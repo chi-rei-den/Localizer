@@ -50,6 +50,14 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\References\Microsoft.Xna.Framework.Xact.dll</HintPath>
     </Reference>
+    <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\References\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="ReLogic, Version=1.0.0.0, Culture=neutral, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\References\ReLogic.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -63,8 +71,42 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DataContainer.cs" />
+    <Compile Include="Harmony\Attributes.cs" />
+    <Compile Include="Harmony\CodeInstruction.cs" />
+    <Compile Include="Harmony\CodeTranspiler.cs" />
+    <Compile Include="Harmony\Extras\DelegateTypeFactory.cs" />
+    <Compile Include="Harmony\Extras\FastAccess.cs" />
+    <Compile Include="Harmony\Extras\MethodInvoker.cs" />
+    <Compile Include="Harmony\GlobalSuppressions.cs" />
+    <Compile Include="Harmony\HarmonyInstance.cs" />
+    <Compile Include="Harmony\HarmonyMethod.cs" />
+    <Compile Include="Harmony\HarmonySharedState.cs" />
+    <Compile Include="Harmony\ILCopying\ByteBuffer.cs" />
+    <Compile Include="Harmony\ILCopying\Emitter.cs" />
+    <Compile Include="Harmony\ILCopying\ILInstruction.cs" />
+    <Compile Include="Harmony\ILCopying\Memory.cs" />
+    <Compile Include="Harmony\ILCopying\MethodCopier.cs" />
+    <Compile Include="Harmony\ILCopying\Signature.cs" />
+    <Compile Include="Harmony\MethodPatcher.cs" />
+    <Compile Include="Harmony\Patch.cs" />
+    <Compile Include="Harmony\PatchFunctions.cs" />
+    <Compile Include="Harmony\PatchProcessor.cs" />
+    <Compile Include="Harmony\Priority.cs" />
+    <Compile Include="Harmony\Tools\AccessCache.cs" />
+    <Compile Include="Harmony\Tools\AccessTools.cs" />
+    <Compile Include="Harmony\Tools\DynamicTools.cs" />
+    <Compile Include="Harmony\Tools\Extensions.cs" />
+    <Compile Include="Harmony\Tools\FileLog.cs" />
+    <Compile Include="Harmony\Tools\PatchTools.cs" />
+    <Compile Include="Harmony\Tools\SelfPatching.cs" />
+    <Compile Include="Harmony\Tools\SymbolExtensions.cs" />
+    <Compile Include="Harmony\Tools\Traverse.cs" />
+    <Compile Include="Harmony\Transpilers.cs" />
+    <Compile Include="InternalDrawHandler.cs" />
     <Compile Include="Localizer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TooltipHandler.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="BuildMod" AfterTargets="Build">
