@@ -1,14 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Terraria.ModLoader;
+using Harmony;
+using System;
 
 namespace Localizer
 {
-    public class Localizer : Mod
+    class yuyutql : Mod
     {
-		
+        private static HarmonyInstance harmony = HarmonyInstance.Create("yuyu");
+        public static Mod instance;
+        public yuyutql()
+        {
+            instance = this;
+            harmony.PatchAll();
+        }
     }
 }
