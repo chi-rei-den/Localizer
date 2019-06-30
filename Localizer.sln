@@ -5,6 +5,8 @@ VisualStudioVersion = 16.0.29009.5
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Localizer", "Localizer\Localizer.csproj", "{95D54B28-B67B-4248-B83A-B5E5426C3806}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LocalizerWPF", "LocalizerWPF\LocalizerWPF.csproj", "{390A3921-DE7E-4406-94FB-496BB04260F3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{95D54B28-B67B-4248-B83A-B5E5426C3806}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{95D54B28-B67B-4248-B83A-B5E5426C3806}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{95D54B28-B67B-4248-B83A-B5E5426C3806}.Release|Any CPU.Build.0 = Release|Any CPU
+		{390A3921-DE7E-4406-94FB-496BB04260F3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{390A3921-DE7E-4406-94FB-496BB04260F3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{390A3921-DE7E-4406-94FB-496BB04260F3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{390A3921-DE7E-4406-94FB-496BB04260F3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
