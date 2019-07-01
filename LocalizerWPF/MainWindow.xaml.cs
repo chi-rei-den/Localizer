@@ -30,7 +30,6 @@ namespace LocalizerWPF
     /// </summary>
     public partial class MainWindow
     {
-        public static int Selected { get; set; }
         public static List<ModTranslation> ModTranslations1 { get; set; } = new List<ModTranslation>()
             {
                 new ModTranslation("T1")
@@ -147,11 +146,11 @@ namespace LocalizerWPF
                     Translations = new List<Translation>()
                 }
             };
-        public static List<KeyValuePair<string, List<ModTranslation>>> ModTranslations { get; set; } = ModTranslations1.GroupBy(i => i.Mod).ToDictionary(i => i.Key, i => i.ToList()).ToList();
-        public static List<ModTranslation> SelectedModTranslations => ModTranslations[Selected].Value;
         public MainWindow()
         {
             this.InitializeComponent();
+            this.LocalMTM.ModTranslations = ModTranslations1.GroupBy(i => i.Mod).ToDictionary(i => i.Key, i => i.ToList()).ToList();
+            this.OnlineMTM.ModTranslations = ModTranslations1.GroupBy(i => i.Mod).ToDictionary(i => i.Key, i => i.ToList()).ToList();
         }
 
         private void Setting_Click(object sender, System.Windows.RoutedEventArgs e)
