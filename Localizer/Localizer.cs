@@ -10,53 +10,61 @@ namespace Localizer
 {
     public class Localizer : Mod
     {
-		public readonly string WPFPath = "WPF/";
+        public readonly string WPFPath = "WPF/";
 
-		private List<ExternalModule> modules = new List<ExternalModule>();
+        private List<ExternalModule> modules = new List<ExternalModule>();
 
-		public Localizer()
-		{
-			AddResolve();
-		}
+        public Localizer()
+        {
+            AddResolve();
+        }
 
         public override void Load()
         {
-			var asm = Assembly.Load(GetWPFFileBytes("LocalizerUI.dll"));
+            var asm = Assembly.Load(GetWPFFileBytes("LocalizerWPF.dll"));
 
-			foreach (var type in asm.GetExportedTypes())
-			{
-				if (type.IsSubclassOf(typeof(ExternalModule)) && type.IsPublic && !type.IsAbstract)
-				{
-					var instance = (ExternalModule)Activator.CreateInstance(type);
-					modules.Add(instance);
-					instance.Run();
-				}
-			}
-		}
+            foreach (var type in asm.GetExportedTypes())
+            {
+                if (type.IsSubclassOf(typeof(ExternalModule)) && type.IsPublic && !type.IsAbstract)
+                {
+                    var instance = (ExternalModule)Activator.CreateInstance(type);
+                    modules.Add(instance);
+                    instance.Run();
+                }
+            }
+        }
 
-		private void AddResolve()
-		{
-			AppDomain.CurrentDomain.AssemblyResolve += (object _, ResolveEventArgs sargs) =>
-			{
-				if (new AssemblyName(sargs.Name).Name == "Localizer")
-				{
-					return Assembly.GetExecutingAssembly();
-				}
+        public override void Unload()
+        {
+            foreach (var m in modules)
+            {
+                m.Dispose();
+            }
+        }
 
-				var fileName = new AssemblyName(sargs.Name).Name + ".dll";
+        private void AddResolve()
+        {
+            AppDomain.CurrentDomain.AssemblyResolve += (object _, ResolveEventArgs sargs) =>
+            {
+                if (new AssemblyName(sargs.Name).Name == "Localizer")
+                {
+                    return Assembly.GetExecutingAssembly();
+                }
 
-				var asmFile = GetWPFFileBytes(fileName);
+                var fileName = new AssemblyName(sargs.Name).Name + ".dll";
 
-				if (asmFile != null)
-					return Assembly.Load(asmFile);
+                var asmFile = GetWPFFileBytes(fileName);
 
-				return null;
-			};
-		}
+                if (asmFile != null && asmFile.Length != 0)
+                    return Assembly.Load(asmFile);
 
-		private byte[] GetWPFFileBytes(string fileName)
-		{
-			return GetFileBytes($"{WPFPath}{fileName}");
-		}
+                return null;
+            };
+        }
+
+        private byte[] GetWPFFileBytes(string fileName)
+        {
+            return GetFileBytes($"{WPFPath}{fileName}");
+        }
     }
 }

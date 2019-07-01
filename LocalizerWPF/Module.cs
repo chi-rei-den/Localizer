@@ -4,30 +4,51 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Threading;
 using Localizer;
 
 namespace LocalizerWPF
 {
-	public class Module : ExternalModule
-	{
-		private Thread _thread;
+    public class Module : ExternalModule
+    {
+        private Thread _thread;
+        private Application app;
 
-		public override void Run()
-		{
-			_thread = new Thread(
-			() =>
-			{
-				var app = new App();
-				app.InitializeComponent();
-				app.Run();
-			});
-			_thread.SetApartmentState(ApartmentState.STA);
-			_thread.IsBackground = true;
-			_thread.Start();
-		}
-		public override void OnDispose()
-		{
-		}
-	}
+        public override void Run()
+        {
+            if (Application.Current == null)
+            {
+                _thread = new Thread(() =>
+                {
+                    var a = new App();
+                    a.InitializeComponent();
+                    app = a;
+                    app.ShutdownMode = ShutdownMode.OnExplicitShutdown;
+                    app.Run();
+                });
+                _thread.SetApartmentState(ApartmentState.STA);
+                _thread.IsBackground = true;
+
+                _thread.Start();
+            }
+            else
+            {
+                app = Application.Current;
+                app.Dispatcher.Invoke(() =>
+                {
+                    app.MainWindow = new MainWindow();
+                    app.MainWindow.Show();
+                });
+            }
+        }
+
+        protected override void OnDispose()
+        {
+            app.Dispatcher.Invoke(() =>
+            {
+                app.MainWindow?.Close();
+            });
+        }
+    }
 }
