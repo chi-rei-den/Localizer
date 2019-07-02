@@ -41,9 +41,6 @@
     <Reference Include="Microsoft.Xaml.Behaviors, Version=1.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Xaml.Behaviors.Wpf.1.0.1\lib\net45\Microsoft.Xaml.Behaviors.dll</HintPath>
     </Reference>
-    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.12.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Configuration" />
@@ -113,6 +110,7 @@
     <ProjectReference Include="..\Localizer\Localizer.csproj">
       <Project>{95d54b28-b67b-4248-b83a-b5e5426c3806}</Project>
       <Name>Localizer</Name>
+      <Private>False</Private>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

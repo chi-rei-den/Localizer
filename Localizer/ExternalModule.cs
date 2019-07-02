@@ -6,20 +6,20 @@ using System.Threading.Tasks;
 
 namespace Localizer
 {
-	public abstract class ExternalModule : IDisposable
-	{
-		public abstract void Run();
+    public abstract class ExternalModule : IDisposable
+    {
+        public abstract void Run();
 
-		~ExternalModule()
-		{
-			Dispose();
-		}
+        ~ExternalModule()
+        {
+            Dispose();
+        }
 
-		public abstract void OnDispose();
+        protected abstract void OnDispose();
 
-		public void Dispose()
-		{
-			OnDispose();
-		}
-	}
+        public void Dispose()
+        {
+            OnDispose();
+        }
+    }
 }
