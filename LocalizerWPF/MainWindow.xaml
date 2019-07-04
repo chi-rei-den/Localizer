@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+        xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
         xmlns:local="clr-namespace:LocalizerWPF"
         mc:Ignorable="d"
         Title="Localizer" Height="450" Width="800"
@@ -22,12 +23,22 @@
     </Window.Resources>
     <Controls:MetroWindow.RightWindowCommands>
         <Controls:WindowCommands>
-            <Button Click="Setting_Click" Content="settings" />
-            <Button Click="About_Click" Content="about" />
+            <ToggleButton Content="settings"
+        IsChecked="{Binding ElementName=SettingsFlyout, Path=IsOpen}" />
+            <ToggleButton Content="about"
+        IsChecked="{Binding ElementName=AboutFlyout, Path=IsOpen}" />
         </Controls:WindowCommands>
     </Controls:MetroWindow.RightWindowCommands>
+    <Controls:MetroWindow.Flyouts>
+        <Controls:FlyoutsControl>
+            <Controls:Flyout x:Name="SettingsFlyout" Header="Settings" Position="Right" Width="200">
+            </Controls:Flyout>
+            <Controls:Flyout x:Name="AboutFlyout" Header="About" Position="Right" Width="200">
+            </Controls:Flyout>
+        </Controls:FlyoutsControl>
+    </Controls:MetroWindow.Flyouts>
     <Grid>
-        <Controls:MetroAnimatedTabControl>
+        <Controls:MetroAnimatedTabControl Grid.Column="1">
             <TabItem Header="Local">
                 <local:ModTranslationManager x:Name="LocalMTM"/>
             </TabItem>
