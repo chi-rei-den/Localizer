@@ -10,12 +10,12 @@ using Localizer;
 
 namespace LocalizerWPF
 {
-    public class Module : ExternalModule
+    public class WPFPlugin : Plugin
     {
         private Thread _thread;
         private Application app;
 
-        public override void Run()
+        public override void Initialize()
         {
             if (Application.Current == null)
             {

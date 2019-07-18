@@ -57,17 +57,81 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\References\Microsoft.Xna.Framework.Xact.dll</HintPath>
     </Reference>
+    <Reference Include="Mono.Cecil, Version=0.10.3.0, Culture=neutral, PublicKeyToken=50cebf1cceb9d05e">
+      <HintPath>..\References\ModCompile\Mono.Cecil.dll</HintPath>
+    </Reference>
+    <Reference Include="MonoMod.RuntimeDetour, Version=19.5.19.1, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\References\ModCompile\MonoMod.RuntimeDetour.dll</HintPath>
+    </Reference>
+    <Reference Include="MonoMod.Utils, Version=19.5.19.1, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\References\ModCompile\MonoMod.Utils.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed">
+      <HintPath>..\References\ModCompile\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Buffers, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Buffers.4.5.0\lib\netstandard2.0\System.Buffers.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Memory, Version=4.0.1.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Memory.4.5.3\lib\netstandard2.0\System.Memory.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Numerics" />
+    <Reference Include="System.Numerics.Vectors, Version=4.1.4.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Numerics.Vectors.4.5.0\lib\net46\System.Numerics.Vectors.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=4.0.5.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.4.6.0-preview6.19303.8\lib\netstandard2.0\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Threading.Tasks.Extensions, Version=4.2.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Threading.Tasks.Extensions.4.5.2\lib\netstandard2.0\System.Threading.Tasks.Extensions.dll</HintPath>
+    </Reference>
+    <Reference Include="System.ValueTuple, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.ValueTuple.4.5.0\lib\net47\System.ValueTuple.dll</HintPath>
+    </Reference>
     <Reference Include="tModLoaderServer">
       <HintPath>..\References\tModLoaderServer.exe</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ExternalModule.cs" />
+    <Compile Include="Commands\ExportCommand.cs" />
+    <Compile Include="Commands\ImportCommand.cs" />
+    <Compile Include="DataExport\BasicBuffExporter.cs" />
+    <Compile Include="DataExport\BasicCustomExporter.cs" />
+    <Compile Include="DataExport\BasicExportConfig.cs" />
+    <Compile Include="DataExport\BasicItemExporter.cs" />
+    <Compile Include="DataExport\BasicNPCExporter.cs" />
+    <Compile Include="DataExport\ExportConfig.cs" />
+    <Compile Include="DataExport\Exporter.cs" />
+    <Compile Include="DataExport\ExporterFactory.cs" />
+    <Compile Include="DataExport\LdstrExportConfig.cs" />
+    <Compile Include="DataExport\LdstrExporter.cs" />
+    <Compile Include="DataImport\BasicBuffBatcher.cs" />
+    <Compile Include="DataImport\BasicCustomBatcher.cs" />
+    <Compile Include="DataImport\BasicItemBatcher.cs" />
+    <Compile Include="DataImport\BasicNPCBatcher.cs" />
+    <Compile Include="DataImport\Batcher.cs" />
+    <Compile Include="DataImport\LdstrBatcher.cs" />
+    <Compile Include="DataModel\File.cs" />
+    <Compile Include="DataModel\Files\BasicBuffFile.cs" />
+    <Compile Include="DataModel\Files\BasicCustomFile.cs" />
+    <Compile Include="DataModel\Files\BasicItemFile.cs" />
+    <Compile Include="DataModel\Files\BasicNPCFile.cs" />
+    <Compile Include="DataModel\Files\LdstrFile.cs" />
+    <Compile Include="DataModel\IEntry.cs" />
+    <Compile Include="DataModel\Package.cs" />
+    <Compile Include="DataModel\BaseEntry.cs" />
+    <Compile Include="Extensions.cs" />
+    <Compile Include="LocalizerLogger.cs" />
+    <Compile Include="Plugin.cs" />
     <Compile Include="Localizer.cs" />
+    <Compile Include="PackageManager.cs" />
+    <Compile Include="PluginManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Utils.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

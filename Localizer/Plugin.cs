@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace Localizer
 {
-    public abstract class ExternalModule : IDisposable
+    public abstract class Plugin : IDisposable
     {
-        public abstract void Run();
+        public abstract void Initialize();
 
-        ~ExternalModule()
+        ~Plugin()
         {
             Dispose();
         }
