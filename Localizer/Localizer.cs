@@ -1,70 +1,56 @@
-﻿using System;
+﻿using log4net;
 using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
+using System.Globalization;
+using Terraria.Localization;
 using Terraria.ModLoader;
 
 namespace Localizer
 {
     public class Localizer : Mod
     {
-        public readonly string WPFPath = "WPF/";
+        public static ILog Log { get; private set; }
+        public static Localizer Instance { get; private set; }
 
-        private List<ExternalModule> modules = new List<ExternalModule>();
+        private static Dictionary<int, GameCulture> _gameCultures;
 
         public Localizer()
         {
-            AddResolve();
+            _gameCultures = typeof(GameCulture).GetFieldDirectly(null, "_legacyCultures") as Dictionary<int, GameCulture>;
+
+            PluginManager.Init();
+            PackageManager.Init();
         }
 
         public override void Load()
         {
-            var asm = Assembly.Load(GetWPFFileBytes("LocalizerWPF.dll"));
+            Log = this.Logger;
+            Instance = this;
 
-            foreach (var type in asm.GetExportedTypes())
-            {
-                if (type.IsSubclassOf(typeof(ExternalModule)) && type.IsPublic && !type.IsAbstract)
-                {
-                    var instance = (ExternalModule)Activator.CreateInstance(type);
-                    modules.Add(instance);
-                    instance.Run();
-                }
-            }
+            PackageManager.LoadPackages();
+            PluginManager.LoadPlugins();
         }
 
         public override void Unload()
         {
-            foreach (var m in modules)
-            {
-                m.Dispose();
-            }
+            base.Unload();
+
+            PluginManager.UnloadPlugins();
         }
 
-        private void AddResolve()
+        public static GameCulture AddGameCulture(CultureInfo culture)
         {
-            AppDomain.CurrentDomain.AssemblyResolve += (object _, ResolveEventArgs sargs) =>
-            {
-                if (new AssemblyName(sargs.Name).Name == "Localizer")
-                {
-                    return Assembly.GetExecutingAssembly();
-                }
-
-                var fileName = new AssemblyName(sargs.Name).Name + ".dll";
-
-                var asmFile = GetWPFFileBytes(fileName);
-
-                if (asmFile != null && asmFile.Length != 0)
-                    return Assembly.Load(asmFile);
-
-                return null;
-            };
+            return GameCulture.FromName(culture.Name) != null ? null : new GameCulture(culture.Name, _gameCultures.Count);
         }
 
-        private byte[] GetWPFFileBytes(string fileName)
+        public static GameCulture CultureInfoToGameCulture(CultureInfo culture)
         {
-            return GetFileBytes($"{WPFPath}{fileName}");
+            var gc = GameCulture.FromName(culture.Name);
+            return gc ?? AddGameCulture(culture);
+        }
+
+        public static void RefreshLanguages(CultureInfo lang)
+        {
+            ModContent.RefreshModLanguage(CultureInfoToGameCulture(lang));
         }
     }
 }

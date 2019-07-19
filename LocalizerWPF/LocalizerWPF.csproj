@@ -18,7 +18,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>..\Localizer\WPF\</OutputPath>
+    <OutputPath>..\Localizer\Plugins\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -108,7 +108,7 @@
     <Compile Include="ModTranslationManager.xaml.cs">
       <DependentUpon>ModTranslationManager.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Module.cs" />
+    <Compile Include="WPFPlugin.cs" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">
