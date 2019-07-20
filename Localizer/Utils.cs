@@ -1,3 +1,5 @@
+using MonoMod.Utils;
+using Newtonsoft.Json;
 using System;
 using System.IO;
 using System.Reflection;

@@ -76,7 +76,7 @@
                             </Button>
                         </StackPanel>
                         <DataGrid ItemsSource="{Binding Path=Value}"
-                              SelectionMode="Single" SelectedIndex="0" Grid.Column="1" AutoGenerateColumns="False">
+                              SelectionMode="Single" SelectedIndex="0" Grid.Column="1" AutoGenerateColumns="False" AllowDrop="True">
                             <DataGrid.Columns>
                                 <DataGridTemplateColumn CellTemplate="{StaticResource EnabledSwitchTemplate}" />
                                 <DataGridTextColumn ElementStyle="{StaticResource CenterAligned}" Header="Name" Binding="{Binding Path=Name}" />
