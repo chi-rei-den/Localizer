@@ -1,4 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using Localizer;
+using Localizer.DataModel;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -33,6 +37,12 @@ namespace LocalizerWPF
                         : DataGridRowDetailsVisibilityMode.VisibleWhenSelected;
                 }
             };
+        }
+
+        private void Reload(object sender, RoutedEventArgs e)
+        {
+            PackageManager.LoadPackages();
+            this.ModTranslations = PackageManager.Packages.GroupBy(i => i.ModName).Select(i => new ModTranslation(i.Key) { ModTranslations = new ObservableCollection<Package>(i) }).ToList();
         }
     }
 }

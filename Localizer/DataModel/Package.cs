@@ -18,6 +18,7 @@ namespace Localizer.DataModel
         [JsonProperty] public List<string> FileList { get; set; } = new List<string>();
 
         public List<File> Files { get; set; } = new List<File>();
+        public int Count => this.Files.Sum(f => f.GetKeys().Count());
 
         public bool Enabled { get; set; } = true;
         public int Priority { get; set; } = 100;
