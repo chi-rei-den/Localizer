@@ -1,42 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Linq;
+using System.Security.Principal;
 
 namespace LocalizerWPF
 {
-    public class ModTranslation
-    {
-        public bool Enabled { get; set; }
-        public string Name { get; set; }
-        public string Author { get; set; }
-        public string Mod { get; set; }
-        public Version Version { get; set; } = new Version(1, 0, 0, 0);
-        public CultureInfo Language { get; set; } = CultureInfo.GetCultureInfo("en-US");
-        public List<Translation> Translations { get; set; } = new List<Translation>();
-        public ModTranslation(string name) { this.Name = name; }
-    }
-
-    public class Translation
-    {
-        public string From { get; set; }
-        public string To { get; set; }
-        public string Namespace { get; set; } = "*";
-        public string Method { get; set; } = "*";
-    }
-
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
     public partial class MainWindow
     {
-        public static List<ModTranslation> ModTranslations1 { get; set; } = new List<ModTranslation>()
+        public static List<ModTranslationPackage> ModTranslations1 { get; set; } = new List<ModTranslationPackage>()
             {
-                new ModTranslation("T1")
+                new ModTranslationPackage("T1", "Bluemagic")
                 {
                     Enabled = false,
                     Author = "test",
-                    Mod = "Bluemagic",
                     Language = CultureInfo.GetCultureInfo("zh-CN"),
                     Translations = new List<Translation>
                     {
@@ -47,11 +28,10 @@ namespace LocalizerWPF
                         }
                     }
                 },
-                new ModTranslation("T2")
+                new ModTranslationPackage("T2", "DBZMOD")
                 {
                     Enabled = false,
                     Author = "凌云枫落",
-                    Mod = "DBZMOD",
                     Language = CultureInfo.GetCultureInfo("zh-CN"),
                     Translations = new List<Translation>
                     {
@@ -67,11 +47,10 @@ namespace LocalizerWPF
                         }
                     }
                 },
-                new ModTranslation("T3")
+                new ModTranslationPackage("T3", "ARPGLoot")
                 {
                     Enabled = true,
                     Author = "凌云枫落",
-                    Mod = "ARPGLoot",
                     Language = CultureInfo.GetCultureInfo("zh-CN"),
                     Translations = new List<Translation>
                     {
@@ -92,11 +71,10 @@ namespace LocalizerWPF
                         }
                     }
                 },
-                new ModTranslation("T4")
+                new ModTranslationPackage("T4", "CalamityMod")
                 {
                     Enabled = true,
                     Author = "As a song 当歌",
-                    Mod = "CalamityMod",
                     Language = CultureInfo.GetCultureInfo("zh-CN"),
                     Translations = new List<Translation>
                     {
@@ -122,11 +100,10 @@ namespace LocalizerWPF
                         }
                     }
                 },
-                new ModTranslation("Test 5")
+                new ModTranslationPackage("Test 5", "CalamityMod")
                 {
                     Enabled = false,
                     Author = "佚名",
-                    Mod = "CalamityMod",
                     Language = CultureInfo.GetCultureInfo("zh-CN"),
                     Translations = new List<Translation>
                     {
@@ -137,11 +114,10 @@ namespace LocalizerWPF
                         }
                     }
                 },
-                new ModTranslation("Test 5")
+                new ModTranslationPackage("Test 6", "CalamityMod")
                 {
                     Enabled = false,
                     Author = "佚名二号",
-                    Mod = "CalamityMod",
                     Language = CultureInfo.GetCultureInfo("zh-CN"),
                     Translations = new List<Translation>()
                 }
@@ -149,8 +125,8 @@ namespace LocalizerWPF
         public MainWindow()
         {
             this.InitializeComponent();
-            this.LocalMTM.ModTranslations = ModTranslations1.GroupBy(i => i.Mod).ToDictionary(i => i.Key, i => i.ToList()).ToList();
-            this.OnlineMTM.ModTranslations = ModTranslations1.GroupBy(i => i.Mod).ToDictionary(i => i.Key, i => i.ToList()).ToList();
+            this.LocalMTM.ModTranslations = ModTranslations1.GroupBy(i => i.Mod).Select(i => new ModTranslation(i.Key) { ModTranslations = new ObservableCollection<ModTranslationPackage>(i) }).ToList();
+            this.OnlineMTM.ModTranslations = ModTranslations1.GroupBy(i => i.Mod).Select(i => new ModTranslation(i.Key) { ModTranslations = new ObservableCollection<ModTranslationPackage>(i) }).ToList();
         }
 
         private void Setting_Click(object sender, System.Windows.RoutedEventArgs e)

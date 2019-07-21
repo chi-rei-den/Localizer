@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:dd="urn:gong-wpf-dragdrop"
              xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
              xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
              xmlns:local="clr-namespace:LocalizerWPF"
@@ -35,55 +36,101 @@
                 </Button>
             </StackPanel>
         </Grid>
-        <DataGrid x:Name="DataGrid" SelectionMode="Single" SelectedIndex="0" Grid.Column="1" AutoGenerateColumns="False">
+        <DataGrid x:Name="DataGrid" SelectionMode="Single" SelectedIndex="0" Grid.Column="1" AutoGenerateColumns="False" RowDetailsVisibilityMode="Collapsed">
             <DataGrid.Resources>
                 <Style x:Key="CenterAligned" TargetType="TextBlock">
                     <Setter Property="HorizontalAlignment" Value="Center"/>
                 </Style>
             </DataGrid.Resources>
             <DataGrid.Columns>
-                <DataGridTextColumn ElementStyle="{StaticResource CenterAligned}" Header="Mod" Binding="{Binding Path=Key}" />
-                <DataGridTextColumn ElementStyle="{StaticResource CenterAligned}" Header="Version" Binding="{Binding Path=Version}" />
-                <DataGridTextColumn ElementStyle="{StaticResource CenterAligned}" Header="Count" Binding="{Binding Path=Value.Count}" />
+                <DataGridTemplateColumn Header="Name" >
+                    <DataGridTemplateColumn.CellTemplate >
+                        <DataTemplate>
+                            <Label Content="{Binding Path=Name}"
+                    HorizontalAlignment="Center"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTemplateColumn Header="Mod" >
+                    <DataGridTemplateColumn.CellTemplate >
+                        <DataTemplate>
+                            <Label Content="{Binding Path=Mod}"
+                    HorizontalAlignment="Center"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTemplateColumn Header="Version" >
+                    <DataGridTemplateColumn.CellTemplate >
+                        <DataTemplate>
+                            <Label Content="{Binding Path=Version}"
+                    HorizontalAlignment="Center"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTemplateColumn Header="Count" >
+                    <DataGridTemplateColumn.CellTemplate >
+                        <DataTemplate>
+                            <Label Content="{Binding Path=ModTranslations.Count}"
+                    HorizontalAlignment="Center"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
             </DataGrid.Columns>
             <DataGrid.RowDetailsTemplate>
                 <DataTemplate>
                     <Grid Margin="4">
-                        <Grid.Resources>
-                            <DataTemplate x:Key="EnabledSwitchTemplate">
-                                <Grid>
-                                    <Controls:ToggleSwitch OnLabel="" OffLabel="" IsChecked="{Binding Path=Enabled, Mode=TwoWay}" />
-                                </Grid>
-                            </DataTemplate>
-                        </Grid.Resources>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="160"/>
-                            <ColumnDefinition Width="*"/>
-                        </Grid.ColumnDefinitions>
-                        <StackPanel Grid.Column="0">
-                            <TextBlock Margin="4,2" Text="{Binding Path=Key}"></TextBlock>
-                            <Button Margin="4,2">
-                                <TextBlock Text="Move Up"></TextBlock>
-                            </Button>
-                            <Button Margin="4,2">
-                                <TextBlock Text="Move Down"></TextBlock>
-                            </Button>
-                            <Button Margin="4,2">
-                                <TextBlock Text="Move To Top"></TextBlock>
-                            </Button>
-                            <Button Margin="4,2,4,0">
-                                <TextBlock Text="Move To Bottom"></TextBlock>
-                            </Button>
-                        </StackPanel>
-                        <DataGrid ItemsSource="{Binding Path=Value}"
-                              SelectionMode="Single" SelectedIndex="0" Grid.Column="1" AutoGenerateColumns="False" AllowDrop="True">
+                        <DataGrid ItemsSource="{Binding Path=ModTranslations, Mode=TwoWay}" dd:DragDrop.IsDragSource="True"
+                             dd:DragDrop.IsDropTarget="True"
+                             SelectionMode="Single" SelectedIndex="0" Grid.Column="1" AutoGenerateColumns="False"
+                                  CanUserSortColumns="False" >
                             <DataGrid.Columns>
-                                <DataGridTemplateColumn CellTemplate="{StaticResource EnabledSwitchTemplate}" />
-                                <DataGridTextColumn ElementStyle="{StaticResource CenterAligned}" Header="Name" Binding="{Binding Path=Name}" />
-                                <DataGridTextColumn ElementStyle="{StaticResource CenterAligned}" Header="Author" Binding="{Binding  Path=Author}" />
-                                <DataGridTextColumn ElementStyle="{StaticResource CenterAligned}" Header="Version" Binding="{Binding Path=Version}"/>
-                                <DataGridTextColumn ElementStyle="{StaticResource CenterAligned}" Header="Count" Binding="{Binding Path=Translations.Count}"/>
-                                <DataGridTextColumn ElementStyle="{StaticResource CenterAligned}" Header="Language" Binding="{Binding Path=Language.NativeName}"/>
+                                <DataGridTemplateColumn Header="Count" >
+                                    <DataGridTemplateColumn.CellTemplate >
+                                        <DataTemplate >
+                                            <Controls:ToggleSwitch OnLabel="" OffLabel="" IsChecked="{Binding Path=Enabled, Mode=TwoWay}" />
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                                <DataGridTemplateColumn Header="Name" >
+                                    <DataGridTemplateColumn.CellTemplate >
+                                        <DataTemplate>
+                                            <Label Content="{Binding Path=Name}"
+                    HorizontalAlignment="Center"/>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                                <DataGridTemplateColumn Header="Author" >
+                                    <DataGridTemplateColumn.CellTemplate >
+                                        <DataTemplate>
+                                            <Label Content="{Binding Path=Author}"
+                    HorizontalAlignment="Center"/>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                                <DataGridTemplateColumn Header="Version" >
+                                    <DataGridTemplateColumn.CellTemplate >
+                                        <DataTemplate>
+                                            <Label Content="{Binding Path=Version}"
+                    HorizontalAlignment="Center"/>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                                <DataGridTemplateColumn Header="Count" >
+                                    <DataGridTemplateColumn.CellTemplate >
+                                        <DataTemplate>
+                                            <Label Content="{Binding Path=Translations.Count}"
+                    HorizontalAlignment="Center"/>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                                <DataGridTemplateColumn Header="Language" >
+                                    <DataGridTemplateColumn.CellTemplate >
+                                        <DataTemplate>
+                                            <Label Content="{Binding Path=Language.NativeName}"
+                    HorizontalAlignment="Center"/>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
                             </DataGrid.Columns>
                         </DataGrid>
                     </Grid>
