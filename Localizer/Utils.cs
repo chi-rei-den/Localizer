@@ -2,6 +2,7 @@ using MonoMod.Utils;
 using Newtonsoft.Json;
 using System;
 using System.IO;
+using System.IO.Compression;
 using System.Reflection;
 
 namespace Localizer
@@ -23,10 +24,15 @@ namespace Localizer
         {
             using (var fs = new FileStream(path, FileMode.Open, FileAccess.Read))
             {
-                using (var sr = new StreamReader(fs))
-                {
-                    return JsonConvert.DeserializeObject<T>(sr.ReadToEnd());
-                }
+                return ReadFileAndDeserializeJson<T>(fs);
+            }
+        }
+
+        public static T ReadFileAndDeserializeJson<T>(Stream stream)
+        {
+            using (var sr = new StreamReader(stream))
+            {
+                return JsonConvert.DeserializeObject<T>(sr.ReadToEnd());
             }
         }
 
@@ -34,9 +40,26 @@ namespace Localizer
         {
             using (var fs = new FileStream(path, FileMode.Open, FileAccess.Read))
             {
-                using (var sr = new StreamReader(fs))
+                return ReadFileAndDeserializeJson(t, fs);
+            }
+        }
+        
+        public static object ReadFileAndDeserializeJson(Type t, Stream stream)
+        {
+            using (var sr = new StreamReader(stream))
+            {
+                return JsonConvert.DeserializeObject(sr.ReadToEnd(), t);
+            }
+        }
+
+        public static void WriteZipArchiveEntry(ZipArchive archive, string filePath)
+        {
+            ZipArchiveEntry fileEntry = archive.CreateEntry(filePath);
+            using (Stream stream = fileEntry.Open())
+            {
+                using (var sw = new StreamWriter(stream))
                 {
-                    return JsonConvert.DeserializeObject(sr.ReadToEnd(), t);
+                    sw.Write(File.ReadAllBytes(filePath));
                 }
             }
         }

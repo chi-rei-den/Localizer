@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using Terraria.ModLoader;
 using File = System.IO.File;
@@ -47,9 +48,25 @@ namespace Localizer
         {
             PackageGroups = new List<PackageGroup>();
 
+            LoadZippedPackage();
             LoadExportedPackages();
         }
+        
+        public static void LoadZippedPackage()
+        {
+            if (!Directory.Exists(PackagePath))
+            {
+                Directory.CreateDirectory(PackagePath);
+            }
 
+            var packs = new DirectoryInfo(PackagePath).GetFiles("*.locpack", SearchOption.TopDirectoryOnly);
+
+            foreach (var pack in packs)
+            {
+                TryLoadZippedPackage(pack);
+            }
+        }
+        
         public static void LoadExportedPackages()
         {
             if (!Directory.Exists(ExportPath))
@@ -62,6 +79,46 @@ namespace Localizer
             foreach (var packDir in packDirs)
             {
                 TryLoadExportedPackage(packDir);
+            }
+        }
+
+        public static void TryLoadZippedPackage(FileInfo packFile)
+        {
+            try
+            {
+                var packageFilePath = packFile.FullName;
+
+                if (!File.Exists(packageFilePath))
+                {
+                    return;
+                }
+
+                using (FileStream zipFileToOpen = new FileStream(packageFilePath, FileMode.Open))
+                {
+                    using (ZipArchive archive = new ZipArchive(zipFileToOpen, ZipArchiveMode.Read))
+                    {
+                        var packageStream = archive.GetEntry("Package.json")?.Open();
+                        
+                        var package = Utils.ReadFileAndDeserializeJson<Package>(packageStream);
+                        package.Init();
+                        if(package.Mod == null)
+                            return;
+
+                        foreach (var filename in package.FileList)
+                        {
+                            var fileStream = archive.GetEntry($"{filename}.json")?.Open();
+                            var file = Utils.ReadFileAndDeserializeJson(GetFileTypeByTypeName(filename), fileStream) as DataModel.File;
+
+                            package.AddFile(file);
+                        }
+
+                        AddPackage(package);
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Localizer.Log.Error(e);
             }
         }
 
@@ -90,6 +147,40 @@ namespace Localizer
                 }
 
                 AddPackage(package);
+            }
+            catch (Exception e)
+            {
+                Localizer.Log.Error(e);
+            }
+        }
+
+        public static void ZipPackage(DirectoryInfo packDir)
+        {
+            try
+            {
+                var packageFilePath = Path.Combine(packDir.FullName, PackageFileName);
+
+                if (!File.Exists(packageFilePath))
+                {
+                    return;
+                }
+
+                var package = Utils.ReadFileAndDeserializeJson<Package>(packageFilePath);
+                using (FileStream zipFileToOpen = new FileStream($"{packDir.FullName}/{package.Name}.locpack", FileMode.Create))
+                {
+                    using (ZipArchive archive = new ZipArchive(zipFileToOpen, ZipArchiveMode.Create))
+                    {
+                        Utils.WriteZipArchiveEntry(archive, "Package.json");
+                        
+                        foreach (var filename in package.FileList)
+                        {
+                            var filePath = Path.Combine(packDir.FullName, filename + ".json");           
+                            if (!File.Exists(filePath))
+                                continue;
+                            Utils.WriteZipArchiveEntry(archive, filename + ".json");
+                        }
+                    }
+                }
             }
             catch (Exception e)
             {
