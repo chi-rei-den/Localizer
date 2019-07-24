@@ -7,7 +7,7 @@ namespace Localizer.DataExport
 {
     public class BasicCustomExporter : Exporter
     {
-        public BasicCustomExporter(BasicExportConfig config)
+        public BasicCustomExporter(ExportConfig config)
         {
             this.Config = config;
             this.logger = new LocalizerLogger(this.dirPath);

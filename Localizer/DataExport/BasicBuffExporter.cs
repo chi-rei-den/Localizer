@@ -7,7 +7,7 @@ namespace Localizer.DataExport
 {
     public class BasicBuffExporter : Exporter
     {
-        public BasicBuffExporter(BasicExportConfig config)
+        public BasicBuffExporter(ExportConfig config)
         {
             this.Config = config;
             this.logger = new LocalizerLogger(this.dirPath);

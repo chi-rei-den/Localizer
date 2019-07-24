@@ -22,7 +22,7 @@ namespace Localizer.DataExport
             try
             {
                 var file = this.Extract();
-
+                
                 if (!Directory.Exists(this.dirPath))
                 {
                     Directory.CreateDirectory(this.dirPath);
@@ -52,9 +52,9 @@ namespace Localizer.DataExport
                     if (oldFile != null)
                     {
                         this.Update(oldFile, file);
-                    }
 
-                    file = oldFile;
+                        file = oldFile;
+                    }
                 }
 
                 Utils.SerializeJsonAndCreateFile(file, this.filePath);

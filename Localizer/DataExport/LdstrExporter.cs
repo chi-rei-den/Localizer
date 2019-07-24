@@ -90,7 +90,7 @@ namespace Localizer.DataExport
             GetMethodBase<ModRecipe>("System.Void Terraria.ModLoader.ModRecipe::AddIngredient(Terraria.ModLoader.Mod,System.String,System.Int32)"),
         };
 
-        public LdstrExporter(LdstrExportConfig config)
+        public LdstrExporter(ExportConfig config)
         {
             this.Config = config;
             this.logger = new LocalizerLogger(this.dirPath);
@@ -132,15 +132,14 @@ namespace Localizer.DataExport
                     try
                     {
                         var entry = this.GetEntryFromMethod(method);
-                        if (entry != null)
+                        if (entry != null && !file.LdstrEntries.ContainsKey(method.GetFindableID()))
                         {
                             file.LdstrEntries.Add(method.GetFindableID(), entry);
                         }
                     }
                     catch (Exception e)
                     {
-                        // For some reasons, many System.ArgumentException(An item with the same key has already been added) would be thrown
-                        this.logger.DebugLog(e.ToString());
+                        this.logger.Log(e.ToString());
                     }
                 }
             }

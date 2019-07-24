@@ -25,11 +25,15 @@ namespace Localizer.DataModel
 
         protected static LdstrBatcher _instance;
 
+        protected Dictionary<MethodBase, ILContext.Manipulator> modifications;
+
         protected LdstrBatcher()
         {
             this.files = new List<File>();
 
             this.entries = new Dictionary<string, IEntry>();
+            
+            this.modifications = new Dictionary<MethodBase, ILContext.Manipulator>();
         }
 
         protected override void MergeEntry(string key, IEntry toMerge)
@@ -64,7 +68,7 @@ namespace Localizer.DataModel
 
             try
             {
-                HookEndpointManager.Modify(method, new ILContext.Manipulator(il =>
+                var modification = new ILContext.Manipulator(il =>
                 {
                     var c = new ILCursor(il);
                     while (c.TryGotoNext(i => i.Match(OpCodes.Ldstr)))
@@ -79,7 +83,33 @@ namespace Localizer.DataModel
                         c.Remove();
                         c.Emit(OpCodes.Ldstr, ins.Translation);
                     }
-                }));
+                });
+                HookEndpointManager.Modify(method, modification);
+                modifications.Add(method, modification);
+            }
+            catch (Exception ex)
+            {
+                Localizer.Log.Error(ex);
+            }
+        }
+
+        protected override void Undo()
+        {
+            try
+            {
+                foreach (var m in modifications)
+                {
+                    try
+                    {
+                        HookEndpointManager.Unmodify(m.Key, m.Value);
+                    }
+                    catch (Exception ex)
+                    {
+                        Localizer.Log.Error(ex);
+                    }
+                }
+            
+                modifications.Clear();
             }
             catch (Exception ex)
             {

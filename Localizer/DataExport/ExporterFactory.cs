@@ -1,28 +1,36 @@
 using Localizer.DataModel;
 using System;
+using System.Collections.Generic;
+using System.Reflection;
+using MonoMod.Utils;
 
 namespace Localizer.DataExport
 {
     public static class ExporterFactory
     {
-        // TODO: Should be extensible and elegant
+        
+        public static Dictionary<Type, Type> ExpoterCreateActions = new Dictionary<Type, Type>
+        {
+            [typeof(BasicItemFile)] = typeof(BasicItemExporter),
+            [typeof(BasicBuffFile)] = typeof(BasicBuffExporter),
+            [typeof(BasicCustomFile)] = typeof(BasicCustomExporter),
+            [typeof(BasicNPCFile)] = typeof(BasicNPCExporter),
+            [typeof(LdstrFile)] = typeof(LdstrExporter),
+        };
+        
         public static Exporter CreateExporter(Type type, ExportConfig config)
         {
-            switch (type.Name)
+            if (ExpoterCreateActions.TryGetValue(type, out var exporterType))
             {
-                case nameof(BasicItemFile):
-                    return new BasicItemExporter(config as BasicExportConfig);
-                case nameof(BasicNPCFile):
-                    return new BasicNPCExporter(config as BasicExportConfig);
-                case nameof(BasicBuffFile):
-                    return new BasicBuffExporter(config as BasicExportConfig);
-                case nameof(BasicCustomFile):
-                    return new BasicCustomExporter(config as BasicExportConfig);
-                case nameof(LdstrFile):
-                    return new LdstrExporter(config as LdstrExportConfig);
-                default:
-                    return null;
+                return GetExporterCtor(exporterType).Invoke(new object[]{ config }) as Exporter;
             }
+
+            return null;
+        }
+
+        private static ConstructorInfo GetExporterCtor(Type type)
+        {
+            return type.GetConstructor(new[] { typeof(ExportConfig) });
         }
     }
 }

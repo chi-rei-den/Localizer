@@ -37,26 +37,31 @@ namespace Localizer.Commands
             {
                 [typeof(BasicItemFile)] = new BasicExportConfig
                 {
+                    ForceOverride = false,
                     MakeBackup = true,
                     WithTranslation = true
                 },
                 [typeof(BasicNPCFile)] = new BasicExportConfig
                 {
+                    ForceOverride = false,
                     MakeBackup = true,
                     WithTranslation = true
                 },
                 [typeof(BasicBuffFile)] = new BasicExportConfig
                 {
+                    ForceOverride = false,
                     MakeBackup = true,
                     WithTranslation = true
                 },
                 [typeof(BasicCustomFile)] = new BasicExportConfig
                 {
+                    ForceOverride = false,
                     MakeBackup = true,
                     WithTranslation = true
                 },
                 [typeof(LdstrFile)] = new LdstrExportConfig
                 {
+                    ForceOverride = false,
                     MakeBackup = true,
                 },
             });

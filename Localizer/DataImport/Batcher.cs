@@ -70,6 +70,7 @@ namespace Localizer.DataModel
 
         public void Reset()
         {
+            Undo();
             this.files.Clear();
             this.entries.Clear();
         }
@@ -77,6 +78,11 @@ namespace Localizer.DataModel
         protected abstract void MergeEntry(string key, IEntry toMerge);
 
         protected abstract void ApplyEntry(string key, IEntry entry);
+
+        protected virtual void Undo()
+        {
+            
+        }
 
         protected void SortFiles()
         {

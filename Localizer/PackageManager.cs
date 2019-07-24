@@ -78,6 +78,8 @@ namespace Localizer
 
                 var package = Utils.ReadFileAndDeserializeJson<Package>(packageFilePath);
                 package.Init();
+                if(package.Mod == null)
+                    return;
 
                 foreach (var filename in package.FileList)
                 {
@@ -166,20 +168,17 @@ namespace Localizer
 
         public static void AddPackage(Package package)
         {
-            if (package.Enabled)
+            if (!PackageGroups.Exists(pg => pg.Mod == package.Mod))
             {
-                if (!PackageGroups.Exists(pg => pg.Mod == package.Mod))
+                PackageGroups.Add(new PackageGroup()
                 {
-                    PackageGroups.Add(new PackageGroup()
-                    {
-                        Mod = package.Mod,
-                        Packages = new List<Package>(){ package }
-                    });
-                }
-                else
-                {
-                    PackageGroups.FirstOrDefault(pg => pg.Mod == package.Mod)?.Packages.Add(package);
-                }
+                    Mod = package.Mod,
+                    Packages = new List<Package>() {package}
+                });
+            }
+            else
+            {
+                PackageGroups.FirstOrDefault(pg => pg.Mod == package.Mod)?.Packages.Add(package);
             }
         }
 

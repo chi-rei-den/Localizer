@@ -84,7 +84,7 @@
                     <DataGridTemplateColumn.CellTemplate >
                         <DataTemplate>
                             <Button Background="Transparent" BorderBrush="Transparent"
- BorderThickness="0" Grid.Column="1" >
+ BorderThickness="0">
                                 <Label Content="Import to Mod"></Label>
                             </Button>
                         </DataTemplate>
@@ -96,8 +96,8 @@
                     <Grid Margin="4">
                         <DataGrid ItemsSource="{Binding Path=ModTranslations, Mode=TwoWay}" dd:DragDrop.IsDragSource="True"
                              dd:DragDrop.IsDropTarget="True"
-                             SelectionMode="Single" SelectedIndex="0" Grid.Column="1" AutoGenerateColumns="False"
-                                  CanUserSortColumns="False" >
+                             SelectionMode="Single" AutoGenerateColumns="False"
+                                  CanUserSortColumns="False" CanUserAddRows="False">
                             <DataGrid.Columns>
                                 <DataGridTemplateColumn Header="Count" >
                                     <DataGridTemplateColumn.CellTemplate >

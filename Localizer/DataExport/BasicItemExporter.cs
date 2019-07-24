@@ -8,7 +8,7 @@ namespace Localizer.DataExport
 {
     public class BasicItemExporter : Exporter
     {
-        public BasicItemExporter(BasicExportConfig config)
+        public BasicItemExporter(ExportConfig config)
         {
             this.Config = config;
             this.logger = new LocalizerLogger(this.dirPath);
@@ -27,6 +27,7 @@ namespace Localizer.DataExport
 
             if (items == null)
             {
+                Localizer.Log.Error($"asdfasjbdkb");
                 return null;
             }
 
