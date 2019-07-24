@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using Terraria.ModLoader;
 using File = System.IO.File;
 
@@ -17,8 +18,7 @@ namespace Localizer
         public static string PackagePath => SavePath + "Packages/";
         public static string ExportPath => SavePath + "Exported/";
 
-        public static List<Package> Packages { get; private set; } = new List<Package>();
-        public static Dictionary<Mod, List<Package>> EnabledPackagesOfMod { get; private set; } = new Dictionary<Mod, List<Package>>();
+        public static List<PackageGroup> PackageGroups { get; private set; }
 
         public static Dictionary<Type, Batcher> Batchers = new Dictionary<Type, Batcher>
         {
@@ -40,14 +40,12 @@ namespace Localizer
 
         public static void Init()
         {
-            Packages = new List<Package>();
-            EnabledPackagesOfMod = new Dictionary<Mod, List<Package>>();
+            PackageGroups = new List<PackageGroup>();
         }
 
         public static void LoadPackages()
         {
-            Packages = new List<Package>();
-            EnabledPackagesOfMod = new Dictionary<Mod, List<Package>>();
+            PackageGroups = new List<PackageGroup>();
 
             LoadExportedPackages();
         }
@@ -168,16 +166,19 @@ namespace Localizer
 
         public static void AddPackage(Package package)
         {
-            Packages.Add(package);
             if (package.Enabled)
             {
-                if (!EnabledPackagesOfMod.ContainsKey(package.Mod))
+                if (!PackageGroups.Exists(pg => pg.Mod == package.Mod))
                 {
-                    EnabledPackagesOfMod.Add(package.Mod, new List<Package> { package });
+                    PackageGroups.Add(new PackageGroup()
+                    {
+                        Mod = package.Mod,
+                        Packages = new List<Package>(){ package }
+                    });
                 }
                 else
                 {
-                    EnabledPackagesOfMod[package.Mod].Add(package);
+                    PackageGroups.FirstOrDefault(pg => pg.Mod == package.Mod)?.Packages.Add(package);
                 }
             }
         }
@@ -197,42 +198,45 @@ namespace Localizer
 
         private static void DoBatch(Mod mod, CultureInfo language)
         {
-            if (EnabledPackagesOfMod.TryGetValue(mod, out var packages))
+            var packages = PackageGroups.FirstOrDefault(pg => pg.Mod == mod)?.Packages;
+            if (packages == null)
+                return;
+
+            foreach (var package in packages.FindAll(p => p.Language == language))
             {
-                foreach (var package in packages.FindAll(p => p.Language == language))
+                foreach (var file in package.Files)
                 {
-                    foreach (var file in package.Files)
+                    if (Batchers.TryGetValue(file.GetType(), out var batcher))
                     {
-                        if (Batchers.TryGetValue(file.GetType(), out var batcher))
-                        {
-                            batcher.Add(file);
-                        }
+                        batcher.Add(file);
                     }
                 }
-
-                foreach (var batcher in Batchers.Values)
-                {
-                    batcher.SetState(mod, language);
-
-                    batcher.Batch();
-
-                    batcher.Reset();
-                }
             }
+
+            foreach (var batcher in Batchers.Values)
+            {
+                batcher.SetState(mod, language);
+
+                batcher.Batch();
+
+                batcher.Reset();
+            }
+
         }
 
         private static List<CultureInfo> FindLanguages(Mod mod)
         {
             var results = new List<CultureInfo>();
+            
+            var packages = PackageGroups.FirstOrDefault(pg => pg.Mod == mod)?.Packages;
+            if (packages == null)
+                return results;
 
-            if (EnabledPackagesOfMod.TryGetValue(mod, out var packages))
+            foreach (var package in packages)
             {
-                foreach (var package in packages)
+                if (!results.Contains(package.Language))
                 {
-                    if (!results.Contains(package.Language))
-                    {
-                        results.Add(package.Language);
-                    }
+                    results.Add(package.Language);
                 }
             }
 

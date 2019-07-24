@@ -121,6 +121,7 @@
     <Compile Include="DataModel\IEntry.cs" />
     <Compile Include="DataModel\Package.cs" />
     <Compile Include="DataModel\BaseEntry.cs" />
+    <Compile Include="DataModel\PackageGroup.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="LocalizerLogger.cs" />
     <Compile Include="Plugin.cs" />

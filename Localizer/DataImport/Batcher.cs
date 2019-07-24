@@ -80,7 +80,6 @@ namespace Localizer.DataModel
 
         protected void SortFiles()
         {
-            this.files.Sort((lhs, rhs) => -lhs.Owner.Priority.CompareTo(rhs.Owner.Priority));
         }
     }
 }

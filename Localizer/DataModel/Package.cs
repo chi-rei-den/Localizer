@@ -21,7 +21,9 @@ namespace Localizer.DataModel
         public int Count => this.Files.Sum(f => f.GetKeys().Count());
 
         public bool Enabled { get; set; } = true;
-        public int Priority { get; set; } = 100;
+        
+        public bool Exported { get; set; }
+        
         public Mod Mod { get; set; }
 
         public Package() { }

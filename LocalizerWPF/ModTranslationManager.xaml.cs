@@ -42,7 +42,7 @@ namespace LocalizerWPF
         private void Reload(object sender, RoutedEventArgs e)
         {
             PackageManager.LoadPackages();
-            this.ModTranslations = PackageManager.Packages.GroupBy(i => i.ModName).Select(i => new ModTranslation(i.Key) { ModTranslations = new ObservableCollection<Package>(i) }).ToList();
+            this.ModTranslations = PackageManager.PackageGroups.Select(i => new ModTranslation(i.Mod.Name) { ModTranslations = new ObservableCollection<Package>(i.Packages) }).ToList();
         }
     }
 }

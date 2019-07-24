@@ -85,6 +85,9 @@
     <Reference Include="System.Xaml">
       <RequiredTargetFramework>4.0</RequiredTargetFramework>
     </Reference>
+    <Reference Include="Terraria, Version=1.3.5.1, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\References\tModLoaderServer.exe</HintPath>
+    </Reference>
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
