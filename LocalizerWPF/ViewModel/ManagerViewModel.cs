@@ -17,6 +17,8 @@ namespace LocalizerWPF.ViewModel
         
         public RelayCommand ReloadCommand { get; private set; }
         
+        public RelayCommand ImportAllCommand { get; private set; }
+        
         public ManagerViewModel()
         {
             if (IsInDesignMode)
@@ -31,6 +33,13 @@ namespace LocalizerWPF.ViewModel
             }
             
             ReloadCommand = new RelayCommand(Reload, () => !PackageManager.Loading);
+            ImportAllCommand = new RelayCommand(ImportAll, () => !PackageManager.Importing);
+        }
+
+        private void ImportAll()
+        {
+            PackageManager.ImportAll();
+            Localizer.Localizer.Log.Debug("All Packages Imported");
         }
 
         private void Reload()

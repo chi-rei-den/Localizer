@@ -70,9 +70,13 @@ namespace Localizer.DataModel
 
         public void Reset()
         {
-            Undo();
             this.files.Clear();
             this.entries.Clear();
+        }
+
+        public void Revert()
+        {
+            Undo();
         }
 
         protected abstract void MergeEntry(string key, IEntry toMerge);

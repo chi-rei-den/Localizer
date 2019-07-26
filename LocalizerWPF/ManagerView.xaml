@@ -13,6 +13,19 @@
              DataContext="{Binding Source={StaticResource Locator}, Path=Manager}">
     
     <Grid>
+        <Grid.Resources>
+            <Style x:Key="TransparentButton" TargetType="Button">
+                <Setter Property="Background" Value="Transparent" />
+                <Setter Property="BorderBrush" Value="Transparent" />
+                <Setter Property="BorderThickness" Value="0" />
+            </Style>
+            <Style x:Key="ButtonIcon" TargetType="iconPacks:PackIconBase">
+                <Setter Property="Width" Value="20" />
+                <Setter Property="Height" Value="20" />
+                <Setter Property="HorizontalAlignment" Value="Center" />
+                <Setter Property="VerticalAlignment" Value="Center" />
+            </Style>
+        </Grid.Resources>
         
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="100"/>
@@ -20,22 +33,27 @@
         </Grid.ColumnDefinitions>
         
         <Grid>
+            
             <Grid.RowDefinitions>
-                <RowDefinition Height="50"></RowDefinition>
+                <RowDefinition Height="70"></RowDefinition>
                 <RowDefinition Height="*"></RowDefinition>
             </Grid.RowDefinitions>
-            <Grid Grid.Row="0">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="50"></ColumnDefinition>
-                    <ColumnDefinition Width="50"></ColumnDefinition>
-                </Grid.ColumnDefinitions>
-                <Button Background="Transparent" BorderBrush="Transparent" BorderThickness="0" Grid.Column="0" Command="{Binding ReloadCommand}" >
-                    <iconPacks:PackIconFontAwesome Kind="SyncAltSolid" Width="30" Height="30" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            
+            <StackPanel Grid.Row="0">
+                <Button Command="{Binding ReloadCommand}" Style="{StaticResource TransparentButton}">
+                    <StackPanel Orientation="Horizontal">
+                        <iconPacks:PackIconMaterial Kind="Reload"  Style="{StaticResource ButtonIcon}"/>
+                        <Label Content="Reload"/>
+                    </StackPanel>
                 </Button>
-                <Button Background="Transparent" BorderBrush="Transparent" BorderThickness="0" Grid.Column="1" >
-                    <iconPacks:PackIconFontAwesome Kind="SaveRegular" Width="30" Height="30" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                <Button Command="{Binding ImportAllCommand}" Style="{StaticResource TransparentButton}">
+                    <StackPanel Orientation="Horizontal">
+                        <iconPacks:PackIconMaterial Kind="FileImport" Style="{StaticResource ButtonIcon}"/>
+                        <Label Content="Import"/>
+                    </StackPanel>
                 </Button>
-            </Grid>
+            </StackPanel>
+            
             <StackPanel Grid.Row="1">
                 <Button Margin="4,2">
                     <TextBlock Text="Foo Bar"></TextBlock>
@@ -69,7 +87,7 @@
                     <Label Content="{Binding Packages.Count}" HorizontalAlignment="Center" />
                 </DataTemplate>
                 <DataTemplate x:Key="ImportButton" DataType="{x:Type dataModel:PackageGroup}">
-                    <Button Background="Transparent" BorderBrush="Transparent" BorderThickness="0">
+                    <Button Style="{StaticResource TransparentButton}">
                         <Label Content="Import to Mod"></Label>
                     </Button>
                 </DataTemplate>
@@ -96,21 +114,19 @@
                 
                 <!-- Row Detail Template -->
                 <DataTemplate x:Key="RowDetailTemplate" DataType="{x:Type dataModel:PackageGroup}">
-                    <Grid Margin="4">
-                        <DataGrid ItemsSource="{Binding Path=Packages, Mode=TwoWay}" dd:DragDrop.IsDragSource="True"
-                                  dd:DragDrop.IsDropTarget="True"
-                                  SelectionMode="Single" AutoGenerateColumns="False"
-                                  CanUserSortColumns="False" CanUserAddRows="False">
-                            <DataGrid.Columns>
-                                <DataGridTemplateColumn Header="" CellTemplate="{StaticResource PackageToggleButton}" />
-                                <DataGridTemplateColumn Header="Name" CellTemplate="{StaticResource PackageName}" />
-                                <DataGridTemplateColumn Header="Author" CellTemplate="{StaticResource PackageAuthor}" />
-                                <DataGridTemplateColumn Header="Version" CellTemplate="{StaticResource PackageVersion}" />
-                                <DataGridTemplateColumn Header="Count" CellTemplate="{StaticResource PackageKeyCount}" />
-                                <DataGridTemplateColumn Header="Language" CellTemplate="{StaticResource PackageLanguage}" />
-                            </DataGrid.Columns>
-                        </DataGrid>
-                    </Grid>
+                    <DataGrid ItemsSource="{Binding Path=Packages, Mode=TwoWay}" dd:DragDrop.IsDragSource="True"
+                              dd:DragDrop.IsDropTarget="True"
+                              SelectionMode="Single" AutoGenerateColumns="False"
+                              CanUserSortColumns="False" CanUserAddRows="False" Margin="16, 0, 16, 8">
+                        <DataGrid.Columns>
+                            <DataGridTemplateColumn Header="" CellTemplate="{StaticResource PackageToggleButton}" />
+                            <DataGridTemplateColumn Header="Name" CellTemplate="{StaticResource PackageName}" />
+                            <DataGridTemplateColumn Header="Author" CellTemplate="{StaticResource PackageAuthor}" />
+                            <DataGridTemplateColumn Header="Version" CellTemplate="{StaticResource PackageVersion}" />
+                            <DataGridTemplateColumn Header="Count" CellTemplate="{StaticResource PackageKeyCount}" />
+                            <DataGridTemplateColumn Header="Language" CellTemplate="{StaticResource PackageLanguage}" />
+                        </DataGrid.Columns>
+                    </DataGrid>
                 </DataTemplate>
             </DataGrid.Resources>
         

@@ -6,6 +6,7 @@ using System.Globalization;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
+using System.Threading.Tasks;
 using Terraria.ModLoader;
 using File = System.IO.File;
 
@@ -24,6 +25,8 @@ namespace Localizer
         public static List<PackageGroup> PackageGroups { get; set; }
         
         public static bool Loading { get; private set; }
+        
+        public static bool Importing { get; private set; }
 
         public static Dictionary<Type, Batcher> Batchers = new Dictionary<Type, Batcher>
         {
@@ -53,6 +56,7 @@ namespace Localizer
             foreach (var batcher in Batchers)
             {
                 batcher.Value.Reset();
+                batcher.Value.Revert();
             }
             
             SavePackageGroupStates();
@@ -312,8 +316,24 @@ namespace Localizer
             }
         }
 
+        /// <summary>
+        /// Import all enabled packages.
+        /// </summary>
+        public static void ImportAll()
+        {
+            foreach (var pg in PackageGroups)
+            {
+                Import(pg.Mod);
+            }
+        }
+        
+        /// <summary>
+        /// Import a mod's enabled packages.
+        /// </summary>
+        /// <param name="mod"></param>
         public static void Import(Mod mod)
         {
+            Importing = true;
             try
             {
                 var languages = FindLanguages(mod);
@@ -328,8 +348,16 @@ namespace Localizer
             {
                 Localizer.Log.Error(e);
             }
+            finally
+            {
+                Importing = false;
+            }
         }
 
+        /// <summary>
+        /// Add a package into PackageGroups.
+        /// </summary>
+        /// <param name="package"></param>
         public static void AddPackage(Package package)
         {
             if (!PackageGroups.Exists(pg => pg.Mod == package.Mod))
