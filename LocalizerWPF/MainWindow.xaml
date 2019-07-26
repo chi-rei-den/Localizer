@@ -10,7 +10,8 @@
         Title="Localizer" Height="450" Width="800"
         ShowMinButton="False"
         ShowMaxRestoreButton="False"
-        ResizeMode="CanResizeWithGrip">
+        ResizeMode="CanResizeWithGrip"
+        DataContext="{Binding Source={StaticResource Locator}, Path=Main}">
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -40,10 +41,10 @@
     <Grid>
         <Controls:MetroAnimatedTabControl Grid.Column="1">
             <TabItem Header="Local">
-                <local:ModTranslationManager x:Name="LocalMTM"/>
+                <local:ManagerView x:Name="LocalMTM"/>
             </TabItem>
             <TabItem Header="Online">
-                <local:ModTranslationManager x:Name="OnlineMTM"/>
+                <local:ManagerView x:Name="OnlineMTM"/>
             </TabItem>
             <TabItem Header="DIY">
             </TabItem>

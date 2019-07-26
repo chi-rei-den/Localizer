@@ -19,7 +19,7 @@ namespace Localizer
         public static string PackagePath => SavePath + "Packages/";
         public static string ExportPath => SavePath + "Exported/";
 
-        public static List<PackageGroup> PackageGroups { get; private set; }
+        public static List<PackageGroup> PackageGroups { get; set; }
 
         public static Dictionary<Type, Batcher> Batchers = new Dictionary<Type, Batcher>
         {

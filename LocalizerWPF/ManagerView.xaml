@@ -1,0 +1,131 @@
+﻿<UserControl x:Class="LocalizerWPF.ManagerView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:dd="urn:gong-wpf-dragdrop"
+             xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+             xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+             xmlns:local="clr-namespace:LocalizerWPF"
+             xmlns:dataModel="clr-namespace:Localizer.DataModel;assembly=Localizer"
+             mc:Ignorable="d"
+             d:DesignHeight="450" d:DesignWidth="800"
+             DataContext="{Binding Source={StaticResource Locator}, Path=Manager}">
+    
+    <UserControl.Resources>
+        <ResourceDictionary>
+
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="100"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="50"></RowDefinition>
+                <RowDefinition Height="*"></RowDefinition>
+            </Grid.RowDefinitions>
+            <Grid Grid.Row="0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="50"></ColumnDefinition>
+                    <ColumnDefinition Width="50"></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+                <Button Background="Transparent" BorderBrush="Transparent" BorderThickness="0" Grid.Column="0" Click="Reload" >
+                    <iconPacks:PackIconFontAwesome Kind="SyncAltSolid" Width="30" Height="30" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                </Button>
+                <Button Background="Transparent" BorderBrush="Transparent"
+ BorderThickness="0" Grid.Column="1" >
+                    <iconPacks:PackIconFontAwesome Kind="SaveRegular" Width="30" Height="30" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                </Button>
+            </Grid>
+            <StackPanel Grid.Row="1">
+                <Button Margin="4,2">
+                    <TextBlock Text="Foo Bar"></TextBlock>
+                </Button>
+                <Button Margin="4,2,4,4">
+                    <TextBlock Text="Baz Qux"></TextBlock>
+                </Button>
+            </StackPanel>
+        </Grid>
+        
+        <DataGrid x:Name="DataGrid" Grid.Column="1" ItemsSource="{Binding PackageGroups}" AutoGenerateColumns="False" 
+                  RowDetailsVisibilityMode="Collapsed" CanUserAddRows="False">
+            <DataGrid.Resources>
+                <Style x:Key="CenterAligned" TargetType="TextBlock">
+                    <Setter Property="HorizontalAlignment" Value="Center" />
+                </Style>
+                <DataTemplate x:Key="ModDisplayName" DataType="{x:Type dataModel:PackageGroup}">
+                    <Label Content="{Binding Mod.DisplayName}" HorizontalAlignment="Center" />
+                </DataTemplate>
+                <DataTemplate x:Key="ModName" DataType="{x:Type dataModel:PackageGroup}">
+                    <Label Content="{Binding Mod.Name}"
+                           HorizontalAlignment="Center" />
+                </DataTemplate>
+                <DataTemplate x:Key="ModVersion" DataType="{x:Type dataModel:PackageGroup}">
+                    <Label Content="{Binding Mod.Version}"
+                           HorizontalAlignment="Center" />
+                </DataTemplate>
+                <DataTemplate x:Key="PackageCount" DataType="{x:Type dataModel:PackageGroup}">
+                    <Label Content="{Binding Packages.Count}"
+                           HorizontalAlignment="Center" />
+                </DataTemplate>
+                <DataTemplate x:Key="ImportButton" DataType="{x:Type dataModel:PackageGroup}">
+                    <Button Background="Transparent" BorderBrush="Transparent" BorderThickness="0">
+                        <Label Content="Import to Mod"></Label>
+                    </Button>
+                </DataTemplate>
+
+                <DataTemplate x:Key="PackageToggleButton" DataType="{x:Type dataModel:Package}">
+                    <Controls:ToggleSwitch OnLabel="" OffLabel="" IsChecked="{Binding Path=Enabled, Mode=TwoWay}" />
+                </DataTemplate>
+                <DataTemplate x:Key="PackageName" DataType="{x:Type dataModel:Package}">
+                    <Label Content="{Binding Name}" HorizontalAlignment="Center" />
+                </DataTemplate>
+                <DataTemplate x:Key="PackageAuthor" DataType="{x:Type dataModel:Package}">
+                    <Label Content="{Binding Author}" HorizontalAlignment="Center" />
+                </DataTemplate>
+                <DataTemplate x:Key="PackageVersion" DataType="{x:Type dataModel:Package}">
+                    <Label Content="{Binding Version}" HorizontalAlignment="Center" />
+                </DataTemplate>
+                <DataTemplate x:Key="PackageKeyCount" DataType="{x:Type dataModel:Package}">
+                    <Label Content="{Binding Count}" HorizontalAlignment="Center" />
+                </DataTemplate>
+                <DataTemplate x:Key="PackageLanguage" DataType="{x:Type dataModel:Package}">
+                    <Label Content="{Binding Language.NativeName}" HorizontalAlignment="Center" />
+                </DataTemplate>
+                <DataTemplate x:Key="RowDetailTemplate" DataType="{x:Type dataModel:PackageGroup}">
+                    <Grid Margin="4">
+                        <DataGrid ItemsSource="{Binding Path=Packages, Mode=TwoWay}" dd:DragDrop.IsDragSource="True"
+                                  dd:DragDrop.IsDropTarget="True"
+                                  SelectionMode="Single" AutoGenerateColumns="False"
+                                  CanUserSortColumns="False" CanUserAddRows="False">
+                            <DataGrid.Columns>
+                                <DataGridTemplateColumn Header="" CellTemplate="{StaticResource PackageToggleButton}" />
+                                <DataGridTemplateColumn Header="Name" CellTemplate="{StaticResource PackageName}" />
+                                <DataGridTemplateColumn Header="Author" CellTemplate="{StaticResource PackageAuthor}" />
+                                <DataGridTemplateColumn Header="Version" CellTemplate="{StaticResource PackageVersion}" />
+                                <DataGridTemplateColumn Header="Count" CellTemplate="{StaticResource PackageKeyCount}" />
+                                <DataGridTemplateColumn Header="Language" CellTemplate="{StaticResource PackageLanguage}" />
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </Grid>
+                </DataTemplate>
+            </DataGrid.Resources>
+        
+            <DataGrid.Columns>
+                <DataGridTemplateColumn Header="DisplayName" CellTemplate="{StaticResource ModDisplayName}" />
+                <DataGridTemplateColumn Header="Name" CellTemplate="{StaticResource ModName}" />
+                <DataGridTemplateColumn Header="Version" CellTemplate="{StaticResource ModVersion}" />
+                <DataGridTemplateColumn Header="Count" CellTemplate="{StaticResource PackageCount}" />
+                <DataGridTemplateColumn CellTemplate="{StaticResource ImportButton}" />
+            </DataGrid.Columns>
+            
+            <DataGrid.RowDetailsTemplate>
+                <StaticResource ResourceKey="RowDetailTemplate" />
+            </DataGrid.RowDetailsTemplate>
+            </DataGrid>
+    </Grid>
+</UserControl>

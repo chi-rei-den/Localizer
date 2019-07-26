@@ -12,7 +12,7 @@ namespace LocalizerWPF
     /// <summary>
     /// Interaction logic for ModTranslationManager.xaml
     /// </summary>
-    public partial class ModTranslationManager : UserControl
+    public partial class ManagerView : UserControl
     {
         private List<ModTranslation> _modTranslations;
         public List<ModTranslation> ModTranslations
@@ -20,7 +20,7 @@ namespace LocalizerWPF
             get => this._modTranslations;
             set => this.DataGrid.ItemsSource = this._modTranslations = value;
         }
-        public ModTranslationManager()
+        public ManagerView()
         {
             this.InitializeComponent();
             this.DataGrid.MouseLeftButtonUp += (e, a) =>
