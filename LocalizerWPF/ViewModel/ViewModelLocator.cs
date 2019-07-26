@@ -31,12 +31,15 @@ namespace LocalizerWPF.ViewModel
         {
             ServiceLocator.SetLocatorProvider(() => SimpleIoc.Default);
 
-            SimpleIoc.Default.Register<ManagerViewModel>();
             SimpleIoc.Default.Register<MainViewModel>();
+            SimpleIoc.Default.Register<ManagerViewModel>();
+            SimpleIoc.Default.Register<ExportViewModel>();
         }
 
         public MainViewModel Main => ServiceLocator.Current.GetInstance<MainViewModel>();
         public ManagerViewModel Manager => ServiceLocator.Current.GetInstance<ManagerViewModel>();
+        
+        public ExportViewModel Export => ServiceLocator.Current.GetInstance<ExportViewModel>();
         
         public static void Cleanup()
         {

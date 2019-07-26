@@ -41,12 +41,12 @@
     <Grid>
         <Controls:MetroAnimatedTabControl Grid.Column="1">
             <TabItem Header="Local">
-                <local:ManagerView x:Name="LocalMTM"/>
+                <local:ManagerView x:Name="ManagerView"/>
             </TabItem>
             <TabItem Header="Online">
-                <local:ManagerView x:Name="OnlineMTM"/>
             </TabItem>
-            <TabItem Header="DIY">
+            <TabItem Header="Export">
+                <local:ExportView x:Name="ExportView"/>
             </TabItem>
         </Controls:MetroAnimatedTabControl>
     </Grid>
