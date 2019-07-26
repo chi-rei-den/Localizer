@@ -35,6 +35,7 @@ namespace Localizer
             base.Unload();
 
             PluginManager.UnloadPlugins();
+            PackageManager.Unload();
         }
 
         public static GameCulture AddGameCulture(CultureInfo culture)

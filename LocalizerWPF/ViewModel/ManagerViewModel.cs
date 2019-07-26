@@ -1,6 +1,7 @@
 using System.Collections.ObjectModel;
 using System.Linq;
 using GalaSoft.MvvmLight;
+using GalaSoft.MvvmLight.Command;
 using Localizer;
 using Localizer.DataModel;
 
@@ -14,6 +15,8 @@ namespace LocalizerWPF.ViewModel
             set => PackageManager.PackageGroups = value.ToList();
         }
         
+        public RelayCommand ReloadCommand { get; private set; }
+        
         public ManagerViewModel()
         {
             if (IsInDesignMode)
@@ -22,11 +25,18 @@ namespace LocalizerWPF.ViewModel
             }
             else
             {
-//                PackageGroups = new ObservableCollection<PackageGroup>();
-//                
-//                PackageManager.LoadPackages();
-                Localizer.Localizer.Log.Info("ajkhsgbdljauhwgdfliy");
+                PackageGroups = new ObservableCollection<PackageGroup>();
+                
+                PackageManager.LoadPackages();
             }
+            
+            ReloadCommand = new RelayCommand(Reload, () => !PackageManager.Loading);
+        }
+
+        private void Reload()
+        {
+            PackageManager.LoadPackages();
+            Localizer.Localizer.Log.Debug("Packages Reloaded");
         }
     }
 }

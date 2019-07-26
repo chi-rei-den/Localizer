@@ -14,12 +14,6 @@ namespace LocalizerWPF
     /// </summary>
     public partial class ManagerView : UserControl
     {
-        private List<ModTranslation> _modTranslations;
-        public List<ModTranslation> ModTranslations
-        {
-            get => this._modTranslations;
-            set => this.DataGrid.ItemsSource = this._modTranslations = value;
-        }
         public ManagerView()
         {
             this.InitializeComponent();
@@ -37,12 +31,6 @@ namespace LocalizerWPF
                         : DataGridRowDetailsVisibilityMode.VisibleWhenSelected;
                 }
             };
-        }
-
-        private void Reload(object sender, RoutedEventArgs e)
-        {
-            PackageManager.LoadPackages();
-            this.ModTranslations = PackageManager.PackageGroups.Select(i => new ModTranslation(i.Mod.Name) { ModTranslations = new ObservableCollection<Package>(i.Packages) }).ToList();
         }
     }
 }

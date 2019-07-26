@@ -18,8 +18,12 @@ namespace Localizer
         public static string SavePath => Terraria.Main.SavePath + "/Localizer/";
         public static string PackagePath => SavePath + "Packages/";
         public static string ExportPath => SavePath + "Exported/";
+        
+        public static string PackageGroupStatesPath => SavePath + "PackageStates.json";
 
         public static List<PackageGroup> PackageGroups { get; set; }
+        
+        public static bool Loading { get; private set; }
 
         public static Dictionary<Type, Batcher> Batchers = new Dictionary<Type, Batcher>
         {
@@ -44,12 +48,81 @@ namespace Localizer
             PackageGroups = new List<PackageGroup>();
         }
 
+        public static void Unload()
+        {
+            foreach (var batcher in Batchers)
+            {
+                batcher.Value.Reset();
+            }
+            
+            SavePackageGroupStates();
+        }
+
         public static void LoadPackages()
         {
-            PackageGroups = new List<PackageGroup>();
+            Loading = true;
+            try
+            {
+                PackageGroups = new List<PackageGroup>();
 
-            LoadZippedPackage();
-            LoadExportedPackages();
+                LoadZippedPackage();
+                LoadExportedPackages();
+                
+                LoadPackageGroupStates();
+            }
+            finally
+            {
+                Loading = false;
+            }
+        }
+
+        public static void SavePackageGroupStates()
+        {
+            try
+            {
+                var states = new List<PackageGroupState>();
+
+                foreach (var pg in PackageGroups)
+                {
+                    states.Add(new PackageGroupState(pg));
+                }
+                
+                Utils.SerializeJsonAndCreateFile(states, PackageGroupStatesPath);
+            }
+            catch (Exception e)
+            {
+                Localizer.Log.Error(e);
+            }
+        }
+
+        public static void LoadPackageGroupStates()
+        {
+            if(!File.Exists(PackageGroupStatesPath))
+                return;
+
+            try
+            {
+                var states = Utils.ReadFileAndDeserializeJson<List<PackageGroupState>>(PackageGroupStatesPath);
+
+                foreach (var state in states)
+                {
+                    var packageGroup = PackageGroups.FirstOrDefault(pg => pg.Mod.Name == state.ModName);
+                    if (packageGroup == null)
+                        continue;
+
+                    foreach (var p in packageGroup.Packages)
+                    {
+                        if (state.Packages.Contains(p.Name))
+                        {
+                            p.Enabled = (bool) state.Packages[p.Name];
+                        }
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Localizer.Log.Error(e);
+            }
         }
         
         public static void LoadZippedPackage()
