@@ -8,6 +8,7 @@
              xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
              xmlns:local="clr-namespace:LocalizerWPF"
              xmlns:dataModel="clr-namespace:Localizer.DataModel;assembly=Localizer"
+             xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
              mc:Ignorable="d"
              d:DesignHeight="450" d:DesignWidth="800"
              DataContext="{Binding Source={StaticResource Locator}, Path=Manager}">
@@ -64,13 +65,9 @@
             </StackPanel>
         </Grid>
         
-        <DataGrid x:Name="DataGrid" Grid.Column="1" ItemsSource="{Binding PackageGroups}" AutoGenerateColumns="False" 
-                  RowDetailsVisibilityMode="Collapsed" CanUserAddRows="False">
+        <DataGrid x:Name="PackageDataGrid" Grid.Column="1" ItemsSource="{Binding PackageGroups}" AutoGenerateColumns="False" 
+                  SelectionMode="Extended" RowDetailsVisibilityMode="VisibleWhenSelected" CanUserAddRows="False">
             <DataGrid.Resources>
-                <Style x:Key="CenterAligned" TargetType="TextBlock">
-                    <Setter Property="HorizontalAlignment" Value="Center" />
-                </Style>
-                
                 <!-- PackageGroups Columns Templates -->
                 <DataTemplate x:Key="ModDisplayName" DataType="{x:Type dataModel:PackageGroup}">
                     <Label Content="{Binding Mod.DisplayName}" HorizontalAlignment="Center" />
@@ -141,6 +138,6 @@
             <DataGrid.RowDetailsTemplate>
                 <StaticResource ResourceKey="RowDetailTemplate" />
             </DataGrid.RowDetailsTemplate>
-            </DataGrid>
+        </DataGrid>
     </Grid>
 </UserControl>

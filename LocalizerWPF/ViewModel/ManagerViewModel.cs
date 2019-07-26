@@ -1,5 +1,7 @@
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Windows.Controls;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using Localizer;
@@ -19,6 +21,8 @@ namespace LocalizerWPF.ViewModel
         
         public RelayCommand ImportAllCommand { get; private set; }
         
+        public RelayCommand<List<PackageGroup>> ToggleRowDetailCommand { get; private set; }
+        
         public ManagerViewModel()
         {
             if (IsInDesignMode)
@@ -34,6 +38,16 @@ namespace LocalizerWPF.ViewModel
             
             ReloadCommand = new RelayCommand(Reload, () => !PackageManager.Loading);
             ImportAllCommand = new RelayCommand(ImportAll, () => !PackageManager.Importing);
+            ToggleRowDetailCommand = new RelayCommand<List<PackageGroup>>(ToggleRowDetail);
+        }
+
+        private void ToggleRowDetail(List<PackageGroup> selectedItems)
+        {
+            foreach (var si in selectedItems)
+            {
+                
+                PackageGroups.IndexOf(si);
+            }
         }
 
         private void ImportAll()

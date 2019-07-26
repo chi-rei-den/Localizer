@@ -9,15 +9,5 @@
         {
             this.InitializeComponent();
         }
-
-        private void Setting_Click(object sender, System.Windows.RoutedEventArgs e)
-        {
-
-        }
-
-        private void About_Click(object sender, System.Windows.RoutedEventArgs e)
-        {
-
-        }
     }
 }

@@ -17,18 +17,17 @@ namespace LocalizerWPF
         public ManagerView()
         {
             this.InitializeComponent();
-            this.DataGrid.MouseLeftButtonUp += (e, a) =>
+            PackageDataGrid.MouseLeftButtonDown += (e, a) =>
             {
                 var dg = a.OriginalSource as FrameworkElement;
                 while (dg != null && !(dg is DataGridRow))
                 {
                     dg = VisualTreeHelper.GetParent(dg) as FrameworkElement;
                 }
-                if ((dg as DataGridRow)?.BindingGroup?.Items[0] == this.DataGrid.SelectedItem)
+
+                if (dg is DataGridRow row)
                 {
-                    this.DataGrid.RowDetailsVisibilityMode = this.DataGrid.RowDetailsVisibilityMode == DataGridRowDetailsVisibilityMode.VisibleWhenSelected
-                        ? DataGridRowDetailsVisibilityMode.Collapsed
-                        : DataGridRowDetailsVisibilityMode.VisibleWhenSelected;
+                    row.IsSelected = !row.IsSelected;
                 }
             };
         }
