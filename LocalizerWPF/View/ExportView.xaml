@@ -3,19 +3,21 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
         xmlns:local="clr-namespace:LocalizerWPF"
+        xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
         mc:Ignorable="d"
         d:DesignHeight="450" d:DesignWidth="800"
         DataContext="{Binding Source={StaticResource Locator}, Path=Export}">
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="200"/>
-            <ColumnDefinition Width="200"/>
-            <ColumnDefinition Width="200"/>
-            <ColumnDefinition Width="200"/>
+            <ColumnDefinition Width="25*"/>
+            <ColumnDefinition Width="35*"/>
+            <ColumnDefinition Width="40*"/>
         </Grid.ColumnDefinitions>
 
-        <ListView x:Name="ModList" ItemsSource="{Binding Mods}" Grid.Column="0">
+        <ListView x:Name="ModList" ItemsSource="{Binding Mods, Mode=OneWay}" Grid.Column="0" SelectionMode="Single"
+                  SelectedItem="{Binding SelectedMod, Mode=TwoWay}">
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <StackPanel>
@@ -25,14 +27,26 @@
             </ListView.ItemTemplate>
         </ListView>
         
-        <StackPanel Grid.Column="3">
+        <StackPanel Grid.Column="1">
+            <TextBox Text="{Binding PackageName, Mode=TwoWay}" />
+            <Controls:SplitButton SelectedItem="{Binding SelectedLanguage, Mode=TwoWay}" ItemsSource="{Binding Languages}">
+                <Controls:SplitButton.Icon>
+                    <iconPacks:PackIconEntypo Kind="Language" HorizontalAlignment="Left"/>
+                </Controls:SplitButton.Icon>
+            </Controls:SplitButton>
+            <CheckBox Content="Make Backup" IsChecked="{Binding MakeBackup}"></CheckBox>
+            <CheckBox Content="Force Override" IsChecked="{Binding ForceOverride}"></CheckBox>
+            <CheckBox Content="With Translations" IsChecked="{Binding WithTranslation}"></CheckBox>
+            <Button Command="{Binding ExportCommand}">
+                <Label Content="Export" />
+            </Button>
+        </StackPanel>
+        
+        <StackPanel Grid.Column="2">
             <StackPanel>
-                <Button Command="{Binding RefreshCommand}">
-                    <Label Content="Refresh" />
-                </Button>
-                <Button Command="{Binding ExportCommand}">
-                    <Label Content="Export" />
-                </Button>
+                <RichTextBox Height="600">
+                    
+                </RichTextBox>
             </StackPanel>
         </StackPanel>
     </Grid>

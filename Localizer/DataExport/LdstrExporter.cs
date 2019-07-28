@@ -217,7 +217,7 @@ namespace Localizer.DataExport
 
             foreach (var newIns in newE.Instructions)
             {
-                if (oldE.Instructions.Contains(newIns))
+                if (oldE.Instructions.Exists(oi => oi.Origin == newIns.Origin))
                 {
                     continue;
                 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Linq;
+using System.Windows;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using Localizer;
@@ -14,28 +15,104 @@ namespace LocalizerWPF.ViewModel
 {
     public class ExportViewModel : ViewModelBase
     {
-        public List<Mod> Mods { get; private set; }
+        public ObservableCollection<Mod> Mods
+        {
+            get
+            {
+                var mods = ModLoader.Mods?.ToList();
+                if(mods == null)
+                    return new ObservableCollection<Mod>();
+                return new ObservableCollection<Mod>(mods);
+            }
+        }
 
-        public RelayCommand RefreshCommand { get; private set; }
+        public Mod SelectedMod { get; set; }
         
-        public RelayCommand<Mod> ExportCommand { get; private set; }
+        public string PackageName { get; set; }
+        
+        public CultureInfo SelectedLanguage { get; set; }
+        
+        public ObservableCollection<CultureInfo> Languages { get; set; }
+        
+        public bool MakeBackup { get; set; }
+        
+        public bool ForceOverride { get; set; }
+        
+        public bool WithTranslation { get; set; }
+        
+        public RelayCommand ExportCommand { get; private set; }
         
         public ExportViewModel()
         {
-            if (IsInDesignMode)
-            {
-            }
-            else
-            {
-                Mods = new List<Mod>();
-            }
+            PackageName = "PleaseEnterPackageName";
+
+            Languages = new ObservableCollection<CultureInfo>(
+                CultureInfo.GetCultures(CultureTypes.AllCultures));
             
-            RefreshCommand = new RelayCommand(Refresh);
+            SelectedLanguage = CultureInfo.CurrentCulture;
+
+            MakeBackup = true;
+            ForceOverride = false;
+            WithTranslation = true;
+            
+            ExportCommand = new RelayCommand(Export);
         }
-        
-        private void Refresh()
+
+        private void Export()
         {
-            Mods = ModLoader.Mods.ToList();
+            try
+            {
+                if (SelectedMod == null)
+                {
+                    MessageBox.Show("Please Select Mod!");
+                    return;
+                }
+
+                if (string.IsNullOrWhiteSpace(PackageName))
+                {
+                    MessageBox.Show("Please Enter Package Name!");
+                    return;
+                }
+
+                PackageManager.Export(SelectedMod, PackageName, SelectedLanguage, new Dictionary<Type, ExportConfig>
+                {
+                    [typeof(BasicItemFile)] = new BasicExportConfig
+                    {
+                        ForceOverride = ForceOverride,
+                        MakeBackup = MakeBackup,
+                        WithTranslation = WithTranslation
+                    },
+                    [typeof(BasicNPCFile)] = new BasicExportConfig
+                    {
+                        ForceOverride = ForceOverride,
+                        MakeBackup = MakeBackup,
+                        WithTranslation = WithTranslation
+                    },
+                    [typeof(BasicBuffFile)] = new BasicExportConfig
+                    {
+                        ForceOverride = ForceOverride,
+                        MakeBackup = MakeBackup,
+                        WithTranslation = WithTranslation
+                    },
+                    [typeof(BasicCustomFile)] = new BasicExportConfig
+                    {
+                        ForceOverride = ForceOverride,
+                        MakeBackup = MakeBackup,
+                        WithTranslation = WithTranslation
+                    },
+                    [typeof(LdstrFile)] = new LdstrExportConfig
+                    {
+                        ForceOverride = ForceOverride,
+                        MakeBackup = MakeBackup,
+                    },
+                });
+
+                MessageBox.Show($"{PackageName} Exported!");
+            }
+            catch (Exception e)
+            {
+                Localizer.Localizer.Log.Error(e);
+            }
         }
     }
 }

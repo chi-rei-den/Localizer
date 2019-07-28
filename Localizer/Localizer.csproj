@@ -101,6 +101,7 @@
   <ItemGroup>
     <Compile Include="Commands\ExportCommand.cs" />
     <Compile Include="Commands\ImportCommand.cs" />
+    <Compile Include="Configuration.cs" />
     <Compile Include="DataExport\BasicBuffExporter.cs" />
     <Compile Include="DataExport\BasicCustomExporter.cs" />
     <Compile Include="DataExport\BasicExportConfig.cs" />

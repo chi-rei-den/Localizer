@@ -36,7 +36,7 @@
         <Grid>
             
             <Grid.RowDefinitions>
-                <RowDefinition Height="70"></RowDefinition>
+                <RowDefinition Height="105"></RowDefinition>
                 <RowDefinition Height="*"></RowDefinition>
             </Grid.RowDefinitions>
             
@@ -51,6 +51,12 @@
                     <StackPanel Orientation="Horizontal">
                         <iconPacks:PackIconMaterial Kind="FileImport" Style="{StaticResource ButtonIcon}"/>
                         <Label Content="Import"/>
+                    </StackPanel>
+                </Button>
+                <Button Command="{Binding RevertCommand}" Style="{StaticResource TransparentButton}">
+                    <StackPanel Orientation="Horizontal">
+                        <iconPacks:PackIconMaterial Kind="FileUndo" Style="{StaticResource ButtonIcon}"/>
+                        <Label Content="Revert"/>
                     </StackPanel>
                 </Button>
             </StackPanel>

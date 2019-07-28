@@ -1,6 +1,9 @@
-﻿using log4net;
+﻿using System;
+using log4net;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
+using LocalizerWPF.Model;
 using Terraria.Localization;
 using Terraria.ModLoader;
 
@@ -10,6 +13,10 @@ namespace Localizer
     {
         public static ILog Log { get; private set; }
         public static Localizer Instance { get; private set; }
+
+        public static Configuration Config { get; set; }
+
+        public static string ConfigPath = Terraria.Main.SavePath + "/Localizer/Config.json";
 
         private static Dictionary<int, GameCulture> _gameCultures;
 
@@ -26,6 +33,8 @@ namespace Localizer
             Log = this.Logger;
             Instance = this;
 
+            LoadConfig();
+            
             PackageManager.LoadPackages();
             PluginManager.LoadPlugins();
         }
@@ -33,9 +42,29 @@ namespace Localizer
         public override void Unload()
         {
             base.Unload();
+            
+            SaveConfig();
 
             PluginManager.UnloadPlugins();
             PackageManager.Unload();
+        }
+
+        public static void LoadConfig()
+        {
+            if (File.Exists(ConfigPath))
+            {
+                Config = Utils.ReadFileAndDeserializeJson<Configuration>(ConfigPath);
+            }
+            else
+            {
+                Config = new Configuration();
+                Utils.SerializeJsonAndCreateFile(Config, ConfigPath);
+            }
+        }
+
+        public static void SaveConfig()
+        {
+            Utils.SerializeJsonAndCreateFile(Config, ConfigPath);
         }
 
         public static GameCulture AddGameCulture(CultureInfo culture)

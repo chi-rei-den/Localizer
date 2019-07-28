@@ -62,6 +62,14 @@ namespace Localizer
             SavePackageGroupStates();
         }
 
+        public static void Revert()
+        {
+            foreach (var batcher in Batchers)
+            {
+                batcher.Value.Revert();
+            }
+        }
+
         public static void LoadPackages()
         {
             Loading = true;
@@ -73,6 +81,11 @@ namespace Localizer
                 LoadExportedPackages();
                 
                 LoadPackageGroupStates();
+
+                if (Localizer.Config.AutoImport)
+                {
+                    ImportAll();
+                }
             }
             finally
             {

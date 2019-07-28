@@ -27,7 +27,6 @@ namespace Localizer.DataExport
 
             if (items == null)
             {
-                Localizer.Log.Error($"asdfasjbdkb");
                 return null;
             }
 

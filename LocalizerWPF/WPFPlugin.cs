@@ -1,4 +1,5 @@
-﻿using Localizer;
+﻿using System;
+using Localizer;
 using System.Threading;
 using System.Windows;
 
@@ -33,6 +34,7 @@ namespace LocalizerWPF
                 {
                     this.app.MainWindow = new MainWindow();
                     this.app.MainWindow.Show();
+                    Localizer.Localizer.Log.Info("Window showed.");
                 });
             }
         }
@@ -42,6 +44,7 @@ namespace LocalizerWPF
             this.app.Dispatcher.Invoke(() =>
             {
                 this.app.MainWindow?.Close();
+                Localizer.Localizer.Log.Info("Window closed.");
             });
         }
     }

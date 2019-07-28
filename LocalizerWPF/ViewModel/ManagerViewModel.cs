@@ -21,7 +21,7 @@ namespace LocalizerWPF.ViewModel
         
         public RelayCommand ImportAllCommand { get; private set; }
         
-        public RelayCommand<List<PackageGroup>> ToggleRowDetailCommand { get; private set; }
+        public RelayCommand RevertCommand { get; private set; }
         
         public ManagerViewModel()
         {
@@ -38,18 +38,11 @@ namespace LocalizerWPF.ViewModel
             
             ReloadCommand = new RelayCommand(Reload, () => !PackageManager.Loading);
             ImportAllCommand = new RelayCommand(ImportAll, () => !PackageManager.Importing);
-            ToggleRowDetailCommand = new RelayCommand<List<PackageGroup>>(ToggleRowDetail);
+            ReloadCommand = new RelayCommand(Revert);
+            
+            
         }
-
-        private void ToggleRowDetail(List<PackageGroup> selectedItems)
-        {
-            foreach (var si in selectedItems)
-            {
-                
-                PackageGroups.IndexOf(si);
-            }
-        }
-
+        
         private void ImportAll()
         {
             PackageManager.ImportAll();
@@ -60,6 +53,12 @@ namespace LocalizerWPF.ViewModel
         {
             PackageManager.LoadPackages();
             Localizer.Localizer.Log.Debug("Packages Reloaded");
+        }
+
+        private void Revert()
+        {
+            PackageManager.Revert();
+            Localizer.Localizer.Log.Debug("Translation Reverted");
         }
     }
 }
