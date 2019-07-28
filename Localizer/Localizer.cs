@@ -15,6 +15,8 @@ namespace Localizer
         public static Localizer Instance { get; private set; }
 
         public static Configuration Config { get; set; }
+        
+        public static string SavePath => Terraria.Main.SavePath + "/Localizer/";
 
         public static string ConfigPath = Terraria.Main.SavePath + "/Localizer/Config.json";
 
@@ -33,9 +35,16 @@ namespace Localizer
             Log = this.Logger;
             Instance = this;
 
+            if (!Directory.Exists(SavePath))
+                Directory.CreateDirectory(SavePath);
+            
             LoadConfig();
             
-            PackageManager.LoadPackages();
+        }
+
+        public override void PostSetupContent()
+        {
+            PackageManager.LoadPackages(false);
             PluginManager.LoadPlugins();
         }
 

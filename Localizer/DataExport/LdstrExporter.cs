@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Mono.Collections.Generic;
 using Terraria.ModLoader;
 using static Localizer.Utils;
 
@@ -111,8 +112,8 @@ namespace Localizer.DataExport
             var config = (LdstrExportConfig) this.Config;
 
             file.LdstrEntries = new Dictionary<string, LdstrEntry>();
-
-            foreach (var type in asm.GetTypes())
+            
+            foreach (var type in HookEndpointManager.GenerateCecilModule(asm.GetName()).GetTypes())
             {
                 /* The return value of GetTypes() and other methods will include types they derived from.
                  So we should check the namespace to ensure it belongs to the assembly, but there still are
@@ -122,9 +123,10 @@ namespace Localizer.DataExport
                     continue;
                 }
 
-                foreach (var method in type.GetMethods())
+                foreach (var method in type.Methods)
                 {
-                    if (method.DeclaringType.Namespace == null || !method.DeclaringType.Namespace.StartsWith(config.Package.Mod.Name) || method.IsAbstract)
+                    if (method.DeclaringType?.Namespace == null || !method.DeclaringType.Namespace.StartsWith(config.Package.Mod.Name) 
+                             || method.IsAbstract)
                     {
                         continue;
                     }
@@ -147,11 +149,10 @@ namespace Localizer.DataExport
             return file;
         }
 
-        protected LdstrEntry GetEntryFromMethod(MethodInfo method)
+        protected LdstrEntry GetEntryFromMethod(MethodDefinition method)
         {
-            var dmd = new DynamicMethodDefinition(method, HookEndpointManager.GenerateCecilModule);
-            var instructions = dmd.Definition.Body?.Instructions;
-
+            var instructions = method?.Body?.Instructions;
+            
             if (instructions == null)
             {
                 return null;

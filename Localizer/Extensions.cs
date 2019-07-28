@@ -2,7 +2,9 @@
 using MonoMod.Utils;
 using System;
 using System.Globalization;
+using System.Linq;
 using System.Reflection;
+using Mono.Cecil;
 using Terraria.ModLoader;
 
 namespace Localizer

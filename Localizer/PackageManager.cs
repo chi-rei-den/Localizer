@@ -16,7 +16,7 @@ namespace Localizer
     {
         public static readonly string PackageFileName = "Package.json";
 
-        public static string SavePath => Terraria.Main.SavePath + "/Localizer/";
+        public static string SavePath => Localizer.SavePath;
         public static string PackagePath => SavePath + "Packages/";
         public static string ExportPath => SavePath + "Exported/";
         
@@ -70,7 +70,7 @@ namespace Localizer
             }
         }
 
-        public static void LoadPackages()
+        public static void LoadPackages(bool reload=true)
         {
             Loading = true;
             try
@@ -82,7 +82,7 @@ namespace Localizer
                 
                 LoadPackageGroupStates();
 
-                if (Localizer.Config.AutoImport)
+                if (Localizer.Config.AutoImport && !reload)
                 {
                     ImportAll();
                 }
@@ -317,6 +317,7 @@ namespace Localizer
                     }
 
                     package.AddFile(file);
+                    package.FileList.Add(pair.Key.Name);
                 }
 
                 AddPackage(package);

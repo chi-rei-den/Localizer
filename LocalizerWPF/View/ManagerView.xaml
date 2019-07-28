@@ -71,7 +71,7 @@
             </StackPanel>
         </Grid>
         
-        <DataGrid x:Name="PackageDataGrid" Grid.Column="1" ItemsSource="{Binding PackageGroups}" AutoGenerateColumns="False" 
+        <DataGrid x:Name="PackageDataGrid" Grid.Column="1" ItemsSource="{Binding PackageGroups, Mode=TwoWay}" AutoGenerateColumns="False" 
                   SelectionMode="Extended" RowDetailsVisibilityMode="VisibleWhenSelected" CanUserAddRows="False">
             <DataGrid.Resources>
                 <!-- PackageGroups Columns Templates -->

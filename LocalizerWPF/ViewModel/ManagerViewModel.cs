@@ -11,10 +11,12 @@ namespace LocalizerWPF.ViewModel
 {
     public class ManagerViewModel : ViewModelBase
     {
+        private ObservableCollection<PackageGroup> _packageGroups;
+        
         public ObservableCollection<PackageGroup> PackageGroups
         {
-            get => new ObservableCollection<PackageGroup>(PackageManager.PackageGroups);
-            set => PackageManager.PackageGroups = value.ToList();
+            get => _packageGroups = new ObservableCollection<PackageGroup>(PackageManager.PackageGroups);
+            set => PackageManager.PackageGroups = (_packageGroups = value).ToList();
         }
         
         public RelayCommand ReloadCommand { get; private set; }
@@ -31,14 +33,14 @@ namespace LocalizerWPF.ViewModel
             }
             else
             {
-                PackageGroups = new ObservableCollection<PackageGroup>();
+                _packageGroups = new ObservableCollection<PackageGroup>();
                 
                 PackageManager.LoadPackages();
             }
             
             ReloadCommand = new RelayCommand(Reload, () => !PackageManager.Loading);
             ImportAllCommand = new RelayCommand(ImportAll, () => !PackageManager.Importing);
-            ReloadCommand = new RelayCommand(Revert);
+            RevertCommand = new RelayCommand(Revert);
             
             
         }
@@ -52,6 +54,8 @@ namespace LocalizerWPF.ViewModel
         private void Reload()
         {
             PackageManager.LoadPackages();
+            _packageGroups.Clear();
+            PackageManager.PackageGroups.ForEach(pg => _packageGroups.Add(pg));
             Localizer.Localizer.Log.Debug("Packages Reloaded");
         }
 
