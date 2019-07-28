@@ -1,4 +1,4 @@
-author = 111111111111
+author = Chireiden Team
 version = 1.0.0.0
 displayName = Localizer
 hideCode = true

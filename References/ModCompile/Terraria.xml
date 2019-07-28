@@ -149,6 +149,11 @@
             Specifies a range for primative data values. Without this, default min and max are as follows: float: 0, 1 - int/uint: 0, 100 - byte: 0, 255
             </summary>
         </member>
+        <member name="T:Terraria.ModLoader.Config.SliderAttribute">
+            <summary>
+            Affects whether this data will be presented as a slider of an input field. Add this attribute to use a slider. Currently only affects data of type int.
+            </summary>
+        </member>
         <member name="T:Terraria.ModLoader.Config.DrawTicksAttribute">
             <summary>
             Add this attribute and the sliders will show white tick marks at each increment.
@@ -264,54 +269,13 @@
         <member name="T:Terraria.ModLoader.Engine.GLCallLocker">
             <summary>
             FNA uses a single-threaded GL context. This class helps with tracking down related issues and deadlocks.
-            See https://github.com/blushiemagic/tModLoader/issues/237 and https://github.com/FNA-XNA/FNA/blob/master/src/FNAPlatform/OpenGLDevice.cs#L4676
+            See https://github.com/tModLoader/tModLoader/issues/237 and https://github.com/FNA-XNA/FNA/blob/master/src/FNAPlatform/OpenGLDevice.cs#L4676
             It also improves loading performance on FNA
             </summary>
         </member>
-        <member name="M:Terraria.ModLoader.UI.DownloadManager.DownloadRequest.Start(System.Threading.CancellationToken)">
-            <summary>
-            Begin the request
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:Terraria.ModLoader.UI.DownloadManager.DownloadRequest.Execute">
-            <summary>
-            Execution of the request
-            </summary>
-        </member>
-        <member name="M:Terraria.ModLoader.UI.DownloadManager.DownloadRequest.Cancel">
-            <summary>
-            Cancel the request
-            </summary>
-        </member>
-        <member name="M:Terraria.ModLoader.UI.DownloadManager.DownloadRequest.Complete">
-            <summary>
-            Complete the request. When executed you are certain the request is completed successfully
-            </summary>
-        </member>
-        <member name="T:Terraria.ModLoader.UI.DownloadManager.StreamingDownloadRequest">
-            <summary>
-            Responsible for a streaming download, handled by <see cref="T:Terraria.ModLoader.ModNet"/>
-            </summary>
-        </member>
-        <member name="T:Terraria.ModLoader.UI.DownloadManager.UIDownloadManager">
-            <summary>
-            Responsible for managing download requests and reporting the progress of it in a UI
-            </summary>
-        </member>
-        <member name="M:Terraria.ModLoader.UI.ModBrowser.UIModBrowser.EnqueueModBrowserDownload(Terraria.ModLoader.UI.ModBrowser.UIModDownloadItem)">
-            <summary>
-                Enqueue a Mod browser item to the download manager
-            </summary>
-        </member>
-        <member name="M:Terraria.ModLoader.UI.ModBrowser.UIModBrowser.EnqueueModBrowserDownloads(System.Collections.Generic.IEnumerable{System.String},System.String)">
+        <member name="M:Terraria.ModLoader.UI.ModBrowser.UIModBrowser.DownloadMods(System.Collections.Generic.IEnumerable{System.String})">
             <summary>
                 Enqueues a list of mods, if found on the browser (also used for ModPacks)
-            </summary>
-        </member>
-        <member name="M:Terraria.ModLoader.UI.ModBrowser.UIModBrowser.StartDownloading">
-            <summary>
-                Will prompt the download manager to begin downloading
             </summary>
         </member>
         <member name="T:Terraria.ModLoader.UgBgStyleLoader">
@@ -1074,13 +1038,14 @@
             <param name="quickHeal">Whether the item is being used through quick heal or not.</param>
             <param name="healValue">The amount of mana being healed.</param>
         </member>
-        <member name="M:Terraria.ModLoader.GlobalItem.GetManaCost(Terraria.Item,Terraria.Player,System.Int32@)">
+        <member name="M:Terraria.ModLoader.GlobalItem.ModifyManaCost(Terraria.Item,Terraria.Player,System.Single@,System.Single@)">
             <summary>
             Allows you to temporarily modify the amount of mana an item will consume on use, based on player buffs, accessories, etc. This is only called for items with a mana value.
             </summary>
             <param name="item">The item being used.</param>
             <param name="player">The player using the item.</param>
-            <param name="mana">The amount of mana the item will use, after being affected by mana cost reduction.</param>
+            <param name="reduce">Used for decreasingly stacking buffs (most common). Only ever use -= on this field.</param>
+            <param name="mult">Use to directly multiply the item's effective mana cost. Good for debuffs, or things which should stack separately (eg meteor armor set bonus).</param>
         </member>
         <member name="M:Terraria.ModLoader.GlobalItem.OnMissingMana(Terraria.Item,Terraria.Player,System.Int32)">
             <summary>
@@ -1120,6 +1085,16 @@
             <param name="player">The player using the item</param>
             <param name="add">Used for additively stacking buffs (most common). Only ever use += on this field.</param>
             <param name="mult">Use to directly multiply the player's effective damage. Good for debuffs, or things which should stack separately (eg ammo type buffs)</param>
+        </member>
+        <member name="M:Terraria.ModLoader.GlobalItem.ModifyWeaponDamage(Terraria.Item,Terraria.Player,System.Single@,System.Single@,System.Single@)">
+            <summary>
+            Allows you to temporarily modify this weapon's damage based on player buffs, etc. This is useful for creating new classes of damage, or for making subclasses of damage (for example, Shroomite armor set boosts).
+            </summary>
+            <param name="item">The item being used</param>
+            <param name="player">The player using the item</param>
+            <param name="add">Used for additively stacking buffs (most common). Only ever use += on this field. Things with effects like "5% increased MyDamageClass damage" would use this: `add += 0.05`</param>
+            <param name="mult">Use to directly multiply the player's effective damage. Good for debuffs, or things which should stack separately (eg ammo type buffs)</param>
+            <param name="flat">This is a flat damage bonus that will be added after add and mult are applied. It facilitates effects like "4 more damage from weapons"</param>
         </member>
         <member name="M:Terraria.ModLoader.GlobalItem.GetWeaponKnockback(Terraria.Item,Terraria.Player,System.Single@)">
             <summary>
@@ -1676,7 +1651,7 @@
         <member name="P:Terraria.ModLoader.GlobalNPC.InstancePerEntity">
             <summary>
             Whether to create a new GlobalNPC instance for every NPC that exists. 
-            Useful for storing information on a projectile. Defaults to false. 
+            Useful for storing information on an npc. Defaults to false. 
             Return true if you need to store information (have non-static fields).
             </summary>
         </member>
@@ -2950,9 +2925,9 @@
             Calls ModItem.GetHealMana, then all GlobalItem.GetHealMana hooks.
             </summary>
         </member>
-        <member name="M:Terraria.ModLoader.ItemLoader.GetManaCost(Terraria.Item,Terraria.Player,System.Int32@)">
+        <member name="M:Terraria.ModLoader.ItemLoader.ModifyManaCost(Terraria.Item,Terraria.Player,System.Single@,System.Single@)">
             <summary>
-            Calls ModItem.GetManaCost, then all GlobalItem.GetManaCost hooks.
+            Calls ModItem.ModifyManaCost, then all GlobalItem.ModifyManaCost hooks.
             </summary>
         </member>
         <member name="M:Terraria.ModLoader.ItemLoader.OnMissingMana(Terraria.Item,Terraria.Player,System.Int32)">
@@ -2970,7 +2945,7 @@
             Calls ModItem.GetWeaponDamage, then all GlobalItem.GetWeaponDamage hooks.
             </summary>
         </member>
-        <member name="M:Terraria.ModLoader.ItemLoader.ModifyWeaponDamage(Terraria.Item,Terraria.Player,System.Single@,System.Single@)">
+        <member name="M:Terraria.ModLoader.ItemLoader.ModifyWeaponDamage(Terraria.Item,Terraria.Player,System.Single@,System.Single@,System.Single@)">
             <summary>
             Calls ModItem.HookModifyWeaponDamage, then all GlobalItem.HookModifyWeaponDamage hooks.
             </summary>
@@ -3297,6 +3272,12 @@
         <member name="M:Terraria.ModLoader.ItemLoader.PostDrawInInventory(Terraria.Item,Microsoft.Xna.Framework.Graphics.SpriteBatch,Microsoft.Xna.Framework.Vector2,Microsoft.Xna.Framework.Rectangle,Microsoft.Xna.Framework.Color,Microsoft.Xna.Framework.Color,Microsoft.Xna.Framework.Vector2,System.Single)">
             <summary>
             Calls ModItem.PostDrawInInventory, then all GlobalItem.PostDrawInInventory hooks.
+            </summary>
+        </member>
+        <member name="M:Terraria.ModLoader.Logging.HookWebRequests">
+            <summary>
+            Attempt to hook the .NET internal methods to log when requests are sent to web addresses.
+            Use the right internal methods to capture redirects
             </summary>
         </member>
         <member name="T:Terraria.ModLoader.Mod">
@@ -4373,7 +4354,7 @@
         </member>
         <member name="M:Terraria.ModLoader.Mod.ModifyInterfaceLayers(System.Collections.Generic.List{Terraria.UI.GameInterfaceLayer})">
             <summary>
-            Allows you to modify the elements of the in-game interface that get drawn. GameInterfaceLayer can be found in the Terraria.UI namespace. Check https://github.com/blushiemagic/tModLoader/wiki/Vanilla-Interface-layers-values for vanilla interface layer names
+            Allows you to modify the elements of the in-game interface that get drawn. GameInterfaceLayer can be found in the Terraria.UI namespace. Check https://github.com/tModLoader/tModLoader/wiki/Vanilla-Interface-layers-values for vanilla interface layer names
             </summary>
             <param name="layers">The layers.</param>
         </member>
@@ -4423,7 +4404,7 @@
         <member name="M:Terraria.ModLoader.BackupIO.AddZipEntry(Ionic.Zip.ZipFile,System.String,System.Boolean)">
             <summary>
             Adds a new entry to the archive .zip file
-            Will use the best compression level using BZip2 technique
+            Will use the best compression level using Deflate
             Some files are already compressed and will not be compressed further
             </summary>
         </member>
@@ -4451,14 +4432,10 @@
             Write the archive. Writes the .plr and .tplr files, then writes the player directory
             </summary>
         </member>
-        <member name="M:Terraria.ModLoader.BackupIO.Player.WriteCloud(Ionic.Zip.ZipFile,System.String)">
+        <!-- Badly formed XML comment ignored for member "M:Terraria.ModLoader.BackupIO.Player.WriteCloudFiles(Ionic.Zip.ZipFile,System.String)" -->
+        <member name="M:Terraria.ModLoader.BackupIO.Player.WriteLocalFiles(Ionic.Zip.ZipFile,System.String)">
             <summary>
-            Writes for cloud files
-            </summary>
-        </member>
-        <member name="M:Terraria.ModLoader.BackupIO.Player.WriteLocal(Ionic.Zip.ZipFile,System.String)">
-            <summary>
-            Writes for local files
+            Write local files, which simply writes the entire player dir
             </summary>
         </member>
         <member name="T:Terraria.ModLoader.ModUgBgStyle">
@@ -5162,7 +5139,7 @@
         </member>
         <member name="P:Terraria.ModLoader.ModItem.CloneNewInstances">
             <summary>
-            Whether instances of this GlobalItem are created through Clone or constructor (by default implementations of NewInstance and Clone(Item, Item)). 
+            Whether instances of this ModItem are created through Clone or constructor (by default implementations of NewInstance and Clone(Item, Item)). 
             Defaults to false (using default constructor).
             </summary>
         </member>
@@ -5170,7 +5147,7 @@
             <summary>
             Returns a clone of this ModItem. 
             Allows you to decide which fields of your ModItem class are copied over when an item stack is split or something similar happens. 
-            By default this will return a memberwise clone; you will want to override this if your GlobalItem contains object references. 
+            By default this will return a memberwise clone; you will want to override this if your ModItem contains object references. 
             Only called if CloneNewInstances is set to true.
             Since several ModItem class fields are also set by the default implementation of this method, you'll most likely want to call base.Clone() as the first statement of your override.
             </summary>
@@ -5180,7 +5157,7 @@
         </member>
         <member name="M:Terraria.ModLoader.ModItem.Clone(Terraria.Item)">
             <summary>
-            Create a copy of this instanced GlobalItem. Called when an item is cloned.
+            Create a copy of this instanced ModItem. Called when an item is cloned.
             Defaults to NewInstance(item)
             </summary>
             <param name="item">The item being cloned</param>
@@ -5188,7 +5165,7 @@
         </member>
         <member name="M:Terraria.ModLoader.ModItem.NewInstance(Terraria.Item)">
             <summary>
-            Create a new instance of this GlobalItem for an Item instance. 
+            Create a new instance of this ModItem for an Item instance. 
             Called at the end of Item.SetDefaults.
             If CloneNewInstances is true, just calls Clone()
             Otherwise calls the default constructor and copies fields
@@ -5276,12 +5253,13 @@
             <param name="quickHeal">Whether the item is being used through quick heal or not.</param>
             <param name="healValue">The amount of mana being healed.</param>
         </member>
-        <member name="M:Terraria.ModLoader.ModItem.GetManaCost(Terraria.Player,System.Int32@)">
+        <member name="M:Terraria.ModLoader.ModItem.ModifyManaCost(Terraria.Player,System.Single@,System.Single@)">
             <summary>
             Allows you to temporarily modify the amount of mana this item will consume on use, based on player buffs, accessories, etc. This is only called for items with a mana value.
             </summary>
             <param name="player">The player using the item.</param>
-            <param name="mana">The amount of mana the item will use, after being affected by mana cost reduction.</param>
+            <param name="reduce">Used for decreasingly stacking buffs (most common). Only ever use -= on this field.</param>
+            <param name="mult">Use to directly multiply the item's effective mana cost. Good for debuffs, or things which should stack separately (eg meteor armor set bonus).</param>
         </member>
         <member name="M:Terraria.ModLoader.ModItem.OnMissingMana(Terraria.Player,System.Int32)">
             <summary>
@@ -5317,6 +5295,15 @@
             <param name="player">The player using the item</param>
             <param name="add">Used for additively stacking buffs (most common). Only ever use += on this field.</param>
             <param name="mult">Use to directly multiply the player's effective damage. Good for debuffs, or things which should stack separately (eg ammo type buffs)</param>
+        </member>
+        <member name="M:Terraria.ModLoader.ModItem.ModifyWeaponDamage(Terraria.Player,System.Single@,System.Single@,System.Single@)">
+            <summary>
+            Allows you to temporarily modify this weapon's damage based on player buffs, etc. This is useful for creating new classes of damage, or for making subclasses of damage (for example, Shroomite armor set boosts).
+            </summary>
+            <param name="player">The player using the item</param>
+            <param name="add">Used for additively stacking buffs (most common). Only ever use += on this field. Things with effects like "5% increased MyDamageClass damage" would use this: `add += 0.05`</param>
+            <param name="mult">Use to directly multiply the player's effective damage. Good for debuffs, or things which should stack separately (eg ammo type buffs)</param>
+            <param name="flat">This is a flat damage bonus that will be added after add and mult are applied. It facilitates effects like "4 more damage from weapons"</param>
         </member>
         <member name="M:Terraria.ModLoader.ModItem.GetWeaponKnockback(Terraria.Player,System.Single@)">
             <summary>
@@ -5849,6 +5836,11 @@
             The type of NPC that drops this boss bag. Used to determine how many coins this boss bag contains. Defaults to 0, which means this isn't a boss bag.
             </summary>
         </member>
+        <member name="P:Terraria.ModLoader.ModItem.IgnoreDamageModifiers">
+            <summary>
+            Set this to true to prevent this weapon or ammo item from being adjusted by damage modifiers.
+            </summary>
+        </member>
         <member name="M:Terraria.ModLoader.ModItem.Save">
             <summary>
             Allows you to save custom data for this item. Returns null by default.
@@ -6137,13 +6129,13 @@
             <summary>
             Returns a clone of this ModNPC. 
             Allows you to decide which fields of your ModNPC class are copied over when a new NPC is created. 
-            By default this will return a memberwise clone; you will want to override this if your GlobalNPC contains object references. 
+            By default this will return a memberwise clone; you will want to override this if your ModNPC contains object references. 
             Only called if CloneNewInstances is set to true.
             </summary>
         </member>
         <member name="M:Terraria.ModLoader.ModNPC.NewInstance(Terraria.NPC)">
             <summary>
-            Create a new instance of this GlobalNPC for an NPC instance. 
+            Create a new instance of this ModNPC for an NPC instance. 
             Called at the end of NPC.SetDefaults.
             If CloneNewInstances is true, just calls Clone()
             Otherwise calls the default constructor and copies fields
@@ -6928,12 +6920,13 @@
             <param name="quickHeal">Whether the item is being used through quick heal or not.</param>
             <param name="healValue">The amount of mana being healed.</param>
         </member>
-        <member name="M:Terraria.ModLoader.ModPlayer.GetManaCost(Terraria.Item,System.Int32@)">
+        <member name="M:Terraria.ModLoader.ModPlayer.ModifyManaCost(Terraria.Item,System.Single@,System.Single@)">
             <summary>
             Allows you to temporarily modify the amount of mana an item will consume on use, based on player buffs, accessories, etc. This is only called for items with a mana value.
             </summary>
             <param name="item">The item being used.</param>
-            <param name="mana">The amount of mana the item will use, after being affected by mana cost reduction.</param>
+            <param name="reduce">Used for decreasingly stacking buffs (most common). Only ever use -= on this field.</param>
+            <param name="mult">Use to directly multiply the item's effective mana cost. Good for debuffs, or things which should stack separately (eg meteor armor set bonus).</param>
         </member>
         <member name="M:Terraria.ModLoader.ModPlayer.OnMissingMana(Terraria.Item,System.Int32)">
             <summary>
@@ -6965,6 +6958,15 @@
             <param name="item">The item being used</param>
             <param name="add">Used for additively stacking buffs (most common). Only ever use += on this field.</param>
             <param name="mult">Use to directly multiply the player's effective damage. Good for debuffs, or things which should stack separately (eg ammo type buffs)</param>
+        </member>
+        <member name="M:Terraria.ModLoader.ModPlayer.ModifyWeaponDamage(Terraria.Item,System.Single@,System.Single@,System.Single@)">
+            <summary>
+            Allows you to temporarily modify this weapon's damage based on player buffs, etc. This is useful for creating new classes of damage, or for making subclasses of damage (for example, Shroomite armor set boosts).
+            </summary>
+            <param name="item">The item being used</param>
+            <param name="add">Used for additively stacking buffs (most common). Only ever use += on this field. Things with effects like "5% increased MyDamageClass damage" would use this: `add += 0.05`</param>
+            <param name="mult">Use to directly multiply the player's effective damage. Good for debuffs, or things which should stack separately (eg ammo type buffs)</param>
+            <param name="flat">This is a flat damage bonus that will be added after add and mult are applied. It facilitates effects like "4 more damage from weapons"</param>
         </member>
         <member name="M:Terraria.ModLoader.ModPlayer.GetWeaponKnockback(Terraria.Item,System.Single@)">
             <summary>
@@ -7529,13 +7531,13 @@
             <summary>
             Returns a clone of this ModProjectile. 
             Allows you to decide which fields of your ModProjectile class are copied over when a new Projectile is created. 
-            By default this will return a memberwise clone; you will want to override this if your GlobalProjectile contains object references. 
+            By default this will return a memberwise clone; you will want to override this if your ModProjectile contains object references. 
             Only called if CloneNewInstances is set to true.
             </summary>
         </member>
         <member name="M:Terraria.ModLoader.ModProjectile.NewInstance(Terraria.Projectile)">
             <summary>
-            Create a new instance of this GlobalProjectile for a Projectile instance. 
+            Create a new instance of this ModProjectile for a Projectile instance. 
             Called at the end of Projectile.SetDefaults.
             If CloneNewInstances is true, just calls Clone()
             Otherwise calls the default constructor and copies fields
@@ -8432,7 +8434,7 @@
         </member>
         <member name="T:Terraria.ModLoader.ModTileEntity">
             <summary>
-            Tile Entities are Entities tightly coupled with tiles, allowing the possibility of tiles to exhibit cool behavior. TileEntitry.Update is called in SP and on Server, not on Clients.
+            Tile Entities are Entities tightly coupled with tiles, allowing the possibility of tiles to exhibit cool behavior. TileEntity.Update is called in SP and on Server, not on Clients.
             </summary>
             <seealso cref="T:Terraria.DataStructures.TileEntity" />
         </member>
@@ -9856,7 +9858,7 @@
             This is where all ModPlayer hooks are gathered and called.
             </summary>
         </member>
-        <member name="M:Terraria.ModLoader.PlayerHooks.ModifyWeaponDamage(Terraria.Player,Terraria.Item,System.Single@,System.Single@)">
+        <member name="M:Terraria.ModLoader.PlayerHooks.ModifyWeaponDamage(Terraria.Player,Terraria.Item,System.Single@,System.Single@,System.Single@)">
             <summary>
             Calls ModItem.HookModifyWeaponDamage, then all GlobalItem.HookModifyWeaponDamage hooks.
             </summary>
