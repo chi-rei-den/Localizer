@@ -82,13 +82,14 @@ namespace Localizer.DataModel
 
         protected override void ApplyEntry(string key, IEntry entry)
         {
-            var methodInfo = this.mod.Code.ManifestModule.FindMethod(key);
-            if (methodInfo == null)
+            var module = HookEndpointManager.GenerateCecilModule(mod.Code.GetName());
+            var md = module.FindMethod(key);
+            if (md == null)
             {
                 return;
             }
 
-            var method = MethodBase.GetMethodFromHandle(methodInfo.MethodHandle);
+            var method = MethodBase.GetMethodFromHandle(md.ResolveReflection().MethodHandle);
 
             var e = entry as LdstrEntry;
 

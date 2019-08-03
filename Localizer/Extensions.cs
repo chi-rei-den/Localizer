@@ -66,5 +66,19 @@ namespace Localizer
                 return null;
             }
         }
+        
+        public static MethodDefinition FindMethod(this ModuleDefinition module, string findableID)
+        {
+            try
+            {
+                var typeName = findableID.Split(' ')[1].Split(new[] { "::" }, StringSplitOptions.RemoveEmptyEntries)[0];
+                return module.GetType(typeName)?.FindMethod(findableID);
+            }
+            catch (Exception e)
+            {
+                Localizer.Log.Debug(e);
+                return null;
+            }
+        }
     }
 }
