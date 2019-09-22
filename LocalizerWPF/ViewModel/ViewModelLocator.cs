@@ -33,13 +33,13 @@ namespace LocalizerWPF.ViewModel
 
             SimpleIoc.Default.Register<MainViewModel>();
             SimpleIoc.Default.Register<ManagerViewModel>();
-            SimpleIoc.Default.Register<ExportViewModel>();
+            SimpleIoc.Default.Register<MakeViewModel>();
         }
 
         public MainViewModel Main => ServiceLocator.Current.GetInstance<MainViewModel>();
         public ManagerViewModel Manager => ServiceLocator.Current.GetInstance<ManagerViewModel>();
         
-        public ExportViewModel Export => ServiceLocator.Current.GetInstance<ExportViewModel>();
+        public MakeViewModel Make => ServiceLocator.Current.GetInstance<MakeViewModel>();
         
         public static void Cleanup()
         {

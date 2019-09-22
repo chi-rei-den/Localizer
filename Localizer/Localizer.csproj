@@ -20,27 +20,30 @@
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <OutputPath>bin\x86\Release\</OutputPath>
+    <PlatformTarget>x86</PlatformTarget>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <OutputPath>bin\x86\Debug\</OutputPath>
+    <PlatformTarget>x86</PlatformTarget>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="log4net, Version=2.0.8.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
       <HintPath>..\packages\log4net.2.0.8\lib\net45-full\log4net.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.CSharp" />
     <Reference Include="Microsoft.Xna.Framework, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\References\Microsoft.Xna.Framework.dll</HintPath>
@@ -70,6 +73,9 @@
     <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed">
       <HintPath>$(USERPROFILE)\Documents\My Games\Terraria\ModLoader\references\Newtonsoft.Json.dll</HintPath>
     </Reference>
+    <Reference Include="Ninject, Version=3.3.4.0, Culture=neutral, PublicKeyToken=c7192dc5380945e7">
+      <HintPath>lib\Ninject.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Buffers, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Buffers.4.5.0\lib\netstandard2.0\System.Buffers.dll</HintPath>
@@ -81,6 +87,7 @@
     <Reference Include="System.Memory, Version=4.0.1.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Memory.4.5.3\lib\netstandard2.0\System.Memory.dll</HintPath>
     </Reference>
+    <Reference Include="System.Net.Http.WebRequest" />
     <Reference Include="System.Numerics" />
     <Reference Include="System.Numerics.Vectors, Version=4.1.4.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Numerics.Vectors.4.5.0\lib\net46\System.Numerics.Vectors.dll</HintPath>
@@ -94,59 +101,83 @@
     <Reference Include="System.ValueTuple, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.ValueTuple.4.5.0\lib\net47\System.ValueTuple.dll</HintPath>
     </Reference>
-    <Reference Include="tModLoaderServer">
-      <HintPath>..\References\tModLoaderServer.exe</HintPath>
+    <Reference Include="Terraria">
+      <HintPath>..\References\Terraria.exe</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Commands\ExportCommand.cs" />
-    <Compile Include="Commands\ImportCommand.cs" />
+    <Compile Include="Attributes\TModLocalizeFieldAttribute.cs" />
+    <Compile Include="Attributes\TModLocalizeTextPropAttribute.cs" />
     <Compile Include="Configuration.cs" />
-    <Compile Include="DataExport\BasicBuffExporter.cs" />
-    <Compile Include="DataExport\BasicCustomExporter.cs" />
-    <Compile Include="DataExport\BasicExportConfig.cs" />
-    <Compile Include="DataExport\BasicItemExporter.cs" />
-    <Compile Include="DataExport\BasicNPCExporter.cs" />
-    <Compile Include="DataExport\ExportConfig.cs" />
-    <Compile Include="DataExport\Exporter.cs" />
-    <Compile Include="DataExport\ExporterFactory.cs" />
-    <Compile Include="DataExport\LdstrExportConfig.cs" />
-    <Compile Include="DataExport\LdstrExporter.cs" />
-    <Compile Include="DataImport\BasicBuffBatcher.cs" />
-    <Compile Include="DataImport\BasicCustomBatcher.cs" />
-    <Compile Include="DataImport\BasicItemBatcher.cs" />
-    <Compile Include="DataImport\BasicNPCBatcher.cs" />
-    <Compile Include="DataImport\Batcher.cs" />
-    <Compile Include="DataImport\LdstrBatcher.cs" />
-    <Compile Include="DataModel\File.cs" />
-    <Compile Include="DataModel\Files\BasicBuffFile.cs" />
-    <Compile Include="DataModel\Files\BasicCustomFile.cs" />
-    <Compile Include="DataModel\Files\BasicItemFile.cs" />
-    <Compile Include="DataModel\Files\BasicNPCFile.cs" />
-    <Compile Include="DataModel\Files\LdstrFile.cs" />
+    <Compile Include="DataModel\Default\BaseEntry.cs" />
+    <Compile Include="DataModel\Default\File.cs" />
+    <Compile Include="DataModel\Default\ModWrapper.cs" />
+    <Compile Include="DataModel\Default\Package.cs" />
+    <Compile Include="DataModel\Default\PackageGroup.cs" />
+    <Compile Include="DataModel\Default\PackageGroupState.cs" />
+    <Compile Include="DataModel\IExportConfig.cs" />
+    <Compile Include="DataModel\Default\BasicBuffFile.cs" />
+    <Compile Include="DataModel\Default\CustomModTranslationFile.cs" />
+    <Compile Include="DataModel\Default\BasicItemFile.cs" />
+    <Compile Include="DataModel\Default\BasicNPCFile.cs" />
+    <Compile Include="DataModel\Default\LdstrFile.cs" />
     <Compile Include="DataModel\IEntry.cs" />
-    <Compile Include="DataModel\Package.cs" />
-    <Compile Include="DataModel\BaseEntry.cs" />
-    <Compile Include="DataModel\PackageGroup.cs" />
-    <Compile Include="DataModel\PackageGroupState.cs" />
+    <Compile Include="DataModel\IFile.cs" />
+    <Compile Include="DataModel\IMod.cs" />
+    <Compile Include="DataModel\IPackage.cs" />
+    <Compile Include="DataModel\IPackageGroup.cs" />
     <Compile Include="Extensions.cs" />
-    <Compile Include="LocalizerLogger.cs" />
-    <Compile Include="Plugin.cs" />
+    <Compile Include="LocalizerKernel.cs" />
     <Compile Include="Localizer.cs" />
-    <Compile Include="PackageManager.cs" />
-    <Compile Include="PluginManager.cs" />
+    <Compile Include="Modules\DefaultFileExportModule.cs" />
+    <Compile Include="Modules\DefaultFileImportModule.cs" />
+    <Compile Include="Modules\DefaultFileUpdateModule.cs" />
+    <Compile Include="Modules\DefaultPackageModule.cs" />
+    <Compile Include="Plugin\Plugin.cs" />
+    <Compile Include="Plugin\PluginManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ServiceInterfaces\File\IFileExportService.cs" />
+    <Compile Include="ServiceInterfaces\File\IFileImportService.cs" />
+    <Compile Include="ServiceInterfaces\File\IFileLoadService.cs" />
+    <Compile Include="ServiceInterfaces\File\IFileSaveService.cs" />
+    <Compile Include="ServiceInterfaces\File\IFileUpdateService.cs" />
+    <Compile Include="ServiceInterfaces\IUpdateLogService.cs" />
+    <Compile Include="ServiceInterfaces\Network\IDownloadManagerService.cs" />
+    <Compile Include="ServiceInterfaces\Network\IPackageBrowserService.cs" />
+    <Compile Include="ServiceInterfaces\Package\IPackageExportService.cs" />
+    <Compile Include="ServiceInterfaces\Package\IPackageImportService.cs" />
+    <Compile Include="ServiceInterfaces\Package\IPackageLoadService.cs" />
+    <Compile Include="ServiceInterfaces\Package\IPackageManageService.cs" />
+    <Compile Include="ServiceInterfaces\Package\IPackagePackService.cs" />
+    <Compile Include="ServiceInterfaces\Package\IPackageSaveService.cs" />
+    <Compile Include="ServiceInterfaces\Package\IPackageUpdateService.cs" />
+    <Compile Include="Services\File\BasicFileExportService.cs" />
+    <Compile Include="Services\File\BasicFileImportService.cs" />
+    <Compile Include="Services\File\BasicFileUpdateService.cs" />
+    <Compile Include="Services\File\CustomModTranslationFileExportService.cs" />
+    <Compile Include="Services\File\CustomModTranslationFileImportService.cs" />
+    <Compile Include="Services\File\CustomModTranslationFileUpdateService.cs" />
+    <Compile Include="Services\File\JsonFileLoadService.cs" />
+    <Compile Include="Services\File\JsonFileSaveService.cs" />
+    <Compile Include="Services\File\LdstrFileExportService.cs" />
+    <Compile Include="Services\File\LdstrFileImportService.cs" />
+    <Compile Include="Services\File\LdstrFileUpdateService.cs" />
+    <Compile Include="Services\IService.cs" />
+    <Compile Include="Services\Network\PackageBrowserService.cs" />
+    <Compile Include="Services\UpdateLogService.cs" />
+    <Compile Include="Services\Package\PackageExportService.cs" />
+    <Compile Include="Services\Package\PackageImportService.cs" />
+    <Compile Include="Services\Package\PackageManageService.cs" />
+    <Compile Include="Services\Package\PackageSaveService.cs" />
+    <Compile Include="Services\Package\PackageUpdateService.cs" />
+    <Compile Include="Services\Package\PackedPackageLoadService.cs" />
+    <Compile Include="Services\Package\SourcePackageLoadService.cs" />
+    <Compile Include="Services\Package\ZipPackagePackService.cs" />
     <Compile Include="Utils.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Network" />
-  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <Target Name="BuildMod" AfterTargets="Build">
-    <Exec Command="&quot;$(tMLBuildServerPath)&quot; -build $(ProjectDir) -eac $(TargetPath) -define $(DefineConstants) -unsafe $(AllowUnsafeBlocks)" />
-  </Target>
 </Project>

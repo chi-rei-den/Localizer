@@ -1,7 +1,9 @@
-﻿using System;
-using Localizer;
-using System.Threading;
+﻿using System.Threading;
 using System.Windows;
+using Localizer;
+using On.Terraria.GameInput;
+using Terraria;
+using PlayerInput = Terraria.GameInput.PlayerInput;
 
 namespace LocalizerWPF
 {
@@ -12,38 +14,49 @@ namespace LocalizerWPF
 
         public override void Initialize()
         {
+            Localizer.Localizer.Kernel.Load(new[] {new WPFModule()});
+
             if (Application.Current == null)
             {
-                this._thread = new Thread(() =>
+                _thread = new Thread(() =>
                 {
                     var a = new App();
                     a.InitializeComponent();
-                    this.app = a;
-                    this.app.ShutdownMode = ShutdownMode.OnExplicitShutdown;
-                    this.app.Run();
+                    app = a;
+                    app.ShutdownMode = ShutdownMode.OnExplicitShutdown;
+                    app.Run();
                 });
-                this._thread.SetApartmentState(ApartmentState.STA);
-                this._thread.IsBackground = true;
+                _thread.SetApartmentState(ApartmentState.STA);
+                _thread.IsBackground = true;
 
-                this._thread.Start();
+                _thread.Start();
             }
             else
             {
-                this.app = Application.Current;
-                this.app.Dispatcher.Invoke(() =>
+                app = Application.Current;
+                app.Dispatcher.Invoke(() =>
                 {
-                    this.app.MainWindow = new MainWindow();
-                    this.app.MainWindow.Show();
+                    app.MainWindow = new MainWindow();
+                    app.MainWindow.Show();
                     Localizer.Localizer.Log.Info("Window showed.");
                 });
             }
+
+            TriggersSet.CopyInto += (orig, self, player) =>
+            {
+                if (Main.menuMode == 0 && PlayerInput.Triggers.Current.MouseMiddle &&
+                    PlayerInput.Triggers.Current.MouseRight && app?.MainWindow?.IsActive != true)
+                {
+                    app?.MainWindow?.Show();
+                }
+            };
         }
 
         protected override void OnDispose()
         {
-            this.app.Dispatcher.Invoke(() =>
+            app.Dispatcher.Invoke(() =>
             {
-                this.app.MainWindow?.Close();
+                app.MainWindow?.Close();
                 Localizer.Localizer.Log.Info("Window closed.");
             });
         }

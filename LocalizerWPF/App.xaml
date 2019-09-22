@@ -4,7 +4,7 @@
              StartupUri="MainWindow.xaml">
     <Application.Resources>
         <ResourceDictionary>
-            <vm:ViewModelLocator x:Key="Locator" xmlns:vm="clr-namespace:LocalizerWPF.ViewModel"/>
+            <vm:ViewModelLocator x:Key="Locator" xmlns:vm="clr-namespace:LocalizerWPF.ViewModel" />
         </ResourceDictionary>
     </Application.Resources>
 </Application>

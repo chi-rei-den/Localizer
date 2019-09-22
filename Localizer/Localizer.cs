@@ -1,61 +1,75 @@
-﻿using System;
-using log4net;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using Localizer.Modules;
 using LocalizerWPF.Model;
+using log4net;
+using Ninject.Modules;
 using Terraria.Localization;
 using Terraria.ModLoader;
 
 namespace Localizer
 {
-    public class Localizer : Mod
+    public sealed class Localizer : Mod
     {
-        public static ILog Log { get; private set; }
-        public static Localizer Instance { get; private set; }
-
-        public static Configuration Config { get; set; }
-        
-        public static string SavePath => Terraria.Main.SavePath + "/Localizer/";
-
-        public static string ConfigPath = Terraria.Main.SavePath + "/Localizer/Config.json";
+        public static string SavePath;
+        public static string SourcePackageDirPath;
+        public static string DownloadPackageDirPath;
+        public static string ConfigPath;
 
         private static Dictionary<int, GameCulture> _gameCultures;
 
         public Localizer()
         {
-            _gameCultures = typeof(GameCulture).GetFieldDirectly(null, "_legacyCultures") as Dictionary<int, GameCulture>;
-
-            PluginManager.Init();
-            PackageManager.Init();
+            _gameCultures =
+                typeof(GameCulture).GetFieldDirectly(null, "_legacyCultures") as Dictionary<int, GameCulture>;
         }
+
+        public static ILog Log { get; private set; }
+        public static Localizer Instance { get; private set; }
+
+        public static LocalizerKernel Kernel { get; private set; }
+
+        public static Configuration Config { get; set; }
 
         public override void Load()
         {
-            Log = this.Logger;
+            PluginManager.Init();
+
+            Log = Logger;
             Instance = this;
 
-            if (!Directory.Exists(SavePath))
-                Directory.CreateDirectory(SavePath);
-            
+            SavePath = "./Localizer/";
+            SourcePackageDirPath = SavePath + "/Source/";
+            DownloadPackageDirPath = SavePath + "/Download/";
+            ConfigPath = SavePath + "/Config.json";
+
+            Utils.CreateDirectory(SavePath);
+            Utils.CreateDirectory(SourcePackageDirPath);
+            Utils.CreateDirectory(DownloadPackageDirPath);
+
             LoadConfig();
-            
+
+            Kernel = new LocalizerKernel();
+            Kernel.Load(new NinjectModule[]
+            {
+                new DefaultPackageModule(), new DefaultFileExportModule(),
+                new DefaultFileUpdateModule(), new DefaultFileImportModule()
+            });
         }
 
         public override void PostSetupContent()
         {
-            PackageManager.LoadPackages(false);
             PluginManager.LoadPlugins();
         }
 
         public override void Unload()
         {
             base.Unload();
-            
+
             SaveConfig();
 
             PluginManager.UnloadPlugins();
-            PackageManager.Unload();
         }
 
         public static void LoadConfig()
@@ -78,7 +92,9 @@ namespace Localizer
 
         public static GameCulture AddGameCulture(CultureInfo culture)
         {
-            return GameCulture.FromName(culture.Name) != null ? null : new GameCulture(culture.Name, _gameCultures.Count);
+            return GameCulture.FromName(culture.Name) != null
+                ? null
+                : new GameCulture(culture.Name, _gameCultures.Count);
         }
 
         public static GameCulture CultureInfoToGameCulture(CultureInfo culture)

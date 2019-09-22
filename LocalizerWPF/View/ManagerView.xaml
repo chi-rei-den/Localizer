@@ -9,10 +9,10 @@
              xmlns:local="clr-namespace:LocalizerWPF"
              xmlns:dataModel="clr-namespace:Localizer.DataModel;assembly=Localizer"
              xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+             xmlns:model="clr-namespace:LocalizerWPF.Model"
              mc:Ignorable="d"
              d:DesignHeight="450" d:DesignWidth="800"
              DataContext="{Binding Source={StaticResource Locator}, Path=Manager}">
-    
     <Grid>
         <Grid.Resources>
             <Style x:Key="TransparentButton" TargetType="Button">
@@ -27,51 +27,52 @@
                 <Setter Property="VerticalAlignment" Value="Center" />
             </Style>
         </Grid.Resources>
-        
+
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="100"/>
-            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="100" />
+            <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
-        
+
         <Grid>
-            
+
             <Grid.RowDefinitions>
-                <RowDefinition Height="105"></RowDefinition>
-                <RowDefinition Height="*"></RowDefinition>
+                <RowDefinition Height="105" />
+                <RowDefinition Height="*" />
             </Grid.RowDefinitions>
-            
+
             <StackPanel Grid.Row="0">
                 <Button Command="{Binding ReloadCommand}" Style="{StaticResource TransparentButton}">
                     <StackPanel Orientation="Horizontal">
-                        <iconPacks:PackIconMaterial Kind="Reload"  Style="{StaticResource ButtonIcon}"/>
-                        <Label Content="Reload"/>
+                        <iconPacks:PackIconMaterial Kind="Reload" Style="{StaticResource ButtonIcon}" />
+                        <Label Content="Reload" />
                     </StackPanel>
                 </Button>
                 <Button Command="{Binding ImportAllCommand}" Style="{StaticResource TransparentButton}">
                     <StackPanel Orientation="Horizontal">
-                        <iconPacks:PackIconMaterial Kind="FileImport" Style="{StaticResource ButtonIcon}"/>
-                        <Label Content="Import"/>
+                        <iconPacks:PackIconMaterial Kind="FileImport" Style="{StaticResource ButtonIcon}" />
+                        <Label Content="Import" />
                     </StackPanel>
                 </Button>
-                <Button Command="{Binding RevertCommand}" Style="{StaticResource TransparentButton}">
-                    <StackPanel Orientation="Horizontal">
-                        <iconPacks:PackIconMaterial Kind="FileUndo" Style="{StaticResource ButtonIcon}"/>
-                        <Label Content="Revert"/>
-                    </StackPanel>
-                </Button>
+                <!-- <Button Command="{Binding RevertCommand}" Style="{StaticResource TransparentButton}"> -->
+                <!--     <StackPanel Orientation="Horizontal"> -->
+                <!--         <iconPacks:PackIconMaterial Kind="FileUndo" Style="{StaticResource ButtonIcon}"/> -->
+                <!--         <Label Content="Revert"/> -->
+                <!--     </StackPanel> -->
+                <!-- </Button> -->
             </StackPanel>
-            
-            <StackPanel Grid.Row="1">
-                <Button Margin="4,2">
-                    <TextBlock Text="Foo Bar"></TextBlock>
-                </Button>
-                <Button Margin="4,2,4,4">
-                    <TextBlock Text="Baz Qux"></TextBlock>
-                </Button>
-            </StackPanel>
+
+            <!-- <StackPanel Grid.Row="1"> -->
+            <!--     <Button Margin="4,2"> -->
+            <!--         <TextBlock Text="Foo Bar"></TextBlock> -->
+            <!--     </Button> -->
+            <!--     <Button Margin="4,2,4,4"> -->
+            <!--         <TextBlock Text="Baz Qux"></TextBlock> -->
+            <!--     </Button> -->
+            <!-- </StackPanel> -->
         </Grid>
-        
-        <DataGrid x:Name="PackageDataGrid" Grid.Column="1" ItemsSource="{Binding PackageGroups, Mode=TwoWay}" AutoGenerateColumns="False" 
+
+        <DataGrid x:Name="PackageDataGrid" Grid.Column="1" ItemsSource="{Binding PackageGroups, Mode=TwoWay}"
+                  AutoGenerateColumns="False"
                   SelectionMode="Extended" RowDetailsVisibilityMode="VisibleWhenSelected" CanUserAddRows="False">
             <DataGrid.Resources>
                 <!-- PackageGroups Columns Templates -->
@@ -89,34 +90,32 @@
                 <DataTemplate x:Key="PackageCount" DataType="{x:Type dataModel:PackageGroup}">
                     <Label Content="{Binding Packages.Count}" HorizontalAlignment="Center" />
                 </DataTemplate>
-                <DataTemplate x:Key="ImportButton" DataType="{x:Type dataModel:PackageGroup}">
-                    <Button Style="{StaticResource TransparentButton}">
-                        <Label Content="Import to Mod"></Label>
-                    </Button>
-                </DataTemplate>
 
                 <!-- Row Detail Columns Templates -->
-                <DataTemplate x:Key="PackageToggleButton" DataType="{x:Type dataModel:Package}">
-                    <Controls:ToggleSwitch OnLabel="" OffLabel="" IsChecked="{Binding Path=Enabled, Mode=TwoWay}" />
+                <DataTemplate x:Key="PackageToggleButton" DataType="{x:Type model:Package}">
+                    <Controls:ToggleSwitch OnLabel="" OffLabel=""
+                                           Click="ToggleSwitch_OnClick"
+                                           Tag="{Binding}"
+                                           IsChecked="{Binding Path=Enabled, Mode=TwoWay}" />
                 </DataTemplate>
-                <DataTemplate x:Key="PackageName" DataType="{x:Type dataModel:Package}">
+                <DataTemplate x:Key="PackageName" DataType="{x:Type model:Package}">
                     <Label Content="{Binding Name}" HorizontalAlignment="Center" />
                 </DataTemplate>
-                <DataTemplate x:Key="PackageAuthor" DataType="{x:Type dataModel:Package}">
+                <DataTemplate x:Key="PackageAuthor" DataType="{x:Type model:Package}">
                     <Label Content="{Binding Author}" HorizontalAlignment="Center" />
                 </DataTemplate>
-                <DataTemplate x:Key="PackageVersion" DataType="{x:Type dataModel:Package}">
+                <DataTemplate x:Key="PackageVersion" DataType="{x:Type model:Package}">
                     <Label Content="{Binding Version}" HorizontalAlignment="Center" />
                 </DataTemplate>
-                <DataTemplate x:Key="PackageKeyCount" DataType="{x:Type dataModel:Package}">
+                <DataTemplate x:Key="PackageKeyCount" DataType="{x:Type model:Package}">
                     <Label Content="{Binding Count}" HorizontalAlignment="Center" />
                 </DataTemplate>
-                <DataTemplate x:Key="PackageLanguage" DataType="{x:Type dataModel:Package}">
+                <DataTemplate x:Key="PackageLanguage" DataType="{x:Type model:Package}">
                     <Label Content="{Binding Language.NativeName}" HorizontalAlignment="Center" />
                 </DataTemplate>
-                
+
                 <!-- Row Detail Template -->
-                <DataTemplate x:Key="RowDetailTemplate" DataType="{x:Type dataModel:PackageGroup}">
+                <DataTemplate x:Key="RowDetailTemplate" DataType="{x:Type dataModel:IPackageGroup}">
                     <DataGrid ItemsSource="{Binding Path=Packages, Mode=TwoWay}" dd:DragDrop.IsDragSource="True"
                               dd:DragDrop.IsDropTarget="True"
                               SelectionMode="Single" AutoGenerateColumns="False"
@@ -132,15 +131,14 @@
                     </DataGrid>
                 </DataTemplate>
             </DataGrid.Resources>
-        
+
             <DataGrid.Columns>
                 <DataGridTemplateColumn Header="DisplayName" CellTemplate="{StaticResource ModDisplayName}" />
                 <DataGridTemplateColumn Header="Name" CellTemplate="{StaticResource ModName}" />
                 <DataGridTemplateColumn Header="Version" CellTemplate="{StaticResource ModVersion}" />
                 <DataGridTemplateColumn Header="Count" CellTemplate="{StaticResource PackageCount}" />
-                <DataGridTemplateColumn CellTemplate="{StaticResource ImportButton}" />
             </DataGrid.Columns>
-            
+
             <DataGrid.RowDetailsTemplate>
                 <StaticResource ResourceKey="RowDetailTemplate" />
             </DataGrid.RowDetailsTemplate>

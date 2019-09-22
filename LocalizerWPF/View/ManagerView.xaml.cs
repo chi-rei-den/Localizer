@@ -1,22 +1,21 @@
-﻿using Localizer;
-using Localizer.DataModel;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using GalaSoft.MvvmLight.Ioc;
+using LocalizerWPF.Model;
+using LocalizerWPF.ViewModel;
+using MahApps.Metro.Controls;
 
 namespace LocalizerWPF
 {
     /// <summary>
-    /// Interaction logic for ModTranslationManager.xaml
+    ///     Interaction logic for ModTranslationManager.xaml
     /// </summary>
     public partial class ManagerView : UserControl
     {
         public ManagerView()
         {
-            this.InitializeComponent();
+            InitializeComponent();
             PackageDataGrid.MouseLeftButtonDown += (e, a) =>
             {
                 var dg = a.OriginalSource as FrameworkElement;
@@ -30,6 +29,13 @@ namespace LocalizerWPF
                     row.IsSelected = !row.IsSelected;
                 }
             };
+        }
+
+        private void ToggleSwitch_OnClick(object sender, RoutedEventArgs e)
+        {
+            var toggle = sender as ToggleSwitch;
+            (toggle.Tag as Package).Enabled = toggle.IsChecked ?? true;
+            SimpleIoc.Default.GetInstance<ManagerViewModel>().SaveStateCommand.Execute(null);
         }
     }
 }
