@@ -1,10 +1,134 @@
-<UserControl x:Class="LocalizerWPF.View.BrowserView"
+<UserControl x:Class="LocalizerWPF.BrowserView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:local="clr-namespace:LocalizerWPF.View"
+             xmlns:dd="urn:gong-wpf-dragdrop"
+             xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+             xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+             xmlns:local="clr-namespace:LocalizerWPF"
+             xmlns:dataModel="clr-namespace:Localizer.DataModel;assembly=Localizer"
+             xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+             xmlns:model="clr-namespace:LocalizerWPF.Model"
              mc:Ignorable="d"
-             d:DesignHeight="300" d:DesignWidth="300">
-    <Grid />
+             d:DesignHeight="450" d:DesignWidth="800"
+             DataContext="{Binding Source={StaticResource Locator}, Path=Browser}">
+    <Grid>
+        <Grid.Resources>
+            <Style x:Key="ButtonIcon" TargetType="iconPacks:PackIconBase">
+                <Setter Property="Width" Value="20" />
+                <Setter Property="Height" Value="20" />
+                <Setter Property="HorizontalAlignment" Value="Center" />
+                <Setter Property="VerticalAlignment" Value="Center" />
+            </Style>
+        </Grid.Resources>
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="1*" />
+            <ColumnDefinition Width="5*"/>
+        </Grid.ColumnDefinitions>
+
+        <Border Grid.Column="0" BorderBrush="SteelBlue" Margin="6"
+                BorderThickness="3,3,3,3" CornerRadius="2" VerticalAlignment="Stretch" Padding="3">
+            <StackPanel Grid.Column="0" VerticalAlignment="Stretch">
+                <Button Command="{Binding RefreshCommand}" Margin="3" BorderBrush="CornflowerBlue">
+                    <StackPanel Orientation="Horizontal">
+                        <iconPacks:PackIconMaterial Kind="Reload" Style="{StaticResource ButtonIcon}" />
+                        <Label Content="{DynamicResource Browser-Button-Refresh}" />
+                    </StackPanel>
+                </Button>
+            </StackPanel>
+        </Border>
+        
+        <Grid Grid.Column="1" Margin="6">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="3*"/>
+                <RowDefinition Height="4" />
+                <RowDefinition Height="1*" />
+            </Grid.RowDefinitions>
+
+            <Border x:Name="PackageList" Grid.Row="0" BorderBrush="SteelBlue"
+                    BorderThickness="3,3,3,3" CornerRadius="2" VerticalAlignment="Top">
+                <DataGrid ItemsSource="{Binding Packages, Mode=TwoWay}"
+                          SelectionMode="Single" SelectedItem="{Binding SelectedPackage, Mode=TwoWay}"
+                          AutoGenerateColumns="False" CanUserAddRows="False">
+                    <DataGrid.Resources>
+                        <!-- PackageList Columns Templates -->
+                        <DataTemplate x:Key="PackageName" DataType="{x:Type dataModel:IPackage}">
+                            <Label Content="{Binding Name}" HorizontalAlignment="Left" />
+                        </DataTemplate>
+                        <DataTemplate x:Key="PackageAuthor" DataType="{x:Type dataModel:IPackage}">
+                            <Label Content="{Binding Author}" HorizontalAlignment="Left" />
+                        </DataTemplate>
+                        <DataTemplate x:Key="PackageVersion" DataType="{x:Type dataModel:IPackage}">
+                            <Label Content="{Binding Version}" HorizontalAlignment="Left" />
+                        </DataTemplate>
+                        <DataTemplate x:Key="PackageModName" DataType="{x:Type dataModel:IPackage}">
+                            <Label Content="{Binding ModName}" HorizontalAlignment="Left" />
+                        </DataTemplate>
+                        <DataTemplate x:Key="PackageLanguage" DataType="{x:Type dataModel:IPackage}">
+                            <Label Content="{Binding Language}" HorizontalAlignment="Left" />
+                        </DataTemplate>
+                        <DataTemplate x:Key="DownloadButton" >
+                            <Button Content="{DynamicResource Browser-Button-Download}" HorizontalAlignment="Center" Width="80"
+                                    Command="{Binding Path=DataContext.DownloadCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl}}"
+                                    CommandParameter="{Binding}" />
+                        </DataTemplate>
+                    </DataGrid.Resources>
+                    <DataGrid.Columns>
+                        <DataGridTemplateColumn Header="Name" CellTemplate="{StaticResource PackageName}">
+                            <DataGridTemplateColumn.HeaderTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{DynamicResource Browser-Grid-Head-Name}" />
+                                </DataTemplate>
+                            </DataGridTemplateColumn.HeaderTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTemplateColumn Header="Author" CellTemplate="{StaticResource PackageAuthor}">
+                            <DataGridTemplateColumn.HeaderTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{DynamicResource Browser-Grid-Head-Author}" />
+                                </DataTemplate>
+                            </DataGridTemplateColumn.HeaderTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTemplateColumn Header="Version" CellTemplate="{StaticResource PackageVersion}">
+                            <DataGridTemplateColumn.HeaderTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{DynamicResource Browser-Grid-Head-Version}" />
+                                </DataTemplate>
+                            </DataGridTemplateColumn.HeaderTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTemplateColumn Header="ModName" CellTemplate="{StaticResource PackageModName}">
+                            <DataGridTemplateColumn.HeaderTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{DynamicResource Browser-Grid-Head-ModName}" />
+                                </DataTemplate>
+                            </DataGridTemplateColumn.HeaderTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTemplateColumn Header="Language" CellTemplate="{StaticResource PackageLanguage}">
+                            <DataGridTemplateColumn.HeaderTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{DynamicResource Browser-Grid-Head-Language}" />
+                                </DataTemplate>
+                            </DataGridTemplateColumn.HeaderTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTemplateColumn Header="" CellTemplate="{StaticResource DownloadButton}">
+                        </DataGridTemplateColumn>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </Border>
+
+            <GridSplitter Grid.Row="1" Height="3" HorizontalAlignment="Stretch" Background="Gray" VerticalAlignment="Center"/>
+
+            <Border x:Name="PackageDescription" Grid.Row="2"
+                    BorderBrush="SteelBlue"
+                    BorderThickness="3,3,3,3" CornerRadius="2" VerticalAlignment="Center">
+                <StackPanel>
+                    <TextBlock
+                        HorizontalAlignment="Left" TextWrapping="Wrap"
+                        Text="{Binding SelectedPackage.Description, UpdateSourceTrigger=PropertyChanged}"
+                        Padding="10 10" />
+                </StackPanel>
+            </Border>
+        </Grid>
+    </Grid>
 </UserControl>

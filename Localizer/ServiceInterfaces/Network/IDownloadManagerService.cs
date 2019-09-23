@@ -2,6 +2,6 @@ namespace Localizer.ServiceInterfaces.Network
 {
     public interface IDownloadManagerService
     {
-        void Queue(string url, string path);
+        void Download(string url, string path);
     }
 }

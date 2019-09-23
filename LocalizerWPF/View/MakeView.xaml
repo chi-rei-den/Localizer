@@ -16,40 +16,43 @@
             <ColumnDefinition Width="40*" />
         </Grid.ColumnDefinitions>
 
-        <ListView x:Name="ModList" ItemsSource="{Binding Mods, Mode=OneWay}" Grid.Column="0" SelectionMode="Single"
-                  SelectedItem="{Binding SelectedMod, Mode=TwoWay}" Margin="5,0">
-            <ListView.ItemTemplate>
-                <DataTemplate>
-                    <StackPanel>
-                        <TextBlock Text="{Binding Name}" Margin="3" />
-                    </StackPanel>
-                </DataTemplate>
-            </ListView.ItemTemplate>
-        </ListView>
+        <Border Grid.Column="0" BorderBrush="SteelBlue" Margin="6"
+                BorderThickness="3,3,3,3" CornerRadius="2" VerticalAlignment="Stretch" Padding="3">
+            <ListView x:Name="ModList" ItemsSource="{Binding Mods, Mode=OneWay}" SelectionMode="Single"
+                      SelectedItem="{Binding SelectedMod, Mode=TwoWay}" Margin="5,0">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <Border BorderBrush="SkyBlue" Margin="6"
+                                BorderThickness="3,0,3,0" VerticalAlignment="Center" Padding="3">
+                            <StackPanel>
+                                <TextBlock Text="{Binding Name}" Margin="3" />
+                            </StackPanel>
+                        </Border>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </Border>
 
-        <StackPanel Grid.Column="1" Margin="10,0">
-            <TextBox Text="{Binding PackageName, Mode=TwoWay}" Margin="0,10" />
-            <Controls:SplitButton SelectedItem="{Binding SelectedLanguage, Mode=TwoWay}"
-                                  ItemsSource="{Binding Languages}" Margin="0,10">
-                <Controls:SplitButton.Icon>
-                    <iconPacks:PackIconEntypo Kind="Language" HorizontalAlignment="Left" />
-                </Controls:SplitButton.Icon>
-            </Controls:SplitButton>
-            <CheckBox Content="Make Backup" IsChecked="{Binding MakeBackup}" Margin="0,5" />
-            <CheckBox Content="Force Override" IsChecked="{Binding ForceOverride}" Margin="0,5" />
-            <CheckBox Content="With Translations" IsChecked="{Binding WithTranslation}" Margin="0,5" />
-            <Button Command="{Binding ExportCommand}" Margin="0,15">
-                <Label Content="Export" />
-            </Button>
-            <Button Command="{Binding PackUpCommand}" Margin="0,15">
-                <Label Content="Pack Up" />
-            </Button>
-        </StackPanel>
-
-        <StackPanel Grid.Column="2">
-            <StackPanel>
-                <RichTextBox Height="600" />
+        <Border Grid.Column="1" BorderBrush="SteelBlue" Margin="6"
+                BorderThickness="3,3,3,3" CornerRadius="2" VerticalAlignment="Stretch" Padding="3">
+            <StackPanel Grid.Column="1" Margin="10,0">
+                <TextBox Text="{Binding PackageName, Mode=TwoWay}" Margin="0,10" />
+                <Controls:SplitButton SelectedItem="{Binding SelectedLanguage, Mode=TwoWay}"
+                                      ItemsSource="{Binding Languages}" Margin="0,10">
+                    <Controls:SplitButton.Icon>
+                        <iconPacks:PackIconEntypo Kind="Language" HorizontalAlignment="Left" />
+                    </Controls:SplitButton.Icon>
+                </Controls:SplitButton>
+                <CheckBox Content="{DynamicResource Make-CheckBox-MakeBackup}" IsChecked="{Binding MakeBackup}" Margin="0,5" />
+                <CheckBox Content="{DynamicResource Make-CheckBox-ForceOverride}" IsChecked="{Binding ForceOverride}" Margin="0,5" />
+                <CheckBox Content="{DynamicResource Make-CheckBox-WithTranslations}" IsChecked="{Binding WithTranslation}" Margin="0,5" />
+                <Button Command="{Binding ExportCommand}" Margin="0,15">
+                    <Label Content="{DynamicResource Make-Button-Export}" />
+                </Button>
+                <Button Command="{Binding PackUpCommand}" Margin="0,15">
+                    <Label Content="{DynamicResource Make-Button-Pack}" />
+                </Button>
             </StackPanel>
-        </StackPanel>
+        </Border>
     </Grid>
 </UserControl>

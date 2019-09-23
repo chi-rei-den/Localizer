@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using Localizer.DataModel;
-using File = System.IO.File;
+using Localizer.DataModel.Default;
 
-namespace Localizer
+namespace Localizer.Services.Package
 {
     public class PackageManageService : IPackageManageService
     {
@@ -33,7 +33,9 @@ namespace Localizer
             }
             else
             {
-                PackageGroups.FirstOrDefault(pg => pg.Mod.Name != package.Mod.Name)?.Packages.Add(package);
+                PackageGroups.FirstOrDefault(
+                    pg => pg.Mod.Name == package.Mod.Name && 
+                          pg.Packages.All(p => p.Name != package.Name))?.Packages.Add(package);
             }
         }
 
@@ -44,7 +46,7 @@ namespace Localizer
 
         public void LoadState()
         {
-            if (!File.Exists(stateSavePath))
+            if (!System.IO.File.Exists(stateSavePath))
             {
                 return;
             }

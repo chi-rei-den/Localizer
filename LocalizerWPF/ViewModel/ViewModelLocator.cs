@@ -34,12 +34,16 @@ namespace LocalizerWPF.ViewModel
             SimpleIoc.Default.Register<MainViewModel>();
             SimpleIoc.Default.Register<ManagerViewModel>();
             SimpleIoc.Default.Register<MakeViewModel>();
+            SimpleIoc.Default.Register<BrowserViewModel>();
         }
 
         public MainViewModel Main => ServiceLocator.Current.GetInstance<MainViewModel>();
+        
         public ManagerViewModel Manager => ServiceLocator.Current.GetInstance<ManagerViewModel>();
         
         public MakeViewModel Make => ServiceLocator.Current.GetInstance<MakeViewModel>();
+        
+        public BrowserViewModel Browser => ServiceLocator.Current.GetInstance<BrowserViewModel>();
         
         public static void Cleanup()
         {

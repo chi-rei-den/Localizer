@@ -2,7 +2,7 @@ using System;
 using System.Reflection;
 using Terraria.ModLoader;
 
-namespace Localizer.DataModel
+namespace Localizer.DataModel.Default
 {
     public class ModWrapper : IMod
     {
@@ -13,10 +13,10 @@ namespace Localizer.DataModel
             wrapped = mod;
         }
 
-        public string Name => wrapped.Name;
+        public string Name => wrapped?.Name ?? "";
 
-        public Assembly Code => wrapped.Code;
-        public string DisplayName => wrapped.DisplayName;
-        public Version Version => wrapped.Version;
+        public Assembly Code => wrapped?.Code;
+        public string DisplayName => wrapped?.DisplayName ?? "";
+        public Version Version => wrapped?.Version;
     }
 }

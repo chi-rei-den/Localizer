@@ -41,15 +41,6 @@ namespace LocalizerWPF
                     Localizer.Localizer.Log.Info("Window showed.");
                 });
             }
-
-            TriggersSet.CopyInto += (orig, self, player) =>
-            {
-                if (Main.menuMode == 0 && PlayerInput.Triggers.Current.MouseMiddle &&
-                    PlayerInput.Triggers.Current.MouseRight && app?.MainWindow?.IsActive != true)
-                {
-                    app?.MainWindow?.Show();
-                }
-            };
         }
 
         protected override void OnDispose()

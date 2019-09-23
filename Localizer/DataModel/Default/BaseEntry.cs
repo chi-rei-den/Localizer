@@ -1,4 +1,4 @@
-﻿namespace Localizer.DataModel
+﻿namespace Localizer.DataModel.Default
 {
     public class BaseEntry : IEntry
     {

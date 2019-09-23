@@ -1,7 +1,7 @@
 using System.Collections.Specialized;
 using Newtonsoft.Json;
 
-namespace Localizer.DataModel
+namespace Localizer.DataModel.Default
 {
     [JsonObject(MemberSerialization.OptOut)]
     public class PackageGroupState

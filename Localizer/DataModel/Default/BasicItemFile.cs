@@ -2,7 +2,7 @@
 using System.Linq;
 using Localizer.Attributes;
 
-namespace Localizer.DataModel
+namespace Localizer.DataModel.Default
 {
     public class ItemEntry : IEntry
     {

@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using Localizer.DataModel;
+using Localizer.DataModel.Default;
 using Terraria.Localization;
 using Terraria.ModLoader;
 

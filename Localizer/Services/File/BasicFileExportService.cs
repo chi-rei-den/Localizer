@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using Localizer.DataModel;
+using Localizer.DataModel.Default;
 using Terraria.ModLoader;
 
 namespace Localizer.Services.File

@@ -30,32 +30,6 @@ namespace LocalizerWPF.ViewModel
         private readonly IPackageUpdateService packageUpdateService;
         private readonly IPackageLoadService<Package> sourcePackageLoadServiceService;
 
-        public MakeViewModel()
-        {
-            PackageName = "PleaseEnterPackageName";
-
-            Languages = new ObservableCollection<CultureInfo>(
-                CultureInfo.GetCultures(CultureTypes.AllCultures));
-
-            SelectedLanguage = CultureInfo.CurrentCulture;
-
-            MakeBackup = true;
-            ForceOverride = false;
-            WithTranslation = true;
-
-            ExportCommand = new RelayCommand(Export);
-            PackUpCommand = new RelayCommand(PackUp);
-
-            packageManageService = Localizer.Localizer.Kernel.Get<IPackageManageService>();
-            packageExportService = Localizer.Localizer.Kernel.Get<IPackageExportService>();
-            packagePackService = Localizer.Localizer.Kernel.Get<IPackagePackService>();
-            packageSaveService = Localizer.Localizer.Kernel.Get<IPackageSaveService>();
-            packageUpdateService = Localizer.Localizer.Kernel.Get<IPackageUpdateService>();
-            fileSaveService = Localizer.Localizer.Kernel.Get<IFileSaveService>();
-            sourcePackageLoadServiceService = Localizer.Localizer.Kernel.Get<SourcePackageLoadService<Package>>();
-            fileLoadService = Localizer.Localizer.Kernel.Get<IFileLoadService>();
-        }
-
         public ObservableCollection<IMod> Mods
         {
             get
@@ -87,6 +61,33 @@ namespace LocalizerWPF.ViewModel
         public RelayCommand ExportCommand { get; }
         public RelayCommand PackUpCommand { get; }
 
+
+        public MakeViewModel()
+        {
+            PackageName = "PleaseEnterPackageName";
+
+            Languages = new ObservableCollection<CultureInfo>(
+                CultureInfo.GetCultures(CultureTypes.AllCultures));
+
+            SelectedLanguage = CultureInfo.CurrentCulture;
+
+            MakeBackup = true;
+            ForceOverride = false;
+            WithTranslation = true;
+
+            ExportCommand = new RelayCommand(Export);
+            PackUpCommand = new RelayCommand(PackUp);
+
+            packageManageService = Localizer.Localizer.Kernel.Get<IPackageManageService>();
+            packageExportService = Localizer.Localizer.Kernel.Get<IPackageExportService>();
+            packagePackService = Localizer.Localizer.Kernel.Get<IPackagePackService>();
+            packageSaveService = Localizer.Localizer.Kernel.Get<IPackageSaveService>();
+            packageUpdateService = Localizer.Localizer.Kernel.Get<IPackageUpdateService>();
+            fileSaveService = Localizer.Localizer.Kernel.Get<IFileSaveService>();
+            sourcePackageLoadServiceService = Localizer.Localizer.Kernel.Get<SourcePackageLoadService<Package>>();
+            fileLoadService = Localizer.Localizer.Kernel.Get<IFileLoadService>();
+        }
+        
         private void Export()
         {
             try
@@ -111,7 +112,7 @@ namespace LocalizerWPF.ViewModel
                     Files = new ObservableCollection<IFile>()
                 };
 
-                var dirPath = Path.Combine(Localizer.Localizer.SourcePackageDirPath, PackageName);
+                var dirPath = Utils.EscapePath(Path.Combine(Localizer.Localizer.SourcePackageDirPath, PackageName));
 
                 packageExportService.Export(package,
                                             new ExportConfig
@@ -134,7 +135,7 @@ namespace LocalizerWPF.ViewModel
 
                 if (MakeBackup && oldPack != null)
                 {
-                    var backupDirPath = Path.Combine(dirPath, "Backups", Utils.DateTimeToFileName(DateTime.Now));
+                    var backupDirPath = Utils.EscapePath(Path.Combine(dirPath, "Backups", Utils.DateTimeToFileName(DateTime.Now)));
                     Utils.CreateDirectory(backupDirPath);
                     packageSaveService.Save(oldPack, backupDirPath, fileSaveService);
 

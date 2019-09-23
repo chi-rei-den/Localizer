@@ -1,7 +1,7 @@
 using System;
 using System.Reflection;
 
-namespace Localizer
+namespace Localizer.DataModel
 {
     public interface IMod
     {

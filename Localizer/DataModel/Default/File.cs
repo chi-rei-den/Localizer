@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Newtonsoft.Json;
 
-namespace Localizer.DataModel
+namespace Localizer.DataModel.Default
 {
     public abstract class File : IFile
     {

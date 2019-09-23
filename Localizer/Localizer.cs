@@ -54,7 +54,8 @@ namespace Localizer
             Kernel.Load(new NinjectModule[]
             {
                 new DefaultPackageModule(), new DefaultFileExportModule(),
-                new DefaultFileUpdateModule(), new DefaultFileImportModule()
+                new DefaultFileUpdateModule(), new DefaultFileImportModule(),
+                new DefaultNetworkModule(), 
             });
         }
 

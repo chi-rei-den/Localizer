@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Localizer.DataModel;
+using Localizer.DataModel.Default;
 using Terraria.Localization;
 
 namespace Localizer.Services.File

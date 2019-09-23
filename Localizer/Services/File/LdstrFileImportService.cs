@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Localizer.DataModel;
+using Localizer.DataModel.Default;
 using MonoMod.Cil;
 using MonoMod.RuntimeDetour.HookGen;
 using MonoMod.Utils;

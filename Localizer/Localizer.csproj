@@ -132,6 +132,7 @@
     <Compile Include="Modules\DefaultFileExportModule.cs" />
     <Compile Include="Modules\DefaultFileImportModule.cs" />
     <Compile Include="Modules\DefaultFileUpdateModule.cs" />
+    <Compile Include="Modules\DefaultNetworkModule.cs" />
     <Compile Include="Modules\DefaultPackageModule.cs" />
     <Compile Include="Plugin\Plugin.cs" />
     <Compile Include="Plugin\PluginManager.cs" />
@@ -144,6 +145,7 @@
     <Compile Include="ServiceInterfaces\IUpdateLogService.cs" />
     <Compile Include="ServiceInterfaces\Network\IDownloadManagerService.cs" />
     <Compile Include="ServiceInterfaces\Network\IPackageBrowserService.cs" />
+    <Compile Include="ServiceInterfaces\Network\IUpdateService.cs" />
     <Compile Include="ServiceInterfaces\Package\IPackageExportService.cs" />
     <Compile Include="ServiceInterfaces\Package\IPackageImportService.cs" />
     <Compile Include="ServiceInterfaces\Package\IPackageLoadService.cs" />
@@ -163,6 +165,7 @@
     <Compile Include="Services\File\LdstrFileImportService.cs" />
     <Compile Include="Services\File\LdstrFileUpdateService.cs" />
     <Compile Include="Services\IService.cs" />
+    <Compile Include="Services\Network\DownloadManagerService.cs" />
     <Compile Include="Services\Network\PackageBrowserService.cs" />
     <Compile Include="Services\UpdateLogService.cs" />
     <Compile Include="Services\Package\PackageExportService.cs" />

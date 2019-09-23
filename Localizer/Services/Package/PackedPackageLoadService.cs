@@ -2,6 +2,7 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using Localizer.DataModel;
+using Localizer.DataModel.Default;
 using Localizer.Package;
 using Localizer.Services.File;
 using Terraria.ModLoader;
@@ -35,7 +36,11 @@ namespace Localizer.Services.Package
                         return null;
                     }
 
-                    InitPackage(package);
+                    var tmod = ModLoader.Mods.FirstOrDefault(m => m.Name == package.ModName);
+                    if (tmod == null)
+                        return null;
+                    package.Mod = new ModWrapper(tmod);
+                    
                     foreach (var fileTypeName in package.FileList)
                     {
                         Utils.LogDebug($"Loading file [{fileTypeName}]");
@@ -51,11 +56,6 @@ namespace Localizer.Services.Package
                     return package;
                 }
             }
-        }
-
-        private void InitPackage(IPackage package)
-        {
-            package.Mod = new ModWrapper(ModLoader.Mods.FirstOrDefault(m => m.Name == package.ModName));
         }
     }
 }

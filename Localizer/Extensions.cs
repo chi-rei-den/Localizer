@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using Localizer.Attributes;
 using Localizer.DataModel;
+using Localizer.DataModel.Default;
 using Mono.Cecil;
 using MonoMod.Utils;
 using Terraria.ModLoader;

@@ -6,6 +6,7 @@ using System.Linq;
 using System.Reflection;
 using Localizer.Attributes;
 using Localizer.DataModel;
+using Localizer.DataModel.Default;
 using MonoMod.Utils;
 using Newtonsoft.Json;
 using Terraria.ModLoader;
@@ -223,6 +224,11 @@ namespace Localizer
         public static string DateTimeToFileName(DateTime dateTime)
         {
             return string.Format("{0:yyyy-MM-dd_hh-mm-ss-tt}", dateTime);
+        }
+
+        public static string EscapePath(string path)
+        {
+            return path.Trim(Path.GetInvalidPathChars());
         }
 
         #endregion

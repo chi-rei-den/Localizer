@@ -5,10 +5,12 @@ namespace Localizer.ServiceInterfaces.Network
 {
     public interface IPackageBrowserService
     {
+        ICollection<IPackage> GetList();
+        
         int GetPageCount();
 
-        List<IPackage> GetListPage(int i);
+        ICollection<IPackage> GetListByPage(int i);
 
-        string GetDownloadLinkOf();
+        string GetDownloadLinkOf(IPackage package);
     }
 }

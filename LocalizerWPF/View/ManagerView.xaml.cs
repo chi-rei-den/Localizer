@@ -1,5 +1,6 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
 using System.Windows.Media;
 using GalaSoft.MvvmLight.Ioc;
 using LocalizerWPF.Model;
@@ -35,6 +36,11 @@ namespace LocalizerWPF
         {
             var toggle = sender as ToggleSwitch;
             (toggle.Tag as Package).Enabled = toggle.IsChecked ?? true;
+            SimpleIoc.Default.GetInstance<ManagerViewModel>().SaveStateCommand.Execute(null);
+        }
+
+        private void OnSourceUpdated(object sender, DataTransferEventArgs e)
+        {
             SimpleIoc.Default.GetInstance<ManagerViewModel>().SaveStateCommand.Execute(null);
         }
     }

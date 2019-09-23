@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Localizer.DataModel
+namespace Localizer.DataModel.Default
 {
     public class LdstrEntry : IEntry
     {
