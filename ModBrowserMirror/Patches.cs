@@ -12,6 +12,7 @@ namespace ModBrowserMirror
     {
         public static void Patch()
         {
+            Utils.LogInfo("Patching ModBrowser");
             var original = typeof(Mod).Module.GetType("Terraria.ModLoader.UI.ModBrowser.UIModBrowser").GetMethod("<PopulateModBrowser>b__70_0", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Public | BindingFlags.Static);
             var transpiler = typeof(ReplaceURLs).GetMethod("PopulateModBrowserTranspiler", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Public | BindingFlags.Static);
 
@@ -26,6 +27,7 @@ namespace ModBrowserMirror
             var transpiler2 = typeof(ReplaceURLs).GetMethod("OnActivateTranspiler", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Public | BindingFlags.Static);
 
             Plugin.HarmonyInstance.Patch(original2, null, null, new HarmonyMethod(transpiler2));
+            Utils.LogInfo("ModBrowser Patched");
         }
         
         static IEnumerable<CodeInstruction> PopulateModBrowserTranspiler(IEnumerable<CodeInstruction> instructions)

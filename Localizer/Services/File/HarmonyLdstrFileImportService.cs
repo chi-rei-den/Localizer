@@ -79,7 +79,7 @@ namespace Localizer.Services.File
 
         public void Reset()
         {
-            harmony.UnpatchAll();
+            harmony.UnpatchAll("LdstrFileImport");
         }
         public LdstrEntry Merge(LdstrEntry main, LdstrEntry addition)
         {
@@ -148,7 +148,7 @@ namespace Localizer.Services.File
 
         public void Dispose()
         {
-            harmony.UnpatchAll();
+            harmony.UnpatchAll("LdstrFileImport");
         }
     }
 }
