@@ -40,6 +40,7 @@ namespace ModBrowserMirror
         {
             var result = instructions.ToList();
             ReplaceLdstr("http://javid.ddns.net/tModLoader/download.php?Down=mods/", "https://trbbs.cc/trmod/", result);
+            ReplaceLdstr("&tls12=y", "", result);
 
             return result;
         }
@@ -47,6 +48,7 @@ namespace ModBrowserMirror
         static IEnumerable<CodeInstruction> OnActivateTranspiler(IEnumerable<CodeInstruction> instructions)
         {
             var result = instructions.ToList();
+            ReplaceLdstr("http://javid.ddns.net/tModLoader/download.php?Down=mods/", "https://trbbs.cc/trmod/", result);
             var ins = result.FirstOrDefault(i => i?.operand?.ToString() == "http://javid.ddns.net/tModLoader/moddescription.php");
             if (ins != null)
             {
