@@ -11,6 +11,7 @@ using Localizer.Services.File;
 using Localizer.Services.Package;
 using LocalizerWPF.Model;
 using Ninject;
+using Terraria.Localization;
 
 namespace LocalizerWPF.ViewModel
 {
@@ -47,9 +48,13 @@ namespace LocalizerWPF.ViewModel
             ImportAllCommand = new RelayCommand(ImportAll, () => !loading && !importing);
             RevertCommand = new RelayCommand(Revert);
             
-            Application.Current.Dispatcher.Invoke(() =>
+            Application.Current.Dispatcher.InvokeAsync(() =>
             {
                 LoadPackages();
+                if (Localizer.Localizer.Config.AutoImport)
+                {
+                    ImportAll();
+                }
             });
         }
 
@@ -85,6 +90,8 @@ namespace LocalizerWPF.ViewModel
             }
 
             packageImportService.Import();
+            
+            Localizer.Localizer.RefreshLanguages();
 
             Utils.LogDebug("All Packages Imported");
             

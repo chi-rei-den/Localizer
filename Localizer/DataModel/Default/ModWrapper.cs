@@ -16,7 +16,7 @@ namespace Localizer.DataModel.Default
         public string Name => wrapped?.Name ?? "";
 
         public Assembly Code => wrapped?.Code;
-        public string DisplayName => wrapped?.DisplayName ?? "";
+        public string DisplayName => wrapped.DisplayName ?? "";
         public Version Version => wrapped?.Version;
     }
 }

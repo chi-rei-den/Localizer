@@ -7,6 +7,7 @@ using Localizer.DataModel;
 using Localizer.DataModel.Default;
 using Mono.Cecil;
 using MonoMod.Utils;
+using Terraria.Localization;
 using Terraria.ModLoader;
 
 namespace Localizer
@@ -24,7 +25,7 @@ namespace Localizer
                     && !string.IsNullOrWhiteSpace(modTranslation.GetDefault())
                     && !string.IsNullOrWhiteSpace(entry.Origin))
                 {
-                    Localizer.Log.Warn(
+                    Utils.LogWarn(
                         $"Mismatch origin text when importing \"{modTranslation.Key}\", Origin in mod: {modTranslation.GetDefault()}, Origin in package: {entry.Origin}");
                 }
 

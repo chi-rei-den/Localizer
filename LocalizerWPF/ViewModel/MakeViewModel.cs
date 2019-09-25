@@ -15,6 +15,7 @@ using Localizer.Services.Package;
 using LocalizerWPF.Model;
 using Microsoft.Win32;
 using Ninject;
+using static LocalizerWPF.Lang;
 
 namespace LocalizerWPF.ViewModel
 {
@@ -64,7 +65,7 @@ namespace LocalizerWPF.ViewModel
 
         public MakeViewModel()
         {
-            PackageName = "PleaseEnterPackageName";
+            PackageName = _("Enter-Package-Name-Placeholder");
 
             Languages = new ObservableCollection<CultureInfo>(
                 CultureInfo.GetCultures(CultureTypes.AllCultures));
@@ -94,13 +95,13 @@ namespace LocalizerWPF.ViewModel
             {
                 if (SelectedMod == null)
                 {
-                    MessageBox.Show("Please Select Mod!");
+                    MessageBox.Show(_("No-Selected-Mod-Error-Message"));
                     return;
                 }
 
                 if (string.IsNullOrWhiteSpace(PackageName))
                 {
-                    MessageBox.Show("Please Enter Package Name!");
+                    MessageBox.Show(_("No-Package-Name-Error-Message"));
                     return;
                 }
 
@@ -156,7 +157,7 @@ namespace LocalizerWPF.ViewModel
                     packageSaveService.Save(package, dirPath, fileSaveService);
                 }
 
-                MessageBox.Show($"{PackageName} Exported!");
+                MessageBox.Show(string.Format(_("Package-Exported-Success-Message"), PackageName));
             }
             catch (Exception e)
             {
@@ -170,8 +171,8 @@ namespace LocalizerWPF.ViewModel
             try
             {
                 var dialog = new OpenFileDialog();
-                dialog.Title = "Select package";
-                dialog.Filter = "Package Info(Package.json)|Package.json";
+                dialog.Title = _("Select-Package-Window-Title");
+                dialog.Filter = _("Select-Package-Window-Filter");
 
                 if (dialog.ShowDialog() ?? false)
                 {
@@ -181,7 +182,7 @@ namespace LocalizerWPF.ViewModel
 
                     packagePackService.Pack(fileInfo.FullName);
 
-                    MessageBox.Show("Package created!");
+                    MessageBox.Show(_("Package-Created-Success-Message"));
                 }
             }
             catch (Exception e)

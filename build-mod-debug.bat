@@ -1,0 +1,1 @@
+".\References\Terraria" -build ".\Localizer" -unsafe -define DEBUG

@@ -2,8 +2,8 @@
 using System.Globalization;
 using System.IO;
 using Localizer.Modules;
-using LocalizerWPF.Model;
 using log4net;
+using MonoMod.RuntimeDetour.HookGen;
 using Ninject.Modules;
 using Terraria.Localization;
 using Terraria.ModLoader;
@@ -71,6 +71,8 @@ namespace Localizer
             SaveConfig();
 
             PluginManager.UnloadPlugins();
+            
+            HookEndpointManager.RemoveAllOwnedBy(this);
         }
 
         public static void LoadConfig()
@@ -107,6 +109,11 @@ namespace Localizer
         public static void RefreshLanguages(CultureInfo lang)
         {
             ModContent.RefreshModLanguage(CultureInfoToGameCulture(lang));
+        }
+        
+        public static void RefreshLanguages()
+        {
+            ModContent.RefreshModLanguage(LanguageManager.Instance.ActiveCulture);
         }
     }
 }

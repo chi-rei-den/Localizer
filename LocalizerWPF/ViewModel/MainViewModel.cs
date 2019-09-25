@@ -1,4 +1,5 @@
 using GalaSoft.MvvmLight;
+using GalaSoft.MvvmLight.Ioc;
 
 namespace LocalizerWPF.ViewModel
 {
@@ -21,14 +22,11 @@ namespace LocalizerWPF.ViewModel
         /// </summary>
         public MainViewModel()
         {
-            ////if (IsInDesignMode)
-            ////{
-            ////    // Code runs in Blend --> create design time data.
-            ////}
-            ////else
-            ////{
-            ////    // Code runs "for real"
-            ////}
+            var setting = SimpleIoc.Default.GetInstance<SettingViewModel>();
+            
+            setting.LoadConfig();
+            
+            Lang.SwitchLang(setting.Config.Language);
         }
     }
 }

@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using Localizer.DataModel;
 using Localizer.DataModel.Default;
 using Terraria.Localization;
+using Terraria.ModLoader;
 
 namespace Localizer.Services.File
 {
@@ -16,13 +17,21 @@ namespace Localizer.Services.File
 
             var entryDict = (file as CustomModTranslationFile).Translations;
 
-            var tmod = Utils.GetModByName(mod.Name);
+            var translations =
+                typeof(Mod).GetFieldDirectly(Utils.GetModByName(mod.Name), "translations") as
+                    IDictionary<string, ModTranslation>;
+
             foreach (var pair in entryDict)
             {
-                var translation = tmod?.CreateTranslation(pair.Key.Replace(string.Format("Mods.{0}.", mod.Name), ""));
+                if(!translations.ContainsKey(pair.Key))
+                    continue;
+                
+                var translation = translations[pair.Key];
                 translation?.Import(pair.Value, LanguageManager.Instance.ActiveCulture.CultureInfo);
-                tmod?.AddTranslation(translation);
+                translations[pair.Key] = translation;
             }
+            
+            
         }
 
         public IFile Merge(IFile main, IFile addition)

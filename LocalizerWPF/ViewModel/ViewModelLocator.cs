@@ -32,6 +32,7 @@ namespace LocalizerWPF.ViewModel
             ServiceLocator.SetLocatorProvider(() => SimpleIoc.Default);
 
             SimpleIoc.Default.Register<MainViewModel>();
+            SimpleIoc.Default.Register<SettingViewModel>();
             SimpleIoc.Default.Register<ManagerViewModel>();
             SimpleIoc.Default.Register<MakeViewModel>();
             SimpleIoc.Default.Register<BrowserViewModel>();
@@ -39,15 +40,22 @@ namespace LocalizerWPF.ViewModel
 
         public MainViewModel Main => ServiceLocator.Current.GetInstance<MainViewModel>();
         
+        public SettingViewModel Setting => ServiceLocator.Current.GetInstance<SettingViewModel>();
+        
         public ManagerViewModel Manager => ServiceLocator.Current.GetInstance<ManagerViewModel>();
         
         public MakeViewModel Make => ServiceLocator.Current.GetInstance<MakeViewModel>();
         
         public BrowserViewModel Browser => ServiceLocator.Current.GetInstance<BrowserViewModel>();
         
+        
         public static void Cleanup()
-        {
-            // TODO Clear the ViewModels
+        {            
+            SimpleIoc.Default.Unregister<MainViewModel>();
+            SimpleIoc.Default.Unregister<SettingViewModel>();
+            SimpleIoc.Default.Unregister<ManagerViewModel>();
+            SimpleIoc.Default.Unregister<MakeViewModel>();
+            SimpleIoc.Default.Unregister<BrowserViewModel>();
         }
     }
 }

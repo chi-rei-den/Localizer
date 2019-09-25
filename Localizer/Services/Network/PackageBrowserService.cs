@@ -16,7 +16,7 @@ namespace Localizer.Services.Network
 #if DEBUG
         public string serverURL = "http://127.0.0.1:8000/api/";
 #else
-        public string serverURL = "";
+        public string serverURL = "http://www.axeel.moe/api/";
 #endif
 
         private Dictionary<IPackage, int> packages = new Dictionary<IPackage, int>();

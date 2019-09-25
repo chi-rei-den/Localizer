@@ -12,9 +12,12 @@ namespace Localizer.Services.File
 {
     public class LdstrFileImportService : IFileImportService
     {
+        private Dictionary<MethodBase, ILContext.Manipulator> modifications;
+        
         public LdstrFileImportService()
         {
             HookEndpointManager.OnModify += RedirectDMD;
+            modifications = new Dictionary<MethodBase, ILContext.Manipulator>();
         }
 
         public void Import(IFile file, IMod mod)
@@ -42,7 +45,7 @@ namespace Localizer.Services.File
 
                 if (!HaveTranslation(e))
                 {
-                    return;
+                    continue;
                 }
 
                 var modification = new ILContext.Manipulator(il =>
@@ -66,6 +69,12 @@ namespace Localizer.Services.File
                         }
                     }
                 });
+                
+                if (!modifications.ContainsKey(method))
+                {
+                    HookEndpointManager.Modify(method, modification);
+                    modifications.Add(method, modification);
+                }
             }
         }
 

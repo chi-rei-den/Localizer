@@ -41,4 +41,17 @@
     <system:String x:Key="Make-CheckBox-MakeBackup">制作备份</system:String>
     <system:String x:Key="Make-CheckBox-ForceOverride">强制覆盖</system:String>
     <system:String x:Key="Make-CheckBox-WithTranslations">导出翻译</system:String>
+    
+    <!-- Setting View -->
+    <system:String x:Key="Setting-Label-Language">语言</system:String>
+    <system:String x:Key="Setting-Label-Auto-Import">启动时自动导入文本</system:String>
+        
+    <!-- Make View Model -->
+    <system:String x:Key="Enter-Package-Name-Placeholder">在这里输入汉化包的名字</system:String>
+    <system:String x:Key="No-Selected-Mod-Error-Message">请选择要导出的Mod!</system:String>
+    <system:String x:Key="No-Package-Name-Error-Message">请输入汉化包的名字!</system:String>
+    <system:String x:Key="Package-Exported-Success-Message">{0} 导出成功</system:String>
+    <system:String x:Key="Select-Package-Window-Title">选择汉化包</system:String>
+    <system:String x:Key="Select-Package-Window-Filter">汉化包主文件(Package.json)|Package.json</system:String>
+    <system:String x:Key="Package-Created-Success-Message">打包完成</system:String>
 </ResourceDictionary>

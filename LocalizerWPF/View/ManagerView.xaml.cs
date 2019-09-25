@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Media;
@@ -34,9 +35,16 @@ namespace LocalizerWPF
 
         private void ToggleSwitch_OnClick(object sender, RoutedEventArgs e)
         {
-            var toggle = sender as ToggleSwitch;
-            (toggle.Tag as Package).Enabled = toggle.IsChecked ?? true;
-            SimpleIoc.Default.GetInstance<ManagerViewModel>().SaveStateCommand.Execute(null);
+            try
+            {
+                var toggle = sender as ToggleSwitch;
+                (toggle.Tag as Package).Enabled = toggle.IsChecked ?? true;
+                SimpleIoc.Default.GetInstance<ManagerViewModel>().SaveStateCommand.Execute(null);
+            }
+            catch (Exception ex)
+            {
+                Localizer.Utils.LogError(ex);
+            }
         }
 
         private void OnSourceUpdated(object sender, DataTransferEventArgs e)

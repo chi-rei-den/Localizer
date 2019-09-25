@@ -13,7 +13,11 @@ namespace Localizer
         private static string InternalPluginDirPath = "Plugins/";
         private static readonly string ExternalPluginDirPath = "./Localizer/Plugins/";
 
-        private static readonly string[] InternalPlugins = {"LocalizerWPF.dll"};
+        private static readonly string[] InternalPlugins =
+        {
+            "LocalizerWPF.dll",
+            "ModBrowserMirror.dll",
+        };
 
         public static List<Plugin> Plugins { get; set; }
 

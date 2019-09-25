@@ -110,6 +110,7 @@
     <Compile Include="Attributes\TModLocalizeTextPropAttribute.cs" />
     <Compile Include="Configuration.cs" />
     <Compile Include="DataModel\Default\BaseEntry.cs" />
+    <Compile Include="DataModel\Default\BasicNPCFile.cs" />
     <Compile Include="DataModel\Default\File.cs" />
     <Compile Include="DataModel\Default\ModWrapper.cs" />
     <Compile Include="DataModel\Default\Package.cs" />
@@ -119,7 +120,6 @@
     <Compile Include="DataModel\Default\BasicBuffFile.cs" />
     <Compile Include="DataModel\Default\CustomModTranslationFile.cs" />
     <Compile Include="DataModel\Default\BasicItemFile.cs" />
-    <Compile Include="DataModel\Default\BasicNPCFile.cs" />
     <Compile Include="DataModel\Default\LdstrFile.cs" />
     <Compile Include="DataModel\IEntry.cs" />
     <Compile Include="DataModel\IFile.cs" />

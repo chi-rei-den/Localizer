@@ -25,10 +25,13 @@ namespace Localizer.Services.Package
             {
                 packageGroups.FirstOrDefault(pg => pg.Mod == package.Mod)?.Packages.Add(package);
             }
+            
+            Utils.LogDebug($"Queued [{package.Name}]");
         }
 
         public void Import()
         {
+            Utils.LogDebug($"Begin importing");
             var services = Localizer.Kernel.GetAll<IFileImportService>();
 
             foreach (var group in packageGroups)
@@ -38,10 +41,13 @@ namespace Localizer.Services.Package
                 {
                     foreach (var s in services)
                     {
+                        Utils.LogDebug($"Importing [{f.GetType()}] using [{s.GetType()}]");
                         s.Import(f, group.Mod);
+                        Utils.LogDebug($"Imported");
                     }
                 }
             }
+            Utils.LogDebug($"Imported");
         }
 
         public void Reset()

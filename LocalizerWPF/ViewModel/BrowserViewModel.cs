@@ -1,3 +1,4 @@
+using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
@@ -12,8 +13,16 @@ using Ninject;
 namespace LocalizerWPF.ViewModel
 {
     public class BrowserViewModel : ViewModelBase
-    { 
-        public ObservableCollection<IPackage> Packages { get; set; }
+    {
+        public ObservableCollection<IPackage> Packages
+        {
+            get => _packages;
+            set
+            {
+                _packages = value;
+                RaisePropertyChanged("Packages");
+            }
+        }
 
         public IPackage SelectedPackage
         {
@@ -31,6 +40,7 @@ namespace LocalizerWPF.ViewModel
         private IPackageBrowserService packageBrowserService;
         private IDownloadManagerService downloadManager;
         private IPackage _selectedPackage;
+        private ObservableCollection<IPackage> _packages;
 
         public BrowserViewModel()
         {
@@ -39,15 +49,27 @@ namespace LocalizerWPF.ViewModel
             
             RefreshCommand = new RelayCommand(Refresh);
             DownloadCommand = new RelayCommand<IPackage>(Download);
-
-            Packages = new ObservableCollection<IPackage>(packageBrowserService.GetList());
         }
 
         private void Refresh()
         {
             Utils.LogDebug($"Fetching package list");
-            Packages = new ObservableCollection<IPackage>(packageBrowserService.GetList());
+            Packages = GetList();
             Utils.LogDebug($"Package list fetched");
+        }
+
+        private ObservableCollection<IPackage> GetList()
+        {
+            try
+            {
+                return new ObservableCollection<IPackage>(packageBrowserService.GetList());
+            }
+            catch (Exception e)
+            {
+                Utils.LogError(e);
+            }
+
+            return new ObservableCollection<IPackage>();
         }
 
         private void Download(IPackage pack)

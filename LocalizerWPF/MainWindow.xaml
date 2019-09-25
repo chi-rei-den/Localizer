@@ -6,6 +6,7 @@
                       xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
                       xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
                       xmlns:local="clr-namespace:LocalizerWPF"
+                      xmlns:view="clr-namespace:LocalizerWPF.View"
                       mc:Ignorable="d"
                       Title="{DynamicResource AppTitle}" Height="450" Width="800"
                       ShowMinButton="False"
@@ -13,17 +14,6 @@
                       ResizeMode="CanResizeWithGrip"
                       DataContext="{Binding Source={StaticResource Locator}, Path=Main}">
     <Window.Resources>
-        <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Fonts.xaml" />
-                <ResourceDictionary
-                    Source="pack://application:,,,/MahApps.Metro;component/Styles/Themes/Light.Blue.xaml" />
-                <ResourceDictionary
-                    Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.AnimatedTabControl.xaml" />
-                <ResourceDictionary Source="Resources/Langs/zh.xaml"/>
-            </ResourceDictionary.MergedDictionaries>
-        </ResourceDictionary>
     </Window.Resources>
     <Controls:MetroWindow.RightWindowCommands>
         <Controls:WindowCommands>
@@ -41,6 +31,9 @@
                         <TextBlock Text="{DynamicResource Flyout-Setting}" />
                     </DataTemplate>
                 </Controls:Flyout.HeaderTemplate>
+                <Controls:Flyout.Content>
+                    <view:SettingView x:Name="SettingView" />
+                </Controls:Flyout.Content>
             </Controls:Flyout>
             <Controls:Flyout x:Name="AboutFlyout" Position="Right" Width="200">
                 <Controls:Flyout.HeaderTemplate>

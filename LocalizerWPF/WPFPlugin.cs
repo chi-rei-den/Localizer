@@ -1,7 +1,6 @@
 ﻿using System.Threading;
 using System.Windows;
 using Localizer;
-using On.Terraria.GameInput;
 using Terraria;
 using PlayerInput = Terraria.GameInput.PlayerInput;
 
@@ -37,8 +36,11 @@ namespace LocalizerWPF
                 app.Dispatcher.Invoke(() =>
                 {
                     app.MainWindow = new MainWindow();
-                    app.MainWindow.Show();
-                    Localizer.Localizer.Log.Info("Window showed.");
+                    if (Localizer.Localizer.Config.ShowUI)
+                    {
+                        app.MainWindow.Show();
+                        Localizer.Localizer.Log.Info("Window showed.");
+                    }
                 });
             }
         }

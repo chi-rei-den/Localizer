@@ -41,4 +41,17 @@
     <system:String x:Key="Make-CheckBox-MakeBackup">Make Backup</system:String>
     <system:String x:Key="Make-CheckBox-ForceOverride">Force Override</system:String>
     <system:String x:Key="Make-CheckBox-WithTranslations">With Translations</system:String>
+    
+    <!-- Setting View -->
+    <system:String x:Key="Setting-Label-Language">Language</system:String>
+    <system:String x:Key="Setting-Label-Auto-Import">Auto Import When Start Up</system:String>
+    
+    <!-- Make View Model -->
+    <system:String x:Key="Enter-Package-Name-Placeholder">PleaseEnterPackageName</system:String>
+    <system:String x:Key="No-Selected-Mod-Error-Message">Please Select Mod!</system:String>
+    <system:String x:Key="No-Package-Name-Error-Message">Please Enter Package Name!</system:String>
+    <system:String x:Key="Package-Exported-Success-Message">{0} Exported!</system:String>
+    <system:String x:Key="Select-Package-Window-Title">Select Package</system:String>
+    <system:String x:Key="Select-Package-Window-Filter">Package Info(Package.json)|Package.json</system:String>
+    <system:String x:Key="Package-Created-Success-Message">Package created!</system:String>
 </ResourceDictionary>
