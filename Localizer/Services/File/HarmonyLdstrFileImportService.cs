@@ -36,8 +36,13 @@ namespace Localizer.Services.File
 
             foreach (var entryPair in entryDict)
             {
+                if(!HaveTranslation(entryPair.Value))
+                {
+                    continue;
+                }
+                
                 var method = module.FindMethod(entryPair.Key);
-                if (method == null || !HaveTranslation(entryPair.Value))
+                if (method == null)
                 {
                     continue;
                 }
@@ -139,6 +144,9 @@ namespace Localizer.Services.File
         
         private static void ReplaceLdstr(string o, string n, IEnumerable<CodeInstruction> il)
         {
+            if(string.IsNullOrEmpty(n))
+                return;
+            
             var ins = il.FirstOrDefault(i => i?.operand?.ToString() == o);
             if (ins != null)
             {
