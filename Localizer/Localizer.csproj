@@ -40,6 +40,9 @@
     <PlatformTarget>x86</PlatformTarget>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="0Harmony, Version=1.2.0.1, Culture=neutral, PublicKeyToken=null">
+      <HintPath>lib\0Harmony.dll</HintPath>
+    </Reference>
     <Reference Include="log4net, Version=2.0.8.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
       <HintPath>..\packages\log4net.2.0.8\lib\net45-full\log4net.dll</HintPath>
     </Reference>
@@ -159,10 +162,11 @@
     <Compile Include="Services\File\CustomModTranslationFileExportService.cs" />
     <Compile Include="Services\File\CustomModTranslationFileImportService.cs" />
     <Compile Include="Services\File\CustomModTranslationFileUpdateService.cs" />
+    <Compile Include="Services\File\HarmonyLdstrFileImportService.cs" />
     <Compile Include="Services\File\JsonFileLoadService.cs" />
     <Compile Include="Services\File\JsonFileSaveService.cs" />
     <Compile Include="Services\File\LdstrFileExportService.cs" />
-    <Compile Include="Services\File\LdstrFileImportService.cs" />
+    <Compile Include="Services\File\MonoModLdstrFileImportService.cs" />
     <Compile Include="Services\File\LdstrFileUpdateService.cs" />
     <Compile Include="Services\IService.cs" />
     <Compile Include="Services\Network\DownloadManagerService.cs" />

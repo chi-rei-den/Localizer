@@ -16,5 +16,9 @@ namespace Localizer.Services.Package
                 fileSaveService.Save(file, Path.Combine(path, file.GetType().Name + ".json"));
             }
         }
+
+        public void Dispose()
+        {
+        }
     }
 }

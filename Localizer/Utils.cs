@@ -4,6 +4,8 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Reflection;
+using System.Reflection.Emit;
+using Harmony.ILCopying;
 using Localizer.Attributes;
 using Localizer.DataModel;
 using Localizer.DataModel.Default;
@@ -230,7 +232,12 @@ namespace Localizer
         {
             return path.Trim(Path.GetInvalidPathChars());
         }
-
+        
+        public static List<ILInstruction> GetInstructions(MethodInfo method)
+        {
+            var dummy = new DynamicMethod("Dummy", typeof(void), new Type[] { });
+            return MethodBodyReader.GetInstructions(dummy.GetILGenerator(), method);
+        }
         #endregion
     }
 }

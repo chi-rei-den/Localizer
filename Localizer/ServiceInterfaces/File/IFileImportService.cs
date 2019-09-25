@@ -2,7 +2,7 @@ using Localizer.DataModel;
 
 namespace Localizer.Services.File
 {
-    public interface IFileImportService
+    public interface IFileImportService : IService
     {
         /// <summary>
         ///     Import a file into correspond mod.
@@ -18,5 +18,7 @@ namespace Localizer.Services.File
         /// <param name="addition"></param>
         /// <returns></returns>
         IFile Merge(IFile main, IFile addition);
+
+        void Reset();
     }
 }

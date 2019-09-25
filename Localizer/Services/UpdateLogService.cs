@@ -29,5 +29,9 @@ namespace Localizer.Services
         {
             System.IO.File.WriteAllText(path, $"[Content Changed]: {content} \r\n");
         }
+
+        public void Dispose()
+        {
+        }
     }
 }

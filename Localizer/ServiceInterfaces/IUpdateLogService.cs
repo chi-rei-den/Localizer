@@ -1,6 +1,8 @@
+using Localizer.Services;
+
 namespace Localizer.ServiceInterfaces
 {
-    public interface IUpdateLogService
+    public interface IUpdateLogService : IService
     {
         /// <summary>
         ///     Initialization works of the logger.

@@ -57,5 +57,9 @@ namespace Localizer.Services.Package
                 }
             }
         }
+
+        public void Dispose()
+        {
+        }
     }
 }

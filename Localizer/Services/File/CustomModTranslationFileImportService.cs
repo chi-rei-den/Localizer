@@ -62,6 +62,12 @@ namespace Localizer.Services.File
             return result;
         }
 
+        public void Reset()
+        {
+            
+            return;
+        }
+
         public BaseEntry Merge(BaseEntry main, BaseEntry addition)
         {
             var e = main.Clone() as BaseEntry;
@@ -72,6 +78,10 @@ namespace Localizer.Services.File
             }
 
             return e;
+        }
+
+        public void Dispose()
+        {
         }
     }
 }

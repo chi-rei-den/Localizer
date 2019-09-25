@@ -45,5 +45,9 @@ namespace Localizer.Services.File
                 logger.Remove($"[{r}]");
             }
         }
+
+        public void Dispose()
+        {
+        }
     }
 }

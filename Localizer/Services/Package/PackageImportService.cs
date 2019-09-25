@@ -52,6 +52,10 @@ namespace Localizer.Services.Package
 
         public void Reset()
         {
+            foreach (var s in Localizer.Kernel.GetAll<IFileImportService>())
+            {
+                s.Reset();
+            }
             packageGroups.Clear();
         }
 
@@ -86,6 +90,10 @@ namespace Localizer.Services.Package
             }
 
             return result;
+        }
+
+        public void Dispose()
+        {
         }
     }
 }

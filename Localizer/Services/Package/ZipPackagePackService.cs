@@ -46,5 +46,9 @@ namespace Localizer.Services.Package
 
             Utils.LogDebug("Packed");
         }
+
+        public void Dispose()
+        {
+        }
     }
 }

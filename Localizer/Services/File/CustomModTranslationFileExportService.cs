@@ -38,5 +38,9 @@ namespace Localizer.Services.File
 
             package.AddFile(file);
         }
+
+        public void Dispose()
+        {
+        }
     }
 }

@@ -25,5 +25,9 @@ namespace Localizer.Services.Package
 
             Utils.LogDebug($"Package [{oldPackage.Name}] updated.");
         }
+
+        public void Dispose()
+        {
+        }
     }
 }

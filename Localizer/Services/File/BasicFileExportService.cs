@@ -71,5 +71,9 @@ namespace Localizer.Services.File
 
             return entries;
         }
+
+        public void Dispose()
+        {
+        }
     }
 }

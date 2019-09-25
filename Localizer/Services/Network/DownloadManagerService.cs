@@ -10,5 +10,9 @@ namespace Localizer.Services.Network
         {
             new WebClient().DownloadFileAsync(new Uri(url), path);
         }
+
+        public void Dispose()
+        {
+        }
     }
 }

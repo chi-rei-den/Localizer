@@ -83,5 +83,9 @@ namespace Localizer.Services.Package
 
             Utils.SerializeJsonAndCreateFile(states, stateSavePath);
         }
+
+        public void Dispose()
+        {
+        }
     }
 }

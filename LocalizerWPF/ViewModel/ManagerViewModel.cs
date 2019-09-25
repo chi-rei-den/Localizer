@@ -1,3 +1,4 @@
+using System;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Threading.Tasks;
@@ -75,27 +76,36 @@ namespace LocalizerWPF.ViewModel
         private void ImportAll()
         {
             importing = true;
-            
-            packageImportService.Reset();
 
-            foreach (var pg in PackageGroups)
+            try
             {
-                foreach (var p in pg.Packages)
+                packageImportService.Reset();
+
+                foreach (var pg in PackageGroups)
                 {
-                    if (p.Enabled)
+                    foreach (var p in pg.Packages)
                     {
-                        packageImportService.Queue(p);
+                        if (p.Enabled)
+                        {
+                            packageImportService.Queue(p);
+                        }
                     }
                 }
+
+                packageImportService.Import();
+
+                Localizer.Localizer.RefreshLanguages();
+
+                Utils.LogDebug("All Packages Imported");
             }
-
-            packageImportService.Import();
-            
-            Localizer.Localizer.RefreshLanguages();
-
-            Utils.LogDebug("All Packages Imported");
-            
-            importing = false;
+            catch (Exception e)
+            {
+                Utils.LogError(e);
+            }
+            finally
+            {
+                importing = false;
+            }
         }
 
         private void Reload()
@@ -108,31 +118,40 @@ namespace LocalizerWPF.ViewModel
         private void LoadPackages()
         {
             loading = true;
-            
-            foreach (var dir in new DirectoryInfo(Localizer.Localizer.SourcePackageDirPath).GetDirectories())
+
+            try
             {
-                var pack = sourcePackageLoadServiceService.Load(dir.FullName, fileLoadService);
-                if(pack == null)
-                    continue;
-                packageManageService.AddPackage(pack);
-            }
+                foreach (var dir in new DirectoryInfo(Localizer.Localizer.SourcePackageDirPath).GetDirectories())
+                {
+                    var pack = sourcePackageLoadServiceService.Load(dir.FullName, fileLoadService);
+                    if(pack == null)
+                        continue;
+                    packageManageService.AddPackage(pack);
+                }
 
-            foreach (var file in new DirectoryInfo(Localizer.Localizer.DownloadPackageDirPath).GetFiles())
+                foreach (var file in new DirectoryInfo(Localizer.Localizer.DownloadPackageDirPath).GetFiles())
+                {
+                    var pack = packedPackageLoadServiceService.Load(file.FullName, fileLoadService);
+                    if(pack == null)
+                        continue;
+                    packageManageService.AddPackage(pack);
+                }
+
+                foreach (var pg in PackageGroups)
+                {
+                    pg.Packages = new ObservableCollection<IPackage>(pg.Packages);
+                }
+
+                packageManageService.LoadState();
+            }
+            catch (Exception e)
             {
-                var pack = packedPackageLoadServiceService.Load(file.FullName, fileLoadService);
-                if(pack == null)
-                    continue;
-                packageManageService.AddPackage(pack);
+                Utils.LogError(e);
             }
-
-            foreach (var pg in PackageGroups)
+            finally
             {
-                pg.Packages = new ObservableCollection<IPackage>(pg.Packages);
+                loading = false;
             }
-
-            packageManageService.LoadState();
-
-            loading = false;
         }
 
         private void SaveState()

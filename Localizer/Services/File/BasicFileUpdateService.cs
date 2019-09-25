@@ -64,5 +64,9 @@ namespace Localizer.Services.File
                 }
             }
         }
+
+        public void Dispose()
+        {
+        }
     }
 }

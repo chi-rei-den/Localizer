@@ -13,7 +13,7 @@ namespace Localizer.Modules
             Bind<IFileImportService>().To<BasicFileImportService<BasicNPCFile>>().InSingletonScope();
             Bind<IFileImportService>().To<BasicFileImportService<BasicBuffFile>>().InSingletonScope();
             Bind<IFileImportService>().To<CustomModTranslationFileImportService>().InSingletonScope();
-            Bind<IFileImportService>().To<LdstrFileImportService>().InSingletonScope();
+            Bind<IFileImportService>().To<HarmonyLdstrFileImportService>().InSingletonScope();
         }
     }
 }

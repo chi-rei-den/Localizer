@@ -59,5 +59,9 @@ namespace Localizer.Package
 
             return package;
         }
+
+        public void Dispose()
+        {
+        }
     }
 }

@@ -8,5 +8,9 @@ namespace Localizer.Services.File
         {
             Utils.SerializeJsonAndCreateFile(file, path);
         }
+
+        public void Dispose()
+        {
+        }
     }
 }

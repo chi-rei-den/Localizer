@@ -1,5 +1,5 @@
 author = Chireiden Team
-version = 1.0.0.0
+version = 1.0.1.0
 displayName = Localizer
 hideCode = true
 hideResources = false
@@ -7,5 +7,5 @@ includeSource = false
 homepage = https://github.com/chi-rei-den/Localizer/
 buildIgnore = *.user, obj\*, bin\*, .vs\*, .git*, referenceImages*.png, .gitattributes, *.csproj
 includePDB = false
-dllReferences = Ninject
+dllReferences = Ninject,0Harmony
 side = Client

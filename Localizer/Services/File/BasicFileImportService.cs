@@ -65,6 +65,12 @@ namespace Localizer.Services.File
             return result as IFile;
         }
 
+        public void Reset()
+        {
+            
+            return;
+        }
+
         public IEntry Merge(IEntry main, IEntry addition)
         {
             if (main.GetType() != addition.GetType())
@@ -108,6 +114,10 @@ namespace Localizer.Services.File
                                      LanguageManager.Instance.ActiveCulture.CultureInfo);
                 }
             }
+        }
+
+        public void Dispose()
+        {
         }
     }
 }

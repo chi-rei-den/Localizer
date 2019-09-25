@@ -2,7 +2,7 @@ using Localizer.DataModel;
 
 namespace Localizer.Services.Package
 {
-    public interface IPackageImportService
+    public interface IPackageImportService : IService
     {
         /// <summary>
         ///     Add a package into the internal queue,

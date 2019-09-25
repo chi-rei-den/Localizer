@@ -23,5 +23,9 @@ namespace Localizer.Services.Package
                 service.Export(package, config);
             }
         }
+
+        public void Dispose()
+        {
+        }
     }
 }

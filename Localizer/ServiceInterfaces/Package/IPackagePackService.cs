@@ -1,6 +1,6 @@
 namespace Localizer.Services.Package
 {
-    public interface IPackagePackService
+    public interface IPackagePackService : IService
     {
         /// <summary>
         ///     Pack up a package.

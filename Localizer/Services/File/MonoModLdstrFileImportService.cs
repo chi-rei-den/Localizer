@@ -10,11 +10,11 @@ using MonoMod.Utils;
 
 namespace Localizer.Services.File
 {
-    public class LdstrFileImportService : IFileImportService
+    public class MonoModLdstrFileImportService : IFileImportService
     {
         private Dictionary<MethodBase, ILContext.Manipulator> modifications;
         
-        public LdstrFileImportService()
+        public MonoModLdstrFileImportService()
         {
             HookEndpointManager.OnModify += RedirectDMD;
             modifications = new Dictionary<MethodBase, ILContext.Manipulator>();
@@ -105,6 +105,11 @@ namespace Localizer.Services.File
             return result;
         }
 
+        public void Reset()
+        {
+            return;
+        }
+
         private bool RedirectDMD(MethodBase methodBase, Delegate callback)
         {
             var endPoint = GetHookEndPoint(methodBase);
@@ -167,6 +172,10 @@ namespace Localizer.Services.File
             }
 
             return false;
+        }
+
+        public void Dispose()
+        {
         }
     }
 }

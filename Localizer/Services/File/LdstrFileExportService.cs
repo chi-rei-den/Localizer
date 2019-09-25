@@ -2,11 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Reflection.Emit;
 using Localizer.DataModel;
 using Localizer.DataModel.Default;
-using Mono.Cecil;
-using Mono.Cecil.Cil;
-using MonoMod.RuntimeDetour.HookGen;
 using MonoMod.Utils;
 using Terraria.ModLoader;
 using static Localizer.Utils;
@@ -134,7 +132,7 @@ namespace Localizer.Services.File
 
             file.LdstrEntries = new Dictionary<string, LdstrEntry>();
 
-            foreach (var type in HookEndpointManager.GenerateCecilModule(asm.GetName()).GetTypes())
+            foreach (var type in asm.ManifestModule.GetTypes())
             {
                 /* The return value of GetTypes() and other methods will include types they derived from.
                  So we should check the namespace to ensure it belongs to the assembly, but there still are
@@ -144,7 +142,7 @@ namespace Localizer.Services.File
                     continue;
                 }
 
-                foreach (var method in type.Methods)
+                foreach (var method in type.GetMethods(BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Public | BindingFlags.Static))
                 {
                     if (method.DeclaringType?.Namespace == null || !method.DeclaringType.Namespace.StartsWith(
                                                                     package.Mod.Name)
@@ -171,9 +169,9 @@ namespace Localizer.Services.File
             package.AddFile(file);
         }
 
-        private LdstrEntry GetEntryFromMethod(MethodDefinition method)
+        private LdstrEntry GetEntryFromMethod(MethodInfo method)
         {
-            var instructions = method?.Body?.Instructions;
+            var instructions = GetInstructions(method);
 
             if (instructions == null)
             {
@@ -184,15 +182,16 @@ namespace Localizer.Services.File
             for (var i = 0; i < instructions.Count; i++)
             {
                 var ins = instructions[i];
-                if (ins.OpCode == OpCodes.Ldstr && !string.IsNullOrWhiteSpace(ins.Operand.ToString()))
+                if (ins.opcode == OpCodes.Ldstr && !string.IsNullOrWhiteSpace(ins.operand.ToString()))
                 {
                     // Filter methods in blacklist1
                     if (i < instructions.Count - 1)
                     {
-                        if (ins.Next.OpCode == OpCodes.Call || ins.Next.OpCode == OpCodes.Calli ||
-                            ins.Next.OpCode == OpCodes.Callvirt)
+                        var next = instructions[i + 1];
+                        if (next.opcode == OpCodes.Call || next.opcode == OpCodes.Calli ||
+                            next.opcode == OpCodes.Callvirt)
                         {
-                            if (_blackList1.Any(m => (ins.Next.Operand as MethodReference).Is(m)))
+                            if (_blackList1.Any(m => (next.operand as MethodBase).GetFindableID() == m.GetFindableID()))
                             {
                                 continue;
                             }
@@ -202,11 +201,11 @@ namespace Localizer.Services.File
                     // Filter methods in blacklist2
                     if (i < instructions.Count - 2)
                     {
-                        var afterNext = ins.Next.Next;
-                        if (afterNext.OpCode == OpCodes.Call || afterNext.OpCode == OpCodes.Calli ||
-                            afterNext.OpCode == OpCodes.Callvirt)
+                        var afterNext = instructions[i + 2];
+                        if (afterNext.opcode == OpCodes.Call || afterNext.opcode == OpCodes.Calli ||
+                            afterNext.opcode == OpCodes.Callvirt)
                         {
-                            if (_blackList2.Any(m => (afterNext.Operand as MethodReference).Is(m)))
+                            if (_blackList2.Any(m => (afterNext.operand as MethodBase).GetFindableID() == m.GetFindableID()))
                             {
                                 continue;
                             }
@@ -214,20 +213,24 @@ namespace Localizer.Services.File
                     }
 
                     // No need to add a same string
-                    if (entry.Instructions.Exists(e => e.Origin == ins.Operand.ToString()))
+                    if (entry.Instructions.Exists(e => e.Origin == ins.operand.ToString()))
                     {
                         continue;
                     }
 
                     entry.Instructions.Add(new BaseEntry
                     {
-                        Origin = ins.Operand.ToString(),
+                        Origin = ins.operand.ToString(),
                         Translation = ""
                     });
                 }
             }
 
             return entry.Instructions.Count == 0 ? null : entry;
+        }
+
+        public void Dispose()
+        {
         }
     }
 }

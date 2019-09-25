@@ -2,7 +2,7 @@ using Localizer.DataModel;
 
 namespace Localizer.Services.Package
 {
-    public interface IPackageExportService
+    public interface IPackageExportService : IService
     {
         /// <summary>
         ///     Extract texts from the mod and fill up the package's file list.

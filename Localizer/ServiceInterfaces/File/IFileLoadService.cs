@@ -3,7 +3,7 @@ using Localizer.DataModel;
 
 namespace Localizer.Services.File
 {
-    public interface IFileLoadService
+    public interface IFileLoadService : IService
     {
         /// <summary>
         ///     Load a file from stream.

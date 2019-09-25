@@ -1,8 +1,9 @@
 using Localizer.DataModel;
+using Localizer.Services;
 
 namespace Localizer.ServiceInterfaces.Package
 {
-    public interface IPackageUpdateService
+    public interface IPackageUpdateService : IService
     {
         /// <summary>
         ///     Compare two packages and merge differences into old one.

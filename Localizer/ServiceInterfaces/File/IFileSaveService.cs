@@ -2,7 +2,7 @@ using Localizer.DataModel;
 
 namespace Localizer.Services.File
 {
-    public interface IFileSaveService
+    public interface IFileSaveService : IService
     {
         /// <summary>
         ///     Save a file.

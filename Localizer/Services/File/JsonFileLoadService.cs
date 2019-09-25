@@ -53,5 +53,9 @@ namespace Localizer.Services.File
                 fileTypes.Add(typeName, type);
             }
         }
+
+        public void Dispose()
+        {
+        }
     }
 }

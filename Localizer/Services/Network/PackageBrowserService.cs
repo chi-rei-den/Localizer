@@ -86,5 +86,9 @@ namespace Localizer.Services.Network
             
             return $"{serverURL}pkg/download/{packages[package]}";
         }
+
+        public void Dispose()
+        {
+        }
     }
 }

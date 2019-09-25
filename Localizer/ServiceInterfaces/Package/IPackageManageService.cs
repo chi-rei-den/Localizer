@@ -1,9 +1,10 @@
 using System.Collections.Generic;
 using Localizer.DataModel;
+using Localizer.Services;
 
 namespace Localizer
 {
-    public interface IPackageManageService
+    public interface IPackageManageService : IService
     {
         /// <summary>
         ///     All added packages sorted by mod.
