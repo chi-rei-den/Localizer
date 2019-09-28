@@ -1,4 +1,7 @@
-﻿namespace LocalizerWPF
+﻿using System.ComponentModel;
+using LocalizerWPF.ViewModel;
+
+namespace LocalizerWPF
 {
     /// <summary>
     ///     Interaction logic for MainWindow.xaml
@@ -8,6 +11,12 @@
         public MainWindow()
         {
             InitializeComponent();
+            Closing += OnClosing;
+        }
+        
+        public void OnClosing(object sender, CancelEventArgs args)
+        {
+            ViewModelLocator.Cleanup();
         }
     }
 }

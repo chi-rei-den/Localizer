@@ -38,24 +38,78 @@ namespace LocalizerWPF.ViewModel
             SimpleIoc.Default.Register<BrowserViewModel>();
         }
 
-        public MainViewModel Main => ServiceLocator.Current.GetInstance<MainViewModel>();
-        
-        public SettingViewModel Setting => ServiceLocator.Current.GetInstance<SettingViewModel>();
-        
-        public ManagerViewModel Manager => ServiceLocator.Current.GetInstance<ManagerViewModel>();
-        
-        public MakeViewModel Make => ServiceLocator.Current.GetInstance<MakeViewModel>();
-        
-        public BrowserViewModel Browser => ServiceLocator.Current.GetInstance<BrowserViewModel>();
-        
-        
+        public static MainViewModel Main
+        {
+            get
+            {
+                if (_main == null)
+                    _main = ServiceLocator.Current.GetInstance<MainViewModel>();
+                return _main;
+            }
+            set { _main = value; }
+        }
+
+        public static SettingViewModel Setting
+        {
+            get
+            {
+                if (_setting == null)
+                    _setting = ServiceLocator.Current.GetInstance<SettingViewModel>();
+                return _setting;
+            }
+            set { _setting = value; }
+        }
+
+        public static ManagerViewModel Manager
+        {
+            get
+            {
+                if (_manager == null)
+                    _manager = ServiceLocator.Current.GetInstance<ManagerViewModel>();
+                return _manager;
+            }
+            set { _manager = value; }
+        }
+
+        public static MakeViewModel Make
+        {
+            get
+            {
+                if (_make == null)
+                    _make = ServiceLocator.Current.GetInstance<MakeViewModel>();
+                return _make;
+            }
+            set { _make = value; }
+        }
+
+        public static BrowserViewModel Browser
+        {
+            get
+            {
+                if (_browser == null)
+                    _browser = ServiceLocator.Current.GetInstance<BrowserViewModel>();
+                return _browser;
+            }
+            set { _browser = value; }
+        }
+
+        private static MainViewModel _main;
+
+        private static SettingViewModel _setting;
+
+        private static ManagerViewModel _manager;
+
+        private static MakeViewModel _make;
+
+        private static BrowserViewModel _browser;
+
         public static void Cleanup()
         {            
-            SimpleIoc.Default.Unregister<MainViewModel>();
-            SimpleIoc.Default.Unregister<SettingViewModel>();
-            SimpleIoc.Default.Unregister<ManagerViewModel>();
-            SimpleIoc.Default.Unregister<MakeViewModel>();
-            SimpleIoc.Default.Unregister<BrowserViewModel>();
+            _main?.Cleanup();
+            _setting?.Cleanup();
+            _manager?.Cleanup();
+            _make?.Cleanup();
+            _browser?.Cleanup();
         }
     }
 }

@@ -6,6 +6,7 @@ namespace Localizer
     {
         public void Dispose()
         {
+            GC.SuppressFinalize(this);
             OnDispose();
         }
 

@@ -1,9 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using Localizer.Modules;
+using Localizer.Services;
 using log4net;
 using MonoMod.RuntimeDetour.HookGen;
+using Ninject;
 using Ninject.Modules;
 using Terraria.Localization;
 using Terraria.ModLoader;
@@ -34,10 +37,10 @@ namespace Localizer
 
         public override void Load()
         {
-            PluginManager.Init();
-
             Log = Logger;
             Instance = this;
+            
+            PluginManager.Init();
 
             SavePath = "./Localizer/";
             SourcePackageDirPath = SavePath + "/Source/";
@@ -66,13 +69,31 @@ namespace Localizer
 
         public override void Unload()
         {
-            base.Unload();
+            try
+            {
+                SaveConfig();
 
-            SaveConfig();
+                PluginManager.UnloadPlugins();
 
-            PluginManager.UnloadPlugins();
+                HookEndpointManager.RemoveAllOwnedBy(this);
+
+                Kernel.Dispose();
+
+                Kernel = null;
+                _gameCultures = null;
+                Instance = null;
+                Config = null;
+            }
+            catch (Exception e)
+            {
+                Log.Error(e);
+            }
+            finally
+            {
+                Log = null;
+            }
             
-            HookEndpointManager.RemoveAllOwnedBy(this);
+            base.Unload();
         }
 
         public static void LoadConfig()

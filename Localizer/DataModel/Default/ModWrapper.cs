@@ -6,17 +6,27 @@ namespace Localizer.DataModel.Default
 {
     public class ModWrapper : IMod
     {
-        private readonly Mod wrapped;
+        private readonly WeakReference<Mod> wrapped;
 
         public ModWrapper(Mod mod)
         {
-            wrapped = mod;
+            wrapped = new WeakReference<Mod>(mod);
         }
 
-        public string Name => wrapped?.Name ?? "";
+        public Mod Mod
+        {
+            get
+            {
+                Mod mod = null;
+                wrapped?.TryGetTarget(out mod);
+                return mod;
+            }
+        }
 
-        public Assembly Code => wrapped?.Code;
-        public string DisplayName => wrapped.DisplayName ?? "";
-        public Version Version => wrapped?.Version;
+        public string Name => Mod?.Name ?? "";
+
+        public Assembly Code => Mod?.Code;
+        public string DisplayName => Mod.DisplayName ?? "";
+        public Version Version => Mod?.Version;
     }
 }

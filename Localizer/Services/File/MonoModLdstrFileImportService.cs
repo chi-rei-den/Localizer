@@ -176,6 +176,7 @@ namespace Localizer.Services.File
 
         public void Dispose()
         {
+            modifications = null;
         }
     }
 }

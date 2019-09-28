@@ -34,16 +34,6 @@ namespace LocalizerWPF.Model
             set => Files = value;
         }
 
-        public bool? NullableEnabled
-        {
-            get => Enabled;
-            set
-            {
-                MessageBox.Show("aj");
-                Enabled = value ?? true;
-            }
-        }
-
         public bool Exported { get; set; }
         [JsonProperty] public string Name { get; set; } = "";
         [JsonProperty] public string Author { get; set; } = "";
@@ -57,7 +47,7 @@ namespace LocalizerWPF.Model
 
         public int Count => Files.Sum(f => f.GetKeys().Count());
 
-        public bool Enabled { get; set; }
+        public bool Enabled { get; set; } = true;
 
         public IMod Mod { get; set; }
 

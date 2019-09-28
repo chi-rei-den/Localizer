@@ -1,7 +1,10 @@
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
+using System.Windows;
+using System.Windows.Threading;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using Localizer;
@@ -42,13 +45,17 @@ namespace LocalizerWPF.ViewModel
         private IPackage _selectedPackage;
         private ObservableCollection<IPackage> _packages;
 
+        private List<IPackage> downloading;
+
         public BrowserViewModel()
         {
             packageBrowserService = Localizer.Localizer.Kernel.Get<IPackageBrowserService>();
             downloadManager = Localizer.Localizer.Kernel.Get<IDownloadManagerService>();
             
             RefreshCommand = new RelayCommand(Refresh);
-            DownloadCommand = new RelayCommand<IPackage>(Download);
+            DownloadCommand = new RelayCommand<IPackage>(Download, CanDownload);
+            
+            downloading = new List<IPackage>();
         }
 
         private void Refresh()
@@ -74,14 +81,32 @@ namespace LocalizerWPF.ViewModel
 
         private void Download(IPackage pack)
         {
-            Utils.LogDebug($"Requesting {pack.Name} download");
-            var url = packageBrowserService.GetDownloadLinkOf(pack);
-            
-            var path = Utils.EscapePath(Path.Combine(Localizer.Localizer.DownloadPackageDirPath, pack.Name + pack.Author + ".locpack"));
-            
-            downloadManager.Download(url, path);
-            
-            Utils.LogDebug($"{pack.Name} is downloading");
+            Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() =>
+            {
+                try
+                {
+                    Utils.LogDebug($"Requesting {pack.Name} download");
+                    var url = packageBrowserService.GetDownloadLinkOf(pack);
+
+                    var path = Utils.EscapePath(Path.Combine(Localizer.Localizer.DownloadPackageDirPath,
+                                                             pack.Name + pack.Author + ".locpack"));
+
+                    downloading.Add(pack);
+                    downloadManager.Download(url, path);
+                    downloading.Remove(pack);
+                    Utils.LogDebug($"{pack.Name} is downloaded");
+                }
+                catch (Exception e)
+                {
+                    Utils.LogError(e);
+                    MessageBox.Show(e.ToString());
+                }
+            }));
+        }
+
+        private bool CanDownload(IPackage pack)
+        {
+            return !downloading.Contains(pack);
         }
     }
 }

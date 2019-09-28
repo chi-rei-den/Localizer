@@ -31,6 +31,7 @@ namespace ModBrowserMirror
         protected override void OnDispose()
         {
             HarmonyInstance.UnpatchAll("ModBrowserMirror");
+            HarmonyInstance = null;
         }
     }
 }

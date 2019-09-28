@@ -4,9 +4,11 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Media;
 using GalaSoft.MvvmLight.Ioc;
+using Localizer.DataModel;
 using LocalizerWPF.Model;
 using LocalizerWPF.ViewModel;
 using MahApps.Metro.Controls;
+using Microsoft.Practices.ServiceLocation;
 
 namespace LocalizerWPF
 {
@@ -38,7 +40,9 @@ namespace LocalizerWPF
             try
             {
                 var toggle = sender as ToggleSwitch;
-                (toggle.Tag as Package).Enabled = toggle.IsChecked ?? true;
+                Localizer.Utils.LogDebug(toggle);
+                Localizer.Utils.LogDebug(toggle.Tag);
+                (toggle.Tag as IPackage).Enabled = toggle.IsChecked ?? true;
                 SimpleIoc.Default.GetInstance<ManagerViewModel>().SaveStateCommand.Execute(null);
             }
             catch (Exception ex)
@@ -49,7 +53,7 @@ namespace LocalizerWPF
 
         private void OnSourceUpdated(object sender, DataTransferEventArgs e)
         {
-            SimpleIoc.Default.GetInstance<ManagerViewModel>().SaveStateCommand.Execute(null);
+            ServiceLocator.Current.GetInstance<ManagerViewModel>().SaveStateCommand.Execute(null);
         }
     }
 }

@@ -156,6 +156,7 @@ namespace Localizer.Services.File
 
         public void Dispose()
         {
+            entries = null;
             harmony.UnpatchAll("LdstrFileImport");
         }
     }

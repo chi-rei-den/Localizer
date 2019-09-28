@@ -8,7 +8,7 @@ namespace Localizer.Services.Network
     {
         public void Download(string url, string path)
         {
-            new WebClient().DownloadFileAsync(new Uri(url), path);
+            new WebClient().DownloadFile(new Uri(url), path);
         }
 
         public void Dispose()

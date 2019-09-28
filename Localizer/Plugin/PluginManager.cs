@@ -42,8 +42,17 @@ namespace Localizer
         {
             foreach (var p in Plugins)
             {
-                p.Dispose();
+                try
+                {
+                    p.Dispose();
+                }
+                catch (Exception e)
+                {
+                    Utils.LogError($"Error occured when unloading {p.GetType()}: {e}");
+                }
             }
+
+            Plugins = null;
         }
 
         private static void LoadInternalPlugins()
@@ -94,7 +103,7 @@ namespace Localizer
 
             return null;
 #else
-            return Localizer.Instance.GetFileBytes($"{InternalPluginDirPath}{fileName}");
+            return Localizer.Instance?.GetFileBytes($"{InternalPluginDirPath}{fileName}");
 #endif
         }
 

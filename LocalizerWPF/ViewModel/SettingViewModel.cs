@@ -48,7 +48,7 @@ namespace LocalizerWPF.ViewModel
         
         public string[] ThemeBases { get; set; } = new[] {"Light", "Dark"};
 
-        private static string configPath = "./Localizer/UIConfig.json";
+        private string configPath = "./Localizer/UIConfig.json";
         private string _selectedLanguage;
 
         public SettingViewModel()

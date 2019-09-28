@@ -1,40 +1,53 @@
-﻿using System.Threading;
+﻿using System;
+using System.Linq;
+using System.Reflection;
+using System.Threading;
 using System.Windows;
 using Localizer;
+using LocalizerWPF.ViewModel;
+using log4net;
+using log4net.Core;
+using MahApps.Metro.Controls;
 using Terraria;
+using Terraria.GameContent.UI.States;
+using Terraria.ModLoader;
 using PlayerInput = Terraria.GameInput.PlayerInput;
+using Utils = Localizer.Utils;
 
 namespace LocalizerWPF
 {
     public class WPFPlugin : Plugin
     {
-        private Thread _thread;
-        private Application app;
-
         public override void Initialize()
         {
             Localizer.Localizer.Kernel.Load(new[] {new WPFModule()});
 
             if (Application.Current == null)
             {
-                _thread = new Thread(() =>
+                var thread = new Thread(() =>
                 {
                     var a = new App();
                     a.InitializeComponent();
-                    app = a;
-                    app.ShutdownMode = ShutdownMode.OnExplicitShutdown;
-                    app.Run();
+                    a.ShutdownMode = ShutdownMode.OnExplicitShutdown;
+                    
+                    a.Run();
                 });
-                _thread.SetApartmentState(ApartmentState.STA);
-                _thread.IsBackground = true;
+                thread.SetApartmentState(ApartmentState.STA);
+                thread.IsBackground = true;
 
-                _thread.Start();
+                thread.Start();
             }
             else
             {
-                app = Application.Current;
+                var app = Application.Current;
                 app.Dispatcher.Invoke(() =>
                 {
+                    var locator = app.TryFindResource("Locator");
+                    if (locator != null)
+                    {
+                        app.Resources.Remove("Locator");
+                    }
+                    app.Resources.Add("Locator", new ViewModelLocator());
                     app.MainWindow = new MainWindow();
                     if (Localizer.Localizer.Config.ShowUI)
                     {
@@ -47,11 +60,13 @@ namespace LocalizerWPF
 
         protected override void OnDispose()
         {
-            app.Dispatcher.Invoke(() =>
+            var app = Application.Current;
+            app?.Dispatcher.Invoke(() =>
             {
                 app.MainWindow?.Close();
-                Localizer.Localizer.Log.Info("Window closed.");
             });
+            app?.Dispatcher.Thread.Join(1000);
+            
         }
     }
 }

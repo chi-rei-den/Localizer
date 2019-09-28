@@ -18,11 +18,11 @@ namespace LocalizerWPF.ViewModel
 {
     public class ManagerViewModel : ViewModelBase
     {
-        private readonly IFileLoadService fileLoadService;
-        private readonly IPackageImportService packageImportService;
-        private readonly IPackageManageService packageManageService;
-        private readonly IPackageLoadService<Package> packedPackageLoadServiceService;
-        private readonly IPackageLoadService<Package> sourcePackageLoadServiceService;
+        private IFileLoadService fileLoadService;
+        private IPackageImportService packageImportService;
+        private IPackageManageService packageManageService;
+        private IPackageLoadService<Package> packedPackageLoadServiceService;
+        private IPackageLoadService<Package> sourcePackageLoadServiceService;
 
         private bool loading = false;
         private bool importing = false;
@@ -47,7 +47,6 @@ namespace LocalizerWPF.ViewModel
             ReloadCommand = new RelayCommand(Reload, () => !loading && !importing);
             SaveStateCommand = new RelayCommand(SaveState, () => !loading && !importing);
             ImportAllCommand = new RelayCommand(ImportAll, () => !loading && !importing);
-            RevertCommand = new RelayCommand(Revert);
             
             Application.Current.Dispatcher.InvokeAsync(() =>
             {
@@ -61,7 +60,7 @@ namespace LocalizerWPF.ViewModel
 
         public ObservableCollection<IPackageGroup> PackageGroups
         {
-            get => packageManageService.PackageGroups as ObservableCollection<IPackageGroup>;
+            get => packageManageService?.PackageGroups as ObservableCollection<IPackageGroup>;
             set => packageManageService.PackageGroups = value;
         }
 
@@ -70,8 +69,6 @@ namespace LocalizerWPF.ViewModel
         public RelayCommand SaveStateCommand { get; }
 
         public RelayCommand ImportAllCommand { get; }
-
-        public RelayCommand RevertCommand { get; }
 
         private void ImportAll()
         {
@@ -157,11 +154,6 @@ namespace LocalizerWPF.ViewModel
         private void SaveState()
         {
             packageManageService.SaveState();
-        }
-
-        private void Revert()
-        {
-            Utils.LogDebug("Translation Reverted");
         }
     }
 }

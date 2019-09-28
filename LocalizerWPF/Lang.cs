@@ -40,5 +40,11 @@ namespace LocalizerWPF
                 return key;
             return CurrentLangDict[key].ToString();
         }
+
+        public static void Dispose()
+        {
+            Languages = null;
+            CurrentLangDict = null;
+        }
     }
 }

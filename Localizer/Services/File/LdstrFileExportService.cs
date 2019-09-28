@@ -13,7 +13,7 @@ namespace Localizer.Services.File
 {
     public sealed class LdstrFileExportService : IFileExportService
     {
-        private static readonly List<MethodBase> _blackList1 = new List<MethodBase>
+        private static List<MethodBase> _blackList1 = new List<MethodBase>
         {
             GetMethodBase<ModTranslation>(
                 "System.Void Terraria.ModLoader.ModTranslation::SetDefault(System.String)"),
@@ -113,7 +113,7 @@ namespace Localizer.Services.File
                 "System.Void Terraria.ModLoader.ModRecipe::AddTile(Terraria.ModLoader.Mod,System.String)")
         };
 
-        private static readonly List<MethodBase> _blackList2 = new List<MethodBase>
+        private static List<MethodBase> _blackList2 = new List<MethodBase>
         {
             GetMethodBase<ModRecipe>(
                 "System.Void Terraria.ModLoader.ModRecipe::AddIngredient(Terraria.ModLoader.Mod,System.String,System.Int32)")
@@ -231,6 +231,8 @@ namespace Localizer.Services.File
 
         public void Dispose()
         {
+            _blackList1 = null;
+            _blackList2 = null;
         }
     }
 }

@@ -21,15 +21,15 @@ namespace LocalizerWPF.ViewModel
 {
     public class MakeViewModel : ViewModelBase
     {
-        private readonly IFileLoadService fileLoadService;
-        private readonly IFileSaveService fileSaveService;
-        private readonly IPackageExportService packageExportService;
+        private IFileLoadService fileLoadService;
+        private IFileSaveService fileSaveService;
+        private IPackageExportService packageExportService;
 
         private IPackageManageService packageManageService;
-        private readonly IPackagePackService packagePackService;
-        private readonly IPackageSaveService packageSaveService;
-        private readonly IPackageUpdateService packageUpdateService;
-        private readonly IPackageLoadService<Package> sourcePackageLoadServiceService;
+        private IPackagePackService packagePackService;
+        private IPackageSaveService packageSaveService;
+        private IPackageUpdateService packageUpdateService;
+        private IPackageLoadService<Package> sourcePackageLoadServiceService;
 
         public ObservableCollection<IMod> Mods
         {
