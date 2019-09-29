@@ -22,12 +22,12 @@ namespace Localizer.Services
 
         public void Remove(object content)
         {
-            System.IO.File.WriteAllText(path, $"[Content Removed]: {content} \r\n");
+            System.IO.File.AppendAllText(path, $"[Content Removed]: {content} \r\n");
         }
 
         public void Change(object content)
         {
-            System.IO.File.WriteAllText(path, $"[Content Changed]: {content} \r\n");
+            System.IO.File.AppendAllText(path, $"[Content Changed]: {content} \r\n");
         }
 
         public void Dispose()

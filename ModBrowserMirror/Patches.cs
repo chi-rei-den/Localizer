@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -10,23 +11,59 @@ namespace ModBrowserMirror
 {	
     public class ReplaceURLs
     {
+        private static string populateModBrowserMethodName;
+        private static string fromJsonMethodName = "FromJson";
+        private static string onActivateMethodName;
+
+        private const BindingFlags bindingFlags =
+            BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Public | BindingFlags.Static;
+        
         public static void Patch()
         {
-            Utils.LogInfo("Patching ModBrowser");
-            var original = typeof(Mod).Module.GetType("Terraria.ModLoader.UI.ModBrowser.UIModBrowser").GetMethod("<PopulateModBrowser>b__70_0", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Public | BindingFlags.Static);
-            var transpiler = typeof(ReplaceURLs).GetMethod("PopulateModBrowserTranspiler", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Public | BindingFlags.Static);
+            var tmlVersion = ModLoader.version;
+            Utils.LogInfo($"Patching ModBrowser, tML version: {tmlVersion}");
 
-            Plugin.HarmonyInstance.Patch(original, null, null, new HarmonyMethod(transpiler));
+            if (tmlVersion.Equals(new Version(0, 11, 4)))
+            {
+                populateModBrowserMethodName = "<PopulateModBrowser>b__71_0";
+                onActivateMethodName = "<OnActivate>b__26_0";
+            }
+            else if(tmlVersion.Equals(new Version(0, 11, 3)))
+            {
+                populateModBrowserMethodName = "<PopulateModBrowser>b__70_0";
+                onActivateMethodName = "<OnActivate>b__25_0";
+            }
+            else
+            {
+                return;
+            }
+            
+            var populateModBrowser = typeof(Mod).Module
+                                      .GetType("Terraria.ModLoader.UI.ModBrowser.UIModBrowser")
+                                      .GetMethod(populateModBrowserMethodName, bindingFlags);
+            var populateModBrowserTranspiler = typeof(ReplaceURLs).GetMethod(nameof(PopulateModBrowserTranspiler), bindingFlags);
 
-            var original1 = typeof(Mod).Module.GetType("Terraria.ModLoader.UI.ModBrowser.UIModDownloadItem").GetMethod("FromJson", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Public | BindingFlags.Static);
-            var transpiler1 = typeof(ReplaceURLs).GetMethod("FromJSONTranspiler", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Public | BindingFlags.Static);
+            Plugin.HarmonyInstance.Patch(populateModBrowser, null, null, new HarmonyMethod(populateModBrowserTranspiler));
 
-            Plugin.HarmonyInstance.Patch(original1, null, null, new HarmonyMethod(transpiler1));
+            var fromJson = typeof(Mod).Module
+                                       .GetType("Terraria.ModLoader.UI.ModBrowser.UIModDownloadItem")
+                                       .GetMethod(fromJsonMethodName, bindingFlags);
+            var fromJsonTranspiler = typeof(ReplaceURLs).GetMethod(nameof(FromJSONTranspiler), bindingFlags);
 
-            var original2 = typeof(Mod).Module.GetType("Terraria.ModLoader.UI.UIModInfo").GetMethod("<OnActivate>b__25_0", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Public | BindingFlags.Static);
-            var transpiler2 = typeof(ReplaceURLs).GetMethod("OnActivateTranspiler", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Public | BindingFlags.Static);
+            Plugin.HarmonyInstance.Patch(fromJson, null, null, new HarmonyMethod(fromJsonTranspiler));
 
-            Plugin.HarmonyInstance.Patch(original2, null, null, new HarmonyMethod(transpiler2));
+            var onActivate = typeof(Mod).Module
+                                       .GetType("Terraria.ModLoader.UI.UIModInfo")
+                                       .GetMethod(onActivateMethodName, bindingFlags);
+            var onActivateTranspiler = typeof(ReplaceURLs).GetMethod(nameof(OnActivateTranspiler), bindingFlags);
+            Plugin.HarmonyInstance.Patch(onActivate, null, null, new HarmonyMethod(onActivateTranspiler));
+            
+            var uiModDownloadItemCtor = typeof(Mod).Module
+                                        .GetType("Terraria.ModLoader.UI.ModBrowser.UIModDownloadItem")
+                                        .GetConstructors(bindingFlags)[0];
+            var removeIconTranspiler = typeof(ReplaceURLs).GetMethod(nameof(RemoveIconTranspiler), bindingFlags);
+            Plugin.HarmonyInstance.Patch(uiModDownloadItemCtor, null, null, new HarmonyMethod(removeIconTranspiler));
+            
             Utils.LogInfo("ModBrowser Patched");
         }
         
@@ -74,6 +111,19 @@ namespace ModBrowserMirror
             return result;
         }
         
+        static IEnumerable<CodeInstruction> RemoveIconTranspiler(IEnumerable<CodeInstruction> instructions)
+        {
+            var result = instructions.ToList();
+            ReplaceLdstr("http://javid.ddns.net/tModLoader/download.php?Down=mods/", "https://trbbs.cc/trmod/", result);
+            var ins = result.FirstOrDefault(i => i?.operand?.ToString()?.Contains("_modIconUrl") ?? false);
+            if (ins != null)
+            {
+                var index = result.IndexOf(ins) - 1;
+                result[index] = new CodeInstruction(OpCodes.Ldnull);
+            }
+
+            return result;
+        }
         private static void ReplaceLdstr(string o, string n, IEnumerable<CodeInstruction> il)
         {
             var ins = il.FirstOrDefault(i => i?.operand?.ToString() == o);
