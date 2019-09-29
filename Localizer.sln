@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Blend for Visual Studio 15
-VisualStudioVersion = 15.0.28307.421
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29324.140
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Localizer", "Localizer\Localizer.csproj", "{95D54B28-B67B-4248-B83A-B5E5426C3806}"
 EndProject
@@ -47,8 +47,10 @@ Global
 		{019C1A68-7B2C-400C-BCAE-FC9EF658A3BC}.Release|Any CPU.ActiveCfg = Release|x86
 		{019C1A68-7B2C-400C-BCAE-FC9EF658A3BC}.Release|x86.ActiveCfg = Release|x86
 		{019C1A68-7B2C-400C-BCAE-FC9EF658A3BC}.Release|x86.Build.0 = Release|x86
+		{4447A29E-2E0A-48DA-AE34-FBF2BD08FF31}.Debug|Any CPU.ActiveCfg = Debug|x86
 		{4447A29E-2E0A-48DA-AE34-FBF2BD08FF31}.Debug|x86.ActiveCfg = Release|x86
 		{4447A29E-2E0A-48DA-AE34-FBF2BD08FF31}.Debug|x86.Build.0 = Release|x86
+		{4447A29E-2E0A-48DA-AE34-FBF2BD08FF31}.Release|Any CPU.ActiveCfg = Release|x86
 		{4447A29E-2E0A-48DA-AE34-FBF2BD08FF31}.Release|x86.ActiveCfg = Release|x86
 		{4447A29E-2E0A-48DA-AE34-FBF2BD08FF31}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
