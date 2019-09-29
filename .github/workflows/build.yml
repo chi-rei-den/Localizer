@@ -21,7 +21,7 @@ jobs:
     - name: Release build
       run: '"%cd%\VSBuildTools\MSBuild\Current\Bin\MSBuild.exe" /restore Localizer.sln /p:Configuration=Release /p:Platform=x86'
     - name: Packaging
-      run: "\".\\References\\Terraria\" -build \".\\Localizer\" -unsafe"
+      run: '".\\build-mod-release.bat"'
     - name: Clean artifact
       run: |
         mkdir .\Artifact\Artifact\

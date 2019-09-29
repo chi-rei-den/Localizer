@@ -1,1 +1,0 @@
-".\References\Terraria" -build ".\Localizer" -unsafe
