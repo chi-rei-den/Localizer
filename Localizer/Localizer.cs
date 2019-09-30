@@ -3,10 +3,8 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using Localizer.Modules;
-using Localizer.Services;
 using log4net;
 using MonoMod.RuntimeDetour.HookGen;
-using Ninject;
 using Ninject.Modules;
 using Terraria.Localization;
 using Terraria.ModLoader;
@@ -39,7 +37,7 @@ namespace Localizer
         {
             Log = Logger;
             Instance = this;
-            
+
             PluginManager.Init();
 
             SavePath = "./Localizer/";
@@ -58,7 +56,7 @@ namespace Localizer
             {
                 new DefaultPackageModule(), new DefaultFileExportModule(),
                 new DefaultFileUpdateModule(), new DefaultFileImportModule(),
-                new DefaultNetworkModule(), 
+                new DefaultNetworkModule(),
             });
         }
 
@@ -92,7 +90,7 @@ namespace Localizer
             {
                 Log = null;
             }
-            
+
             base.Unload();
         }
 
@@ -131,7 +129,7 @@ namespace Localizer
         {
             ModContent.RefreshModLanguage(CultureInfoToGameCulture(lang));
         }
-        
+
         public static void RefreshLanguages()
         {
             ModContent.RefreshModLanguage(LanguageManager.Instance.ActiveCulture);

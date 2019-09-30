@@ -23,15 +23,17 @@ namespace Localizer.Services.File
 
             foreach (var pair in entryDict)
             {
-                if(!translations.ContainsKey(pair.Key))
+                if (!translations.ContainsKey(pair.Key))
+                {
                     continue;
-                
+                }
+
                 var translation = translations[pair.Key];
                 translation?.Import(pair.Value, LanguageManager.Instance.ActiveCulture.CultureInfo);
                 translations[pair.Key] = translation;
             }
-            
-            
+
+
         }
 
         public IFile Merge(IFile main, IFile addition)
@@ -45,8 +47,10 @@ namespace Localizer.Services.File
             var mainFile = main as CustomModTranslationFile;
             var additionFile = addition as CustomModTranslationFile;
 
-            var result = new CustomModTranslationFile();
-            result.Translations = new Dictionary<string, BaseEntry>();
+            var result = new CustomModTranslationFile
+            {
+                Translations = new Dictionary<string, BaseEntry>()
+            };
             foreach (var pair in additionFile.Translations)
             {
                 if (mainFile.Translations.ContainsKey(pair.Key))
@@ -64,7 +68,7 @@ namespace Localizer.Services.File
 
         public void Reset()
         {
-            
+
             return;
         }
 

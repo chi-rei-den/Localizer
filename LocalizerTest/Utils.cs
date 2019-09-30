@@ -1,5 +1,4 @@
 using FluentAssertions;
-using Localizer.DataModel;
 using Localizer.DataModel.Default;
 using Xunit;
 using ModUtils = Localizer.Utils;

@@ -23,9 +23,9 @@ namespace LocalizerWPF.ViewModel
         public MainViewModel()
         {
             var setting = SimpleIoc.Default.GetInstance<SettingViewModel>();
-            
+
             setting.LoadConfig();
-            
+
             Lang.SwitchLang(setting.Config.Language);
         }
     }

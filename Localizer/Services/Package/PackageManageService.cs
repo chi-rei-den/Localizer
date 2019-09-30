@@ -28,13 +28,13 @@ namespace Localizer.Services.Package
                 PackageGroups.Add(new PackageGroup
                 {
                     Mod = package.Mod,
-                    Packages = new List<IPackage> {package}
+                    Packages = new List<IPackage> { package }
                 });
             }
             else
             {
                 PackageGroups.FirstOrDefault(
-                    pg => pg.Mod.Name == package.Mod.Name && 
+                    pg => pg.Mod.Name == package.Mod.Name &&
                           pg.Packages.All(p => p.Name != package.Name))?.Packages.Add(package);
             }
         }

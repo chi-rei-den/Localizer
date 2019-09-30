@@ -23,9 +23,10 @@ namespace Localizer.Services.File
                 return;
             }
 
-            var file = new CustomModTranslationFile();
-
-            file.Translations = new Dictionary<string, BaseEntry>();
+            var file = new CustomModTranslationFile
+            {
+                Translations = new Dictionary<string, BaseEntry>()
+            };
 
             foreach (var translation in translations)
             {

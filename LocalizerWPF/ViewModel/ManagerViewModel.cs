@@ -1,7 +1,6 @@
 using System;
 using System.Collections.ObjectModel;
 using System.IO;
-using System.Threading.Tasks;
 using System.Windows;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
@@ -12,7 +11,6 @@ using Localizer.Services.File;
 using Localizer.Services.Package;
 using LocalizerWPF.Model;
 using Ninject;
-using Terraria.Localization;
 
 namespace LocalizerWPF.ViewModel
 {
@@ -47,7 +45,7 @@ namespace LocalizerWPF.ViewModel
             ReloadCommand = new RelayCommand(Reload, () => !loading && !importing);
             SaveStateCommand = new RelayCommand(SaveState, () => !loading && !importing);
             ImportAllCommand = new RelayCommand(ImportAll, () => !loading && !importing);
-            
+
             Application.Current.Dispatcher.InvokeAsync(() =>
             {
                 LoadPackages();
@@ -121,16 +119,22 @@ namespace LocalizerWPF.ViewModel
                 foreach (var dir in new DirectoryInfo(Localizer.Localizer.SourcePackageDirPath).GetDirectories())
                 {
                     var pack = sourcePackageLoadServiceService.Load(dir.FullName, fileLoadService);
-                    if(pack == null)
+                    if (pack == null)
+                    {
                         continue;
+                    }
+
                     packageManageService.AddPackage(pack);
                 }
 
                 foreach (var file in new DirectoryInfo(Localizer.Localizer.DownloadPackageDirPath).GetFiles())
                 {
                     var pack = packedPackageLoadServiceService.Load(file.FullName, fileLoadService);
-                    if(pack == null)
+                    if (pack == null)
+                    {
                         continue;
+                    }
+
                     packageManageService.AddPackage(pack);
                 }
 

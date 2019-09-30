@@ -18,14 +18,14 @@ namespace Localizer.Services.Package
                 packageGroups.Add(new PackageGroup
                 {
                     Mod = package.Mod,
-                    Packages = new List<IPackage> {package}
+                    Packages = new List<IPackage> { package }
                 });
             }
             else
             {
                 packageGroups.FirstOrDefault(pg => pg.Mod == package.Mod)?.Packages.Add(package);
             }
-            
+
             Utils.LogDebug($"Queued [{package.Name}]");
         }
 

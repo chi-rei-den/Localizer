@@ -1,13 +1,9 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Harmony;
 using Localizer.DataModel;
 using Localizer.DataModel.Default;
-using MonoMod.Cil;
-using MonoMod.RuntimeDetour.HookGen;
-using MonoMod.Utils;
 
 namespace Localizer.Services.File
 {
@@ -16,7 +12,7 @@ namespace Localizer.Services.File
         private HarmonyInstance harmony;
 
         private static Dictionary<MethodBase, LdstrEntry> entries;
-        
+
         public HarmonyLdstrFileImportService()
         {
             harmony = HarmonyInstance.Create("LdstrFileImport");
@@ -30,17 +26,17 @@ namespace Localizer.Services.File
             }
 
             entries = new Dictionary<MethodBase, LdstrEntry>();
-            
+
             var module = mod.Code.ManifestModule;
             var entryDict = (file as LdstrFile).LdstrEntries;
 
             foreach (var entryPair in entryDict)
             {
-                if(!HaveTranslation(entryPair.Value))
+                if (!HaveTranslation(entryPair.Value))
                 {
                     continue;
                 }
-                
+
                 var method = module.FindMethod(entryPair.Key);
                 if (method == null)
                 {
@@ -48,7 +44,7 @@ namespace Localizer.Services.File
                 }
 
                 entries.Add(method, entryPair.Value);
-                
+
                 var transpiler = typeof(HarmonyLdstrFileImportService).GetMethod("Transpile", BindingFlags.NonPublic | BindingFlags.Static);
 
                 harmony.Patch(method, null, null, new HarmonyMethod(transpiler));
@@ -65,8 +61,10 @@ namespace Localizer.Services.File
             var mainFile = main as LdstrFile;
             var additionFile = addition as LdstrFile;
 
-            var result = new LdstrFile();
-            result.LdstrEntries = new Dictionary<string, LdstrEntry>();
+            var result = new LdstrFile
+            {
+                LdstrEntries = new Dictionary<string, LdstrEntry>()
+            };
             foreach (var pair in additionFile.LdstrEntries)
             {
                 if (mainFile.LdstrEntries.ContainsKey(pair.Key))
@@ -88,7 +86,7 @@ namespace Localizer.Services.File
         }
         public LdstrEntry Merge(LdstrEntry main, LdstrEntry addition)
         {
-            var result = new LdstrEntry {Instructions = new List<BaseEntry>()};
+            var result = new LdstrEntry { Instructions = new List<BaseEntry>() };
 
             var mainE = main;
             var addE = addition;
@@ -127,13 +125,15 @@ namespace Localizer.Services.File
 
         private static IEnumerable<CodeInstruction> Transpile(IEnumerable<CodeInstruction> instructions, MethodBase original)
         {
-            if(!entries.ContainsKey(original) || instructions == null || instructions.Count() == 0)
+            if (!entries.ContainsKey(original) || instructions == null || instructions.Count() == 0)
+            {
                 return instructions;
+            }
 
             var result = instructions.ToList();
-            
+
             var entry = entries[original];
-            
+
             foreach (var translation in entry.Instructions)
             {
                 ReplaceLdstr(translation.Origin, translation.Translation, result);
@@ -141,12 +141,14 @@ namespace Localizer.Services.File
 
             return result;
         }
-        
+
         private static void ReplaceLdstr(string o, string n, IEnumerable<CodeInstruction> il)
         {
-            if(string.IsNullOrEmpty(n))
+            if (string.IsNullOrEmpty(n))
+            {
                 return;
-            
+            }
+
             var ins = il.FirstOrDefault(i => i?.operand?.ToString() == o);
             if (ins != null)
             {

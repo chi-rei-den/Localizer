@@ -5,7 +5,6 @@ using System.Windows.Data;
 using System.Windows.Media;
 using GalaSoft.MvvmLight.Ioc;
 using Localizer.DataModel;
-using LocalizerWPF.Model;
 using LocalizerWPF.ViewModel;
 using MahApps.Metro.Controls;
 using Microsoft.Practices.ServiceLocation;
