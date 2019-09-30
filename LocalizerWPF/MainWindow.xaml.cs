@@ -13,7 +13,7 @@ namespace LocalizerWPF
             InitializeComponent();
             Closing += OnClosing;
         }
-        
+
         public void OnClosing(object sender, CancelEventArgs args)
         {
             ViewModelLocator.Cleanup();

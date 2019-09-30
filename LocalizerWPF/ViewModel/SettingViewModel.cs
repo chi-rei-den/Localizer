@@ -1,10 +1,8 @@
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using GalaSoft.MvvmLight;
 using Localizer;
-using LocalizerWPF.Model;
 
 using Config = LocalizerWPF.Model.Configuration;
 using Configuration = Localizer.Configuration;
@@ -14,7 +12,7 @@ namespace LocalizerWPF.ViewModel
     public class SettingViewModel : ViewModelBase
     {
         public Config Config { get; set; }
-        
+
         public Configuration LocalizerConfig
         {
             get => Localizer.Localizer.Config;
@@ -23,7 +21,7 @@ namespace LocalizerWPF.ViewModel
                 Localizer.Localizer.Config = value;
                 RaisePropertyChanged("LocalizerConfig");
                 Localizer.Localizer.SaveConfig();
-            } 
+            }
         }
 
         public string SelectedLanguage
@@ -39,14 +37,14 @@ namespace LocalizerWPF.ViewModel
             }
         }
 
-        public string[] Languages { get; set; } = new[] {"English", "中文(简体)"};
+        public string[] Languages { get; set; } = new[] { "English", "中文(简体)" };
         public Dictionary<string, string> LanguageMappings { get; set; } = new Dictionary<string, string>()
         {
             {"English", "en"},
             {"中文(简体)", "zh"},
         };
-        
-        public string[] ThemeBases { get; set; } = new[] {"Light", "Dark"};
+
+        public string[] ThemeBases { get; set; } = new[] { "Light", "Dark" };
 
         private string configPath = "./Localizer/UIConfig.json";
         private string _selectedLanguage;
@@ -56,7 +54,7 @@ namespace LocalizerWPF.ViewModel
             LoadConfig();
             SelectedLanguage = LanguageMappings.Keys.FirstOrDefault(k => LanguageMappings[k] == Config.Language);
         }
-        
+
         public void LoadConfig()
         {
             if (File.Exists(configPath))

@@ -128,9 +128,10 @@ namespace Localizer.Services.File
 
             var asm = package.Mod.Code;
 
-            var file = new LdstrFile();
-
-            file.LdstrEntries = new Dictionary<string, LdstrEntry>();
+            var file = new LdstrFile
+            {
+                LdstrEntries = new Dictionary<string, LdstrEntry>()
+            };
 
             foreach (var type in asm.ManifestModule.GetTypes())
             {
@@ -178,7 +179,7 @@ namespace Localizer.Services.File
                 return null;
             }
 
-            var entry = new LdstrEntry {Instructions = new List<BaseEntry>()};
+            var entry = new LdstrEntry { Instructions = new List<BaseEntry>() };
             for (var i = 0; i < instructions.Count; i++)
             {
                 var ins = instructions[i];

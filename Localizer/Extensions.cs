@@ -3,11 +3,9 @@ using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using Localizer.Attributes;
-using Localizer.DataModel;
 using Localizer.DataModel.Default;
 using Mono.Cecil;
 using MonoMod.Utils;
-using Terraria.Localization;
 using Terraria.ModLoader;
 
 namespace Localizer
@@ -84,7 +82,7 @@ namespace Localizer
         {
             try
             {
-                var typeName = findableID.Split(' ')[1].Split(new[] {"::"}, StringSplitOptions.RemoveEmptyEntries)[0];
+                var typeName = findableID.Split(' ')[1].Split(new[] { "::" }, StringSplitOptions.RemoveEmptyEntries)[0];
                 return module.GetType(typeName)?.FindMethod(findableID);
             }
             catch (Exception e)
@@ -98,7 +96,7 @@ namespace Localizer
         {
             try
             {
-                var typeName = findableID.Split(' ')[1].Split(new[] {"::"}, StringSplitOptions.RemoveEmptyEntries)[0];
+                var typeName = findableID.Split(' ')[1].Split(new[] { "::" }, StringSplitOptions.RemoveEmptyEntries)[0];
                 return module.GetType(typeName)?.FindMethod(findableID);
             }
             catch (Exception e)

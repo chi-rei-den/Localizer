@@ -1,4 +1,3 @@
-using Localizer.DataModel;
 using Localizer.DataModel.Default;
 using Localizer.Services.File;
 using Ninject.Modules;

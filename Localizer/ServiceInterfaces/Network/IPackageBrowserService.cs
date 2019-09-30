@@ -7,7 +7,7 @@ namespace Localizer.ServiceInterfaces.Network
     public interface IPackageBrowserService : IService
     {
         ICollection<IPackage> GetList();
-        
+
         int GetPageCount();
 
         ICollection<IPackage> GetListByPage(int i);

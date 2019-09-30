@@ -9,7 +9,7 @@ namespace Localizer.DataModel.Default
 
         public IEntry Clone()
         {
-            var entry = new LdstrEntry {Instructions = new List<BaseEntry>()};
+            var entry = new LdstrEntry { Instructions = new List<BaseEntry>() };
 
             foreach (var ins in Instructions)
             {

@@ -38,9 +38,12 @@ namespace Localizer.Services.Package
 
                     var tmod = ModLoader.Mods.FirstOrDefault(m => m.Name == package.ModName);
                     if (tmod == null)
+                    {
                         return null;
+                    }
+
                     package.Mod = new ModWrapper(tmod);
-                    
+
                     foreach (var fileTypeName in package.FileList)
                     {
                         Utils.LogDebug($"Loading file [{fileTypeName}]");

@@ -232,7 +232,7 @@ namespace Localizer
         {
             return path.Trim(Path.GetInvalidPathChars());
         }
-        
+
         public static List<ILInstruction> GetInstructions(MethodInfo method)
         {
             var dummy = new DynamicMethod("Dummy", typeof(void), new Type[] { });

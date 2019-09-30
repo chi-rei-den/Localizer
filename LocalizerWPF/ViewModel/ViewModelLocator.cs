@@ -12,7 +12,6 @@
   See http://www.galasoft.ch/mvvm
 */
 
-using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Ioc;
 using Microsoft.Practices.ServiceLocation;
 
@@ -43,10 +42,13 @@ namespace LocalizerWPF.ViewModel
             get
             {
                 if (_main == null)
+                {
                     _main = ServiceLocator.Current.GetInstance<MainViewModel>();
+                }
+
                 return _main;
             }
-            set { _main = value; }
+            set => _main = value;
         }
 
         public static SettingViewModel Setting
@@ -54,10 +56,13 @@ namespace LocalizerWPF.ViewModel
             get
             {
                 if (_setting == null)
+                {
                     _setting = ServiceLocator.Current.GetInstance<SettingViewModel>();
+                }
+
                 return _setting;
             }
-            set { _setting = value; }
+            set => _setting = value;
         }
 
         public static ManagerViewModel Manager
@@ -65,10 +70,13 @@ namespace LocalizerWPF.ViewModel
             get
             {
                 if (_manager == null)
+                {
                     _manager = ServiceLocator.Current.GetInstance<ManagerViewModel>();
+                }
+
                 return _manager;
             }
-            set { _manager = value; }
+            set => _manager = value;
         }
 
         public static MakeViewModel Make
@@ -76,10 +84,13 @@ namespace LocalizerWPF.ViewModel
             get
             {
                 if (_make == null)
+                {
                     _make = ServiceLocator.Current.GetInstance<MakeViewModel>();
+                }
+
                 return _make;
             }
-            set { _make = value; }
+            set => _make = value;
         }
 
         public static BrowserViewModel Browser
@@ -87,10 +98,13 @@ namespace LocalizerWPF.ViewModel
             get
             {
                 if (_browser == null)
+                {
                     _browser = ServiceLocator.Current.GetInstance<BrowserViewModel>();
+                }
+
                 return _browser;
             }
-            set { _browser = value; }
+            set => _browser = value;
         }
 
         private static MainViewModel _main;
@@ -104,7 +118,7 @@ namespace LocalizerWPF.ViewModel
         private static BrowserViewModel _browser;
 
         public static void Cleanup()
-        {            
+        {
             _main?.Cleanup();
             _setting?.Cleanup();
             _manager?.Cleanup();

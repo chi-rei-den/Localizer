@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.IO;
 using System.Windows;
 using System.Windows.Threading;
@@ -10,7 +9,6 @@ using GalaSoft.MvvmLight.Command;
 using Localizer;
 using Localizer.DataModel;
 using Localizer.ServiceInterfaces.Network;
-using Localizer.ServiceInterfaces.Package;
 using Ninject;
 
 namespace LocalizerWPF.ViewModel
@@ -51,10 +49,10 @@ namespace LocalizerWPF.ViewModel
         {
             packageBrowserService = Localizer.Localizer.Kernel.Get<IPackageBrowserService>();
             downloadManager = Localizer.Localizer.Kernel.Get<IDownloadManagerService>();
-            
+
             RefreshCommand = new RelayCommand(Refresh);
             DownloadCommand = new RelayCommand<IPackage>(Download, CanDownload);
-            
+
             downloading = new List<IPackage>();
         }
 

@@ -67,7 +67,7 @@ namespace Localizer.Services.File
 
         public void Reset()
         {
-            
+
             return;
         }
 

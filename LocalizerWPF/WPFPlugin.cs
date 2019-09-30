@@ -1,18 +1,7 @@
-﻿using System;
-using System.Linq;
-using System.Reflection;
-using System.Threading;
+﻿using System.Threading;
 using System.Windows;
 using Localizer;
 using LocalizerWPF.ViewModel;
-using log4net;
-using log4net.Core;
-using MahApps.Metro.Controls;
-using Terraria;
-using Terraria.GameContent.UI.States;
-using Terraria.ModLoader;
-using PlayerInput = Terraria.GameInput.PlayerInput;
-using Utils = Localizer.Utils;
 
 namespace LocalizerWPF
 {
@@ -20,7 +9,7 @@ namespace LocalizerWPF
     {
         public override void Initialize()
         {
-            Localizer.Localizer.Kernel.Load(new[] {new WPFModule()});
+            Localizer.Localizer.Kernel.Load(new[] { new WPFModule() });
 
             if (Application.Current == null)
             {
@@ -29,7 +18,7 @@ namespace LocalizerWPF
                     var a = new App();
                     a.InitializeComponent();
                     a.ShutdownMode = ShutdownMode.OnExplicitShutdown;
-                    
+
                     a.Run();
                 });
                 thread.SetApartmentState(ApartmentState.STA);
@@ -66,7 +55,7 @@ namespace LocalizerWPF
                 app.MainWindow?.Close();
             });
             app?.Dispatcher.Thread.Join(1000);
-            
+
         }
     }
 }

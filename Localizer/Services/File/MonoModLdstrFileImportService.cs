@@ -13,7 +13,7 @@ namespace Localizer.Services.File
     public class MonoModLdstrFileImportService : IFileImportService
     {
         private Dictionary<MethodBase, ILContext.Manipulator> modifications;
-        
+
         public MonoModLdstrFileImportService()
         {
             HookEndpointManager.OnModify += RedirectDMD;
@@ -69,7 +69,7 @@ namespace Localizer.Services.File
                         }
                     }
                 });
-                
+
                 if (!modifications.ContainsKey(method))
                 {
                     HookEndpointManager.Modify(method, modification);
@@ -88,8 +88,10 @@ namespace Localizer.Services.File
             var mainFile = main as LdstrFile;
             var additionFile = addition as LdstrFile;
 
-            var result = new LdstrFile();
-            result.LdstrEntries = new Dictionary<string, LdstrEntry>();
+            var result = new LdstrFile
+            {
+                LdstrEntries = new Dictionary<string, LdstrEntry>()
+            };
             foreach (var pair in additionFile.LdstrEntries)
             {
                 if (mainFile.LdstrEntries.ContainsKey(pair.Key))
@@ -125,7 +127,7 @@ namespace Localizer.Services.File
         {
             return typeof(HookEndpointManager).GetMethods(BindingFlags.NonPublic | BindingFlags.Static)
                                               .FirstOrDefault(m => m.Name.Contains("GetEndpoint"))
-                                              ?.Invoke(null, new[] {method});
+                                              ?.Invoke(null, new[] { method });
         }
 
         private void ReplaceDMD(object endPoint, DynamicMethodDefinition dmd)
@@ -137,7 +139,7 @@ namespace Localizer.Services.File
 
         public LdstrEntry Merge(LdstrEntry main, LdstrEntry addition)
         {
-            var result = new LdstrEntry {Instructions = new List<BaseEntry>()};
+            var result = new LdstrEntry { Instructions = new List<BaseEntry>() };
 
             var mainE = main;
             var addE = addition;

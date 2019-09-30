@@ -88,7 +88,7 @@ namespace LocalizerWPF.ViewModel
             sourcePackageLoadServiceService = Localizer.Localizer.Kernel.Get<SourcePackageLoadService<Package>>();
             fileLoadService = Localizer.Localizer.Kernel.Get<IFileLoadService>();
         }
-        
+
         private void Export()
         {
             try
@@ -170,9 +170,11 @@ namespace LocalizerWPF.ViewModel
         {
             try
             {
-                var dialog = new OpenFileDialog();
-                dialog.Title = _("Select-Package-Window-Title");
-                dialog.Filter = _("Select-Package-Window-Filter");
+                var dialog = new OpenFileDialog
+                {
+                    Title = _("Select-Package-Window-Title"),
+                    Filter = _("Select-Package-Window-Filter")
+                };
 
                 if (dialog.ShowDialog() ?? false)
                 {
