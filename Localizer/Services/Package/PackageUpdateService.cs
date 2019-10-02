@@ -23,6 +23,14 @@ namespace Localizer.Services.Package
                 }
             }
 
+            foreach (var file in newPackage.Files)
+            {
+                if (oldPackage.Files.All(f => f.GetType() != file.GetType()))
+                {
+                    oldPackage.AddFile(file);
+                }
+            }
+
             Utils.LogDebug($"Package [{oldPackage.Name}] updated.");
         }
 

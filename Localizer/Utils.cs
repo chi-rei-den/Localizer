@@ -9,6 +9,7 @@ using Harmony.ILCopying;
 using Localizer.Attributes;
 using Localizer.DataModel;
 using Localizer.DataModel.Default;
+using MahApps.Metro.Controls;
 using MonoMod.Utils;
 using Newtonsoft.Json;
 using Terraria.ModLoader;
@@ -237,6 +238,36 @@ namespace Localizer
         {
             var dummy = new DynamicMethod("Dummy", typeof(void), new Type[] { });
             return MethodBodyReader.GetInstructions(dummy.GetILGenerator(), method);
+        }
+
+        public static void SafeWrap(Action action, out Exception ex)
+        {
+            try
+            {
+                ex = null;
+                action();
+            }
+            catch (Exception e)
+            {
+                ex = e;
+                LogError(e);
+            }
+        }
+        
+        public static T SafeWrap<T>(Func<T> func, out Exception ex)
+        {
+            try
+            {
+                ex = null;
+                return func();
+            }
+            catch (Exception e)
+            {
+                ex = e;
+                LogError(e);
+            }
+            
+            return default;
         }
         #endregion
     }

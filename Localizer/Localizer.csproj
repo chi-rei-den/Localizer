@@ -77,6 +77,8 @@
     <Compile Include="Configuration.cs" />
     <Compile Include="DataModel\Default\BaseEntry.cs" />
     <Compile Include="DataModel\Default\BasicNPCFile.cs" />
+    <Compile Include="DataModel\Default\BasicPrefixFile.cs" />
+    <Compile Include="DataModel\Default\BasicProjectileFile.cs" />
     <Compile Include="DataModel\Default\File.cs" />
     <Compile Include="DataModel\Default\ModWrapper.cs" />
     <Compile Include="DataModel\Default\Package.cs" />
@@ -133,6 +135,7 @@
     <Compile Include="Services\File\LdstrFileUpdateService.cs" />
     <Compile Include="Services\IService.cs" />
     <Compile Include="Services\Network\DownloadManagerService.cs" />
+    <Compile Include="Services\Network\GitHubModUpdateService.cs" />
     <Compile Include="Services\Network\PackageBrowserService.cs" />
     <Compile Include="Services\UpdateLogService.cs" />
     <Compile Include="Services\Package\PackageExportService.cs" />

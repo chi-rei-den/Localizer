@@ -26,7 +26,7 @@ namespace Localizer.Services.File
                     var n = newEntries[newEntryKey];
                     if (o.Origin != n.Origin)
                     {
-                        logger.Change($"{newEntryKey}, [Old: \"{o.Origin}\"] => [New: \"{n.Origin}\"]");
+                        logger.Change($"{newEntryKey}\r\n[Old: \"{o.Origin}\"]\r\n => \r\n[New: \"{n.Origin}\"]\r\n");
 
                         o.Origin = n.Origin;
                     }

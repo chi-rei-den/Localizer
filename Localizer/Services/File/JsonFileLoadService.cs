@@ -14,6 +14,8 @@ namespace Localizer.Services.File
             {typeof(BasicBuffFile).Name, typeof(BasicBuffFile)},
             {typeof(CustomModTranslationFile).Name, typeof(CustomModTranslationFile)},
             {typeof(BasicNPCFile).Name, typeof(BasicNPCFile)},
+            {typeof(BasicProjectileFile).Name, typeof(BasicProjectileFile)},
+            {typeof(BasicPrefixFile).Name, typeof(BasicPrefixFile)},
             {typeof(LdstrFile).Name, typeof(LdstrFile)}
         };
 

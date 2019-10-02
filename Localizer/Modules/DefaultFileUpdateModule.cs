@@ -13,6 +13,8 @@ namespace Localizer.Modules
             Bind<IFileUpdateService>().To<BasicFileUpdateService<BasicItemFile>>().InSingletonScope();
             Bind<IFileUpdateService>().To<BasicFileUpdateService<BasicNPCFile>>().InSingletonScope();
             Bind<IFileUpdateService>().To<BasicFileUpdateService<BasicBuffFile>>().InSingletonScope();
+            Bind<IFileUpdateService>().To<BasicFileUpdateService<BasicProjectileFile>>().InSingletonScope();
+            Bind<IFileUpdateService>().To<BasicFileUpdateService<BasicPrefixFile>>().InSingletonScope();
             Bind<IFileUpdateService>().To<CustomModTranslationFileUpdateService>().InSingletonScope();
             Bind<IFileUpdateService>().To<LdstrFileUpdateService>().InSingletonScope();
 
