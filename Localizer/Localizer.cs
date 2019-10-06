@@ -5,6 +5,7 @@ using System.IO;
 using System.Threading.Tasks;
 using Localizer.Modules;
 using Localizer.ServiceInterfaces.Network;
+using Localizer.Services;
 using log4net;
 using Microsoft.Xna.Framework;
 using MonoMod.RuntimeDetour.HookGen;
@@ -13,6 +14,7 @@ using Ninject.Modules;
 using Terraria;
 using Terraria.Localization;
 using Terraria.ModLoader;
+using Terraria.UI;
 
 namespace Localizer
 {
@@ -29,6 +31,10 @@ namespace Localizer
         {
             _gameCultures =
                 typeof(GameCulture).GetFieldDirectly(null, "_legacyCultures") as Dictionary<int, GameCulture>;
+            
+            Kernel = new LocalizerKernel();
+            Kernel.Bind<RefreshLanguageService>().To<RefreshLanguageService>().InSingletonScope();
+            Kernel.Get<RefreshLanguageService>();
         }
 
         public static ILog Log { get; private set; }
@@ -55,8 +61,6 @@ namespace Localizer
             Utils.CreateDirectory(DownloadPackageDirPath);
 
             LoadConfig();
-
-            Kernel = new LocalizerKernel();
             Kernel.Load(new NinjectModule[]
             {
                 new DefaultPackageModule(), new DefaultFileExportModule(),
@@ -148,15 +152,10 @@ namespace Localizer
             var gc = GameCulture.FromName(culture.Name);
             return gc ?? AddGameCulture(culture);
         }
-
-        public static void RefreshLanguages(CultureInfo lang)
-        {
-            ModContent.RefreshModLanguage(CultureInfoToGameCulture(lang));
-        }
-
+        
         public static void RefreshLanguages()
         {
-            ModContent.RefreshModLanguage(LanguageManager.Instance.ActiveCulture);
+            Kernel.Get<RefreshLanguageService>().Refresh();
         }
 
         public static void CloseTmodFile()

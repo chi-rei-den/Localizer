@@ -11,10 +11,8 @@ using Harmony.ILCopying;
 using Localizer.Attributes;
 using Localizer.DataModel;
 using Localizer.DataModel.Default;
-using MahApps.Metro.Controls;
 using MonoMod.Utils;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using Terraria.ModLoader;
 using File = System.IO.File;
 

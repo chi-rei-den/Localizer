@@ -57,6 +57,9 @@
     <Reference Include="MonoMod.Utils, Version=19.5.19.1, Culture=neutral, PublicKeyToken=null">
       <HintPath>$(USERPROFILE)\Documents\My Games\Terraria\ModLoader\references\MonoMod.Utils.dll</HintPath>
     </Reference>
+    <Reference Include="TerrariaHooks, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>$(USERPROFILE)\Documents\My Games\Terraria\ModLoader\references\TerrariaHooks.dll</HintPath>
+    </Reference>
     <Reference Include="mscorlib" />
     <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed">
       <HintPath>$(USERPROFILE)\Documents\My Games\Terraria\ModLoader\references\Newtonsoft.Json.dll</HintPath>
@@ -140,6 +143,7 @@
     <Compile Include="Services\Network\DownloadManagerService.cs" />
     <Compile Include="Services\Network\GitHubModUpdateService.cs" />
     <Compile Include="Services\Network\PackageBrowserService.cs" />
+    <Compile Include="Services\RefreshLanguageService.cs" />
     <Compile Include="Services\UpdateLogService.cs" />
     <Compile Include="Services\Package\PackageExportService.cs" />
     <Compile Include="Services\Package\PackageImportService.cs" />
