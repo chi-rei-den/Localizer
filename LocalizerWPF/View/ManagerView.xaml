@@ -50,12 +50,6 @@
                             <Label Content="{DynamicResource Manager-Button-Import}" />
                         </StackPanel>
                     </Button>
-                    <!-- <Button Command="{Binding RevertCommand}" Style="{StaticResource TransparentButton}"> -->
-                    <!--     <StackPanel Orientation="Horizontal"> -->
-                    <!--         <iconPacks:PackIconMaterial Kind="FileUndo" Style="{StaticResource ButtonIcon}"/> -->
-                    <!--         <Label Content="Revert"/> -->
-                    <!--     </StackPanel> -->
-                    <!-- </Button> -->
                 </StackPanel>
             </Border>
 

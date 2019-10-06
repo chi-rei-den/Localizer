@@ -12,6 +12,12 @@
                 <ResourceDictionary
                     Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.AnimatedTabControl.xaml" />
             </ResourceDictionary.MergedDictionaries>
+            <Style TargetType="{x:Type TextElement }">
+                <Setter Property="FontFamily" Value="Microsoft YaHei UI"/>
+            </Style>
+            <Style TargetType="{x:Type TextBlock }">
+                <Setter Property="FontFamily" Value="Microsoft YaHei UI"/>
+            </Style>
             <vm:ViewModelLocator x:Key="Locator" xmlns:vm="clr-namespace:LocalizerWPF.ViewModel" />
         </ResourceDictionary>
     </Application.Resources>

@@ -32,6 +32,7 @@ namespace LocalizerWPF.ViewModel
 
             SimpleIoc.Default.Register<MainViewModel>();
             SimpleIoc.Default.Register<SettingViewModel>();
+            SimpleIoc.Default.Register<AboutViewModel>();
             SimpleIoc.Default.Register<ManagerViewModel>();
             SimpleIoc.Default.Register<MakeViewModel>();
             SimpleIoc.Default.Register<BrowserViewModel>();
@@ -65,6 +66,20 @@ namespace LocalizerWPF.ViewModel
             set => _setting = value;
         }
 
+        public static AboutViewModel About
+        {
+            get
+            {
+                if (_about == null)
+                {
+                    _about = ServiceLocator.Current.GetInstance<AboutViewModel>();
+                }
+
+                return _about;
+            }
+            set => _about = value;
+        }
+        
         public static ManagerViewModel Manager
         {
             get
@@ -110,6 +125,8 @@ namespace LocalizerWPF.ViewModel
         private static MainViewModel _main;
 
         private static SettingViewModel _setting;
+        
+        private static AboutViewModel _about;
 
         private static ManagerViewModel _manager;
 
