@@ -44,7 +44,9 @@
     
     <!-- Setting View -->
     <system:String x:Key="Setting-Label-Language">Language</system:String>
-    <system:String x:Key="Setting-Label-Auto-Import">Auto Import When Start Up</system:String>
+    <system:String x:Key="Setting-Label-Auto-Import">Auto Import</system:String>
+    
+    <!-- About View -->
     
     <!-- Make View Model -->
     <system:String x:Key="Enter-Package-Name-Placeholder">PleaseEnterPackageName</system:String>

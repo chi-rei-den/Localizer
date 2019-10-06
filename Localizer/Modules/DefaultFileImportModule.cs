@@ -11,6 +11,8 @@ namespace Localizer.Modules
             Bind<IFileImportService>().To<BasicFileImportService<BasicItemFile>>().InSingletonScope();
             Bind<IFileImportService>().To<BasicFileImportService<BasicNPCFile>>().InSingletonScope();
             Bind<IFileImportService>().To<BasicFileImportService<BasicBuffFile>>().InSingletonScope();
+            Bind<IFileImportService>().To<BasicFileImportService<BasicProjectileFile>>().InSingletonScope();
+            Bind<IFileImportService>().To<BasicFileImportService<BasicPrefixFile>>().InSingletonScope();
             Bind<IFileImportService>().To<CustomModTranslationFileImportService>().InSingletonScope();
             Bind<IFileImportService>().To<HarmonyLdstrFileImportService>().InSingletonScope();
         }

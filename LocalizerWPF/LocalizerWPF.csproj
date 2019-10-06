@@ -100,12 +100,16 @@
     <Compile Include="Model\Configuration.cs" />
     <Compile Include="Model\ExportConfig.cs" />
     <Compile Include="Model\Package.cs" />
+    <Compile Include="ViewModel\AboutViewModel.cs" />
     <Compile Include="ViewModel\BrowserViewModel.cs" />
     <Compile Include="ViewModel\MakeViewModel.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />
     <Compile Include="ViewModel\ManagerViewModel.cs" />
     <Compile Include="ViewModel\SettingViewModel.cs" />
     <Compile Include="ViewModel\ViewModelLocator.cs" />
+    <Compile Include="View\AboutView.xaml.cs">
+      <DependentUpon>AboutView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\BrowserView.xaml.cs" />
     <Compile Include="View\MakeView.xaml.cs">
       <DependentUpon>MakeView.xaml</DependentUpon>
@@ -124,6 +128,7 @@
     </Page>
     <Page Include="Resources\Langs\en.xaml" />
     <Page Include="Resources\Langs\zh.xaml" />
+    <Page Include="View\AboutView.xaml" />
     <Page Include="View\BrowserView.xaml" />
     <Page Include="View\MakeView.xaml">
       <SubType>Designer</SubType>

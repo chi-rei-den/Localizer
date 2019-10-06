@@ -57,6 +57,9 @@
     <Reference Include="MonoMod.Utils, Version=19.5.19.1, Culture=neutral, PublicKeyToken=null">
       <HintPath>$(USERPROFILE)\Documents\My Games\Terraria\ModLoader\references\MonoMod.Utils.dll</HintPath>
     </Reference>
+    <Reference Include="TerrariaHooks, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>$(USERPROFILE)\Documents\My Games\Terraria\ModLoader\references\TerrariaHooks.dll</HintPath>
+    </Reference>
     <Reference Include="mscorlib" />
     <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed">
       <HintPath>$(USERPROFILE)\Documents\My Games\Terraria\ModLoader\references\Newtonsoft.Json.dll</HintPath>
@@ -77,11 +80,14 @@
     <Compile Include="Configuration.cs" />
     <Compile Include="DataModel\Default\BaseEntry.cs" />
     <Compile Include="DataModel\Default\BasicNPCFile.cs" />
+    <Compile Include="DataModel\Default\BasicPrefixFile.cs" />
+    <Compile Include="DataModel\Default\BasicProjectileFile.cs" />
     <Compile Include="DataModel\Default\File.cs" />
     <Compile Include="DataModel\Default\ModWrapper.cs" />
     <Compile Include="DataModel\Default\Package.cs" />
     <Compile Include="DataModel\Default\PackageGroup.cs" />
     <Compile Include="DataModel\Default\PackageGroupState.cs" />
+    <Compile Include="DataModel\Default\GitHubUpdateInfo.cs" />
     <Compile Include="DataModel\IExportConfig.cs" />
     <Compile Include="DataModel\Default\BasicBuffFile.cs" />
     <Compile Include="DataModel\Default\CustomModTranslationFile.cs" />
@@ -92,7 +98,9 @@
     <Compile Include="DataModel\IMod.cs" />
     <Compile Include="DataModel\IPackage.cs" />
     <Compile Include="DataModel\IPackageGroup.cs" />
-    <Compile Include="Extensions.cs" />
+    <Compile Include="DataModel\IUpdateInfo.cs" />
+    <Compile Include="Helpers\Extensions.cs" />
+    <Compile Include="Helpers\UI.cs" />
     <Compile Include="LocalizerKernel.cs" />
     <Compile Include="Localizer.cs" />
     <Compile Include="Modules\DefaultFileExportModule.cs" />
@@ -133,7 +141,9 @@
     <Compile Include="Services\File\LdstrFileUpdateService.cs" />
     <Compile Include="Services\IService.cs" />
     <Compile Include="Services\Network\DownloadManagerService.cs" />
+    <Compile Include="Services\Network\GitHubModUpdateService.cs" />
     <Compile Include="Services\Network\PackageBrowserService.cs" />
+    <Compile Include="Services\RefreshLanguageService.cs" />
     <Compile Include="Services\UpdateLogService.cs" />
     <Compile Include="Services\Package\PackageExportService.cs" />
     <Compile Include="Services\Package\PackageImportService.cs" />
@@ -143,7 +153,7 @@
     <Compile Include="Services\Package\PackedPackageLoadService.cs" />
     <Compile Include="Services\Package\SourcePackageLoadService.cs" />
     <Compile Include="Services\Package\ZipPackagePackService.cs" />
-    <Compile Include="Utils.cs" />
+    <Compile Include="Helpers\Utils.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

@@ -9,7 +9,6 @@
                       xmlns:view="clr-namespace:LocalizerWPF.View"
                       mc:Ignorable="d"
                       Title="{DynamicResource AppTitle}" Height="450" Width="800"
-                      ShowMinButton="False"
                       ShowMaxRestoreButton="False"
                       ResizeMode="CanResizeWithGrip"
                       DataContext="{Binding Source={StaticResource Locator}, Path=Main}">
@@ -25,22 +24,15 @@
     </Controls:MetroWindow.RightWindowCommands>
     <Controls:MetroWindow.Flyouts>
         <Controls:FlyoutsControl>
-            <Controls:Flyout x:Name="SettingsFlyout" Position="Right" Width="200">
-                <Controls:Flyout.HeaderTemplate>
-                    <DataTemplate>
-                        <TextBlock Text="{DynamicResource Flyout-Setting}" />
-                    </DataTemplate>
-                </Controls:Flyout.HeaderTemplate>
+            <Controls:Flyout Header="{DynamicResource Flyout-Setting}" x:Name="SettingsFlyout" Position="Right" Width="200">
                 <Controls:Flyout.Content>
                     <view:SettingView x:Name="SettingView" />
                 </Controls:Flyout.Content>
             </Controls:Flyout>
-            <Controls:Flyout x:Name="AboutFlyout" Position="Right" Width="200">
-                <Controls:Flyout.HeaderTemplate>
-                    <DataTemplate>
-                        <TextBlock Text="{DynamicResource Flyout-About}" />
-                    </DataTemplate>
-                </Controls:Flyout.HeaderTemplate>
+            <Controls:Flyout Header="{DynamicResource Flyout-About}" x:Name="AboutFlyout" Position="Right" Width="200">
+                <Controls:Flyout.Content>
+                    <view:AboutView x:Name="AboutView" />
+                </Controls:Flyout.Content>
             </Controls:Flyout>
         </Controls:FlyoutsControl>
     </Controls:MetroWindow.Flyouts>

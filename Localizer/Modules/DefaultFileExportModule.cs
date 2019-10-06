@@ -11,6 +11,8 @@ namespace Localizer.Modules
             Bind<IFileExportService>().To<BasicFileExportService<BasicItemFile>>().InSingletonScope();
             Bind<IFileExportService>().To<BasicFileExportService<BasicNPCFile>>().InSingletonScope();
             Bind<IFileExportService>().To<BasicFileExportService<BasicBuffFile>>().InSingletonScope();
+            Bind<IFileExportService>().To<BasicFileExportService<BasicProjectileFile>>().InSingletonScope();
+            Bind<IFileExportService>().To<BasicFileExportService<BasicPrefixFile>>().InSingletonScope();
             Bind<IFileExportService>().To<CustomModTranslationFileExportService>().InSingletonScope();
             Bind<IFileExportService>().To<LdstrFileExportService>().InSingletonScope();
         }

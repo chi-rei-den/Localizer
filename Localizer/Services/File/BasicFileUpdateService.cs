@@ -58,7 +58,7 @@ namespace Localizer.Services.File
 
                 if (o.Origin != n.Origin)
                 {
-                    logger.Change($"{key}'s {prop.Name}, [Old: \"{o.Origin}\"] => [New: \"{n.Origin}\"]");
+                    logger.Change($"{key}'s {prop.Name}\r\n[Old: \"{o.Origin}\"]\r\n => \r\n[New: \"{n.Origin}\"]\r\n");
 
                     o.Origin = n.Origin;
                 }

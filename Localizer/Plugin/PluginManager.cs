@@ -23,6 +23,7 @@ namespace Localizer
 
         public static void Init()
         {
+            Utils.CreateDirectory(ExternalPluginDirPath);
             AddResolve();
         }
 
@@ -36,6 +37,7 @@ namespace Localizer
             Plugins = new List<Plugin>();
 
             LoadInternalPlugins();
+            LoadExternalPlugins();
         }
 
         public static void UnloadPlugins()
@@ -69,7 +71,17 @@ namespace Localizer
                 LoadPlugin(Assembly.Load(bytes));
             }
         }
+        
+        private static void LoadExternalPlugins()
+        {
+            var dirInfo = new DirectoryInfo(ExternalPluginDirPath);
 
+            foreach (var file in dirInfo.GetFiles("*.dll", SearchOption.TopDirectoryOnly))
+            {
+                LoadPlugin(Assembly.Load(GetExternalPluginFileBytes(file.Name)));
+            }
+        }
+        
         private static void LoadPlugin(Assembly asm)
         {
             try
@@ -96,6 +108,9 @@ namespace Localizer
         {
 #if DEBUG
             var path = $"{InternalPluginDirPath}{Path.GetFileName(fileName)}";
+            if (!path.EndsWith(".dll"))
+                path += ".dll";
+            
             if (File.Exists(path))
             {
                 return File.ReadAllBytes(path);
@@ -106,6 +121,17 @@ namespace Localizer
             return Localizer.Instance?.GetFileBytes($"{InternalPluginDirPath}{fileName}");
 #endif
         }
+        
+        private static byte[] GetExternalPluginFileBytes(string fileName)
+        {
+            var path = Path.Combine(ExternalPluginDirPath, fileName);
+
+            if (!File.Exists(path))
+                return null;
+            
+            return File.ReadAllBytes(path);
+        }
+
 
         private static void AddResolve()
         {
@@ -131,7 +157,19 @@ namespace Localizer
 
                     var asmFile = GetInternalPluginFileBytes(fileName);
 
-                    return asmFile != null && asmFile.Length != 0 ? Assembly.Load(asmFile) : null;
+                    if (asmFile != null && asmFile.Length != 0)
+                    {
+                        return Assembly.Load(asmFile);
+                    }
+
+                    asmFile = GetExternalPluginFileBytes(fileName);
+
+                    if (asmFile != null && asmFile.Length != 0)
+                    {
+                        return Assembly.Load(asmFile);
+                    }
+                    
+                    return null;
                 }
                 catch (Exception)
                 {
