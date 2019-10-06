@@ -10,6 +10,7 @@ namespace Localizer.Modules
         {
             Bind<IPackageBrowserService>().To<PackageBrowserService>().InSingletonScope();
             Bind<IDownloadManagerService>().To<DownloadManagerService>().InSingletonScope();
+            Bind<IUpdateService>().To<GitHubModUpdateService>().InSingletonScope();
         }
     }
 }

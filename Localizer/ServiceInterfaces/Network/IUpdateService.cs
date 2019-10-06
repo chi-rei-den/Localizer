@@ -1,20 +1,13 @@
 using System;
 using System.Collections.Generic;
+using Localizer.DataModel;
 using Localizer.Services;
 
 namespace Localizer.ServiceInterfaces.Network
 {
-    public enum UpdateType
-    {
-        None,
-        Minor,
-        Major,
-        Critical,
-    }
-    
     public interface IUpdateService : IService
     {
-        UpdateType DetectUpdate(Version curVersion);
+        bool CheckUpdate(Version curVersion, out IUpdateInfo updateInfo);
         
         Dictionary<Version, string> GetChangeLog(Version from, Version to);
 

@@ -26,43 +26,26 @@ namespace Localizer.Services.Network
 
             var result = new List<IPackage>();
 
-            var request = (HttpWebRequest)WebRequest.Create($"{serverURL}pkg/list");
-            request.Method = "GET";
-            request.ContentType = "application/json;charset=UTF-8";
-            request.UserAgent = null;
-            request.Timeout = 9000;
+            var response = Utils.GET($"{serverURL}pkg/list");
+            var jArray = JArray.Parse(Utils.GetResponseBody(response));
 
-            var response = (HttpWebResponse)request.GetResponse();
-            using (var myResponseStream = response.GetResponseStream())
+            foreach (JObject jo in jArray)
             {
-                using (var myStreamReader = new StreamReader(myResponseStream, Encoding.GetEncoding("utf-8")))
+                Utils.SafeWrap(() =>
                 {
-                    var retString = myStreamReader.ReadToEnd();
-                    var jArray = JArray.Parse(retString);
-
-                    foreach (JObject jo in jArray)
+                    var pack = new DataModel.Default.Package()
                     {
-                        try
-                        {
-                            var pack = new DataModel.Default.Package()
-                            {
-                                Name = jo["name"].ToObject<string>(),
-                                Author = jo["author"].ToObject<string>(),
-                                Version = jo["version"].ToObject<Version>(),
-                                ModName = jo["mod"].ToObject<string>(),
-                                Language = jo["language"].ToObject<CultureInfo>(),
-                                Description = jo["description"].ToObject<string>(),
-                            };
+                        Name = jo["name"].ToObject<string>(),
+                        Author = jo["author"].ToObject<string>(),
+                        Version = jo["version"].ToObject<Version>(),
+                        ModName = jo["mod"].ToObject<string>(),
+                        Language = jo["language"].ToObject<CultureInfo>(),
+                        Description = jo["description"].ToObject<string>(),
+                    };
 
-                            packages.Add(pack, jo["id"].Value<int>());
-                            result.Add(pack);
-                        }
-                        catch (Exception e)
-                        {
-                            Utils.LogError(e);
-                        }
-                    }
-                }
+                    packages.Add(pack, jo["id"].Value<int>());
+                    result.Add(pack);
+                });
             }
 
             return result;

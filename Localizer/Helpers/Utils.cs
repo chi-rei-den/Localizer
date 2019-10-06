@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
+using System.Net;
 using System.Reflection;
 using System.Reflection.Emit;
+using System.Text;
 using Harmony.ILCopying;
 using Localizer.Attributes;
 using Localizer.DataModel;
@@ -12,12 +14,13 @@ using Localizer.DataModel.Default;
 using MahApps.Metro.Controls;
 using MonoMod.Utils;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using Terraria.ModLoader;
 using File = System.IO.File;
 
 namespace Localizer
 {
-    public static class Utils
+    public static partial class Utils
     {
         #region Zip
 
@@ -161,6 +164,45 @@ namespace Localizer
 
         #endregion
 
+        #region Network
+
+        public static HttpWebResponse GET(string url)
+        {
+            var request = (HttpWebRequest)WebRequest.Create(url);
+            request.Method = "GET";
+            request.ContentType = "application/json;charset=UTF-8";
+            request.UserAgent = null;
+            request.Timeout = 9000;
+
+            return (HttpWebResponse)request.GetResponse();
+        }
+
+        public static string GetResponseBody(HttpWebResponse response)
+        {
+            if (response == null)
+                return null;
+            
+            Encoding encoding;
+            try
+            {
+                encoding = Encoding.GetEncoding(response.ContentEncoding);
+            }
+            catch (ArgumentException e)
+            {
+                encoding = Encoding.UTF8;
+            }
+            
+            using (var myResponseStream = response.GetResponseStream())
+            {
+                using (var myStreamReader = new StreamReader(myResponseStream, encoding))
+                {
+                    return myStreamReader.ReadToEnd();
+                }
+            }
+        }
+
+        #endregion
+
         #region Others
 
         /// <summary>
@@ -240,6 +282,11 @@ namespace Localizer
             return MethodBodyReader.GetInstructions(dummy.GetILGenerator(), method);
         }
 
+        public static void SafeWrap(Action action)
+        {
+            SafeWrap(action, out var ex);
+        }
+
         public static void SafeWrap(Action action, out Exception ex)
         {
             try
@@ -252,6 +299,11 @@ namespace Localizer
                 ex = e;
                 LogError(e);
             }
+        }
+        
+        public static T SafeWrap<T>(Func<T> func)
+        {
+            return SafeWrap(func, out var ex);
         }
         
         public static T SafeWrap<T>(Func<T> func, out Exception ex)

@@ -84,6 +84,7 @@
     <Compile Include="DataModel\Default\Package.cs" />
     <Compile Include="DataModel\Default\PackageGroup.cs" />
     <Compile Include="DataModel\Default\PackageGroupState.cs" />
+    <Compile Include="DataModel\Default\GitHubUpdateInfo.cs" />
     <Compile Include="DataModel\IExportConfig.cs" />
     <Compile Include="DataModel\Default\BasicBuffFile.cs" />
     <Compile Include="DataModel\Default\CustomModTranslationFile.cs" />
@@ -94,7 +95,9 @@
     <Compile Include="DataModel\IMod.cs" />
     <Compile Include="DataModel\IPackage.cs" />
     <Compile Include="DataModel\IPackageGroup.cs" />
-    <Compile Include="Extensions.cs" />
+    <Compile Include="DataModel\IUpdateInfo.cs" />
+    <Compile Include="Helpers\Extensions.cs" />
+    <Compile Include="Helpers\UI.cs" />
     <Compile Include="LocalizerKernel.cs" />
     <Compile Include="Localizer.cs" />
     <Compile Include="Modules\DefaultFileExportModule.cs" />
@@ -146,7 +149,7 @@
     <Compile Include="Services\Package\PackedPackageLoadService.cs" />
     <Compile Include="Services\Package\SourcePackageLoadService.cs" />
     <Compile Include="Services\Package\ZipPackagePackService.cs" />
-    <Compile Include="Utils.cs" />
+    <Compile Include="Helpers\Utils.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

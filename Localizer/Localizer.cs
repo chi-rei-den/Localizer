@@ -2,10 +2,15 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Threading.Tasks;
 using Localizer.Modules;
+using Localizer.ServiceInterfaces.Network;
 using log4net;
+using Microsoft.Xna.Framework;
 using MonoMod.RuntimeDetour.HookGen;
+using Ninject;
 using Ninject.Modules;
+using Terraria;
 using Terraria.Localization;
 using Terraria.ModLoader;
 
@@ -63,6 +68,25 @@ namespace Localizer
         public override void PostSetupContent()
         {
             PluginManager.LoadPlugins();
+        }
+
+        public void CheckUpdate()
+        {
+            Task.Run(() =>
+            {
+                var curVersion = this.Version;
+                if (Kernel.Get<IUpdateService>().CheckUpdate(curVersion, out var updateInfo))
+                {
+                    if (Main.gameMenu)
+                    {
+                        
+                    }
+                    else
+                    {
+                        Main.NewText("New Version Detected!", Color.Red);
+                    }
+                }
+            });
         }
 
         public override void Unload()
@@ -133,6 +157,11 @@ namespace Localizer
         public static void RefreshLanguages()
         {
             ModContent.RefreshModLanguage(LanguageManager.Instance.ActiveCulture);
+        }
+
+        public static void CloseTmodFile()
+        {
+            
         }
     }
 }
