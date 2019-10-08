@@ -8,13 +8,13 @@ namespace Localizer.Modules
     {
         public override void Load()
         {
-            Bind<IFileExportService>().To<BasicFileExportService<BasicItemFile>>().InSingletonScope();
-            Bind<IFileExportService>().To<BasicFileExportService<BasicNPCFile>>().InSingletonScope();
-            Bind<IFileExportService>().To<BasicFileExportService<BasicBuffFile>>().InSingletonScope();
-            Bind<IFileExportService>().To<BasicFileExportService<BasicProjectileFile>>().InSingletonScope();
-            Bind<IFileExportService>().To<BasicFileExportService<BasicPrefixFile>>().InSingletonScope();
-            Bind<IFileExportService>().To<CustomModTranslationFileExportService>().InSingletonScope();
-            Bind<IFileExportService>().To<LdstrFileExportService>().InSingletonScope();
+            Bind<IFileExportService>().To<BasicFileExport<BasicItemFile>>().InSingletonScope();
+            Bind<IFileExportService>().To<BasicFileExport<BasicNPCFile>>().InSingletonScope();
+            Bind<IFileExportService>().To<BasicFileExport<BasicBuffFile>>().InSingletonScope();
+            Bind<IFileExportService>().To<BasicFileExport<BasicProjectileFile>>().InSingletonScope();
+            Bind<IFileExportService>().To<BasicFileExport<BasicPrefixFile>>().InSingletonScope();
+            Bind<IFileExportService>().To<CustomModTranslationFileExport>().InSingletonScope();
+            Bind<IFileExportService>().To<LdstrFileExport>().InSingletonScope();
         }
     }
 }

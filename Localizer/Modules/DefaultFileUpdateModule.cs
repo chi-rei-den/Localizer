@@ -10,15 +10,15 @@ namespace Localizer.Modules
     {
         public override void Load()
         {
-            Bind<IFileUpdateService>().To<BasicFileUpdateService<BasicItemFile>>().InSingletonScope();
-            Bind<IFileUpdateService>().To<BasicFileUpdateService<BasicNPCFile>>().InSingletonScope();
-            Bind<IFileUpdateService>().To<BasicFileUpdateService<BasicBuffFile>>().InSingletonScope();
-            Bind<IFileUpdateService>().To<BasicFileUpdateService<BasicProjectileFile>>().InSingletonScope();
-            Bind<IFileUpdateService>().To<BasicFileUpdateService<BasicPrefixFile>>().InSingletonScope();
-            Bind<IFileUpdateService>().To<CustomModTranslationFileUpdateService>().InSingletonScope();
-            Bind<IFileUpdateService>().To<LdstrFileUpdateService>().InSingletonScope();
+            Bind<IFileUpdateService>().To<BasicFileUpdate<BasicItemFile>>().InSingletonScope();
+            Bind<IFileUpdateService>().To<BasicFileUpdate<BasicNPCFile>>().InSingletonScope();
+            Bind<IFileUpdateService>().To<BasicFileUpdate<BasicBuffFile>>().InSingletonScope();
+            Bind<IFileUpdateService>().To<BasicFileUpdate<BasicProjectileFile>>().InSingletonScope();
+            Bind<IFileUpdateService>().To<BasicFileUpdate<BasicPrefixFile>>().InSingletonScope();
+            Bind<IFileUpdateService>().To<CustomModTranslationFileUpdate>().InSingletonScope();
+            Bind<IFileUpdateService>().To<LdstrFileUpdate>().InSingletonScope();
 
-            Bind<IUpdateLogService>().To<UpdateLogService>();
+            Bind<IUpdateLogService>().To<UpdateLog>();
         }
     }
 }

@@ -36,6 +36,9 @@
     <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed">
       <HintPath>C:\Users\axeel\Documents\My Games\Terraria\ModLoader\references\Newtonsoft.Json.dll</HintPath>
     </Reference>
+    <Reference Include="Ninject, Version=3.3.4.0, Culture=neutral, PublicKeyToken=c7192dc5380945e7">
+      <HintPath>..\Localizer\lib\Ninject.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
@@ -48,12 +51,18 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DataModel\GitHubUpdateInfo.cs" />
+    <Compile Include="Helper\Extensions.cs" />
+    <Compile Include="Helper\Utils.cs" />
     <Compile Include="Localizer.cs" />
-    <Compile Include="Services\File\BasicFileExportService.cs" />
+    <Compile Include="Ninject.cs" />
+    <Compile Include="Services\File\BasicFile\BasicFileExport.cs" />
+    <Compile Include="Services\File\BasicFile\BasicFileImport.cs" />
+    <Compile Include="Services\File\CustomModTranslationFile\CustomModTranslationFileImport.cs" />
+    <Compile Include="Services\File\LdstrFile\HarmonyLdstrImport.cs" />
+    <Compile Include="Services\File\LdstrFile\LdstrFileImportBase.cs" />
     <Compile Include="Services\Network\GitHubModUpdateService.cs" />
     <Compile Include="Tests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Utils.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Localizer\Localizer.csproj">

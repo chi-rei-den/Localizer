@@ -6,9 +6,9 @@ namespace Localizer.DataModel.Default
 {
     public class BuffEntry : IEntry
     {
-        [TModLocalizeTextProp("DisplayName")] public BaseEntry Name { get; set; }
+        [ModTranslationProp("DisplayName")] public BaseEntry Name { get; set; }
 
-        [TModLocalizeTextProp("Description")] public BaseEntry Description { get; set; }
+        [ModTranslationProp("Description")] public BaseEntry Description { get; set; }
 
         public IEntry Clone()
         {
@@ -22,7 +22,7 @@ namespace Localizer.DataModel.Default
 
     public class BasicBuffFile : IFile
     {
-        [TModLocalizeField("buffs")]
+        [ModTranslationOwnerField("buffs")]
         public Dictionary<string, BuffEntry> Buffs { get; set; } = new Dictionary<string, BuffEntry>();
 
         public List<string> GetKeys()

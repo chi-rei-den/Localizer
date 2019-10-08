@@ -9,8 +9,8 @@ namespace LocalizerWPF
     {
         public override void Load()
         {
-            Localizer.Localizer.Kernel.Bind<SourcePackageLoadService<Package>>().ToSelf().InSingletonScope();
-            Localizer.Localizer.Kernel.Bind<PackedPackageLoadService<Package>>().ToSelf().InSingletonScope();
+            Localizer.Localizer.Kernel.Bind<SourcePackageLoad<Package>>().ToSelf().InSingletonScope();
+            Localizer.Localizer.Kernel.Bind<PackedPackageLoad<Package>>().ToSelf().InSingletonScope();
         }
     }
 }

@@ -8,9 +8,9 @@ namespace Localizer.Modules
     {
         public override void Load()
         {
-            Bind<IPackageBrowserService>().To<PackageBrowserService>().InSingletonScope();
-            Bind<IDownloadManagerService>().To<DownloadManagerService>().InSingletonScope();
-            Bind<IUpdateService>().To<GitHubModUpdateService>().InSingletonScope();
+            Bind<IPackageBrowserService>().To<PackageBrowser>().InSingletonScope();
+            Bind<IDownloadManagerService>().To<DownloadManager>().InSingletonScope();
+            Bind<IUpdateService>().To<GitHubModUpdate>().InSingletonScope();
         }
     }
 }

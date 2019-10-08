@@ -10,29 +10,29 @@ namespace Localizer.Modules
     {
         public override void Load()
         {
-            Bind<IPackageManageService>().To<PackageManageService>().InSingletonScope();
+            Bind<IPackageManageService>().To<PackageManage>().InSingletonScope();
 
             Bind<IPackageLoadService<DataModel.Default.Package>>()
-                .To<SourcePackageLoadService<DataModel.Default.Package>>().InSingletonScope();
-            Bind<SourcePackageLoadService<DataModel.Default.Package>>().ToSelf().InSingletonScope();
+                .To<SourcePackageLoad<DataModel.Default.Package>>().InSingletonScope();
+            Bind<SourcePackageLoad<DataModel.Default.Package>>().ToSelf().InSingletonScope();
 
             Bind<IPackageLoadService<DataModel.Default.Package>>()
-                .To<PackedPackageLoadService<DataModel.Default.Package>>().InSingletonScope();
-            Bind<PackedPackageLoadService<DataModel.Default.Package>>().ToSelf().InSingletonScope();
+                .To<PackedPackageLoad<DataModel.Default.Package>>().InSingletonScope();
+            Bind<PackedPackageLoad<DataModel.Default.Package>>().ToSelf().InSingletonScope();
 
-            Bind<IPackageSaveService>().To<PackageSaveService>().InSingletonScope();
+            Bind<IPackageSaveService>().To<PackageSave>().InSingletonScope();
 
-            Bind<IPackageExportService>().To<PackageExportService>().InSingletonScope();
+            Bind<IPackageExportService>().To<PackageExport>().InSingletonScope();
 
-            Bind<IPackageImportService>().To<PackageImportService>().InSingletonScope();
+            Bind<IPackageImportService>().To<PackageImport>().InSingletonScope();
 
-            Bind<IPackageUpdateService>().To<PackageUpdateService>().InSingletonScope();
+            Bind<IPackageUpdateService>().To<PackageUpdate>().InSingletonScope();
 
-            Bind<IPackagePackService>().To<ZipPackagePackService<DataModel.Default.Package>>().InSingletonScope();
-            Bind<ZipPackagePackService<DataModel.Default.Package>>().ToSelf().InSingletonScope();
+            Bind<IPackagePackService>().To<ZipPackagePack<DataModel.Default.Package>>().InSingletonScope();
+            Bind<ZipPackagePack<DataModel.Default.Package>>().ToSelf().InSingletonScope();
 
-            Bind<IFileLoadService>().To<JsonFileLoadService>().InSingletonScope();
-            Bind<IFileSaveService>().To<JsonFileSaveService>().InSingletonScope();
+            Bind<IFileLoadService>().To<JsonFileLoad>().InSingletonScope();
+            Bind<IFileSaveService>().To<JsonFileSave>().InSingletonScope();
         }
     }
 }

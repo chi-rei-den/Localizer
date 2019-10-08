@@ -11,6 +11,7 @@ using Harmony.ILCopying;
 using Localizer.Attributes;
 using Localizer.DataModel;
 using Localizer.DataModel.Default;
+using Mono.Cecil;
 using MonoMod.Utils;
 using Newtonsoft.Json;
 using Terraria.ModLoader;
@@ -218,10 +219,10 @@ namespace Localizer
 
             var mappings = new Dictionary<string, PropertyInfo>();
 
-            foreach (var prop in entryType.GetTModLocalizePropPropInfos())
+            foreach (var prop in entryType.ModTranslationProp())
             {
                 var attr =
-                    prop.GetCustomAttribute(typeof(TModLocalizeTextPropAttribute)) as TModLocalizeTextPropAttribute;
+                    prop.GetCustomAttribute(typeof(ModTranslationPropAttribute)) as ModTranslationPropAttribute;
 
                 mappings.Add(attr.PropName, prop);
             }

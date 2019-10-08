@@ -6,7 +6,7 @@ namespace Localizer.DataModel.Default
 {
     public class PrefixEntry : IEntry
     {
-        [TModLocalizeTextProp("DisplayName")] public BaseEntry Name { get; set; }
+        [ModTranslationProp("DisplayName")] public BaseEntry Name { get; set; }
 
         public IEntry Clone()
         {
@@ -16,7 +16,7 @@ namespace Localizer.DataModel.Default
 
     public class BasicPrefixFile : IFile
     {
-        [TModLocalizeField("prefixes")]
+        [ModTranslationOwnerField("prefixes")]
         public Dictionary<string, PrefixEntry> Prefixes { get; set; } = new Dictionary<string, PrefixEntry>();
 
         public List<string> GetKeys()

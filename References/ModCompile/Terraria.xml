@@ -90,6 +90,22 @@
             Bind must always be called after the ctor and serves to facilitate a convenient inheritance workflow for custom ConfigElemets from mods. 
             </summary>
         </member>
+        <member name="T:Terraria.ModLoader.Config.EntityDefinition">
+            <summary>
+            Classes implementing EntityDefinition serve to function as a way to save and load the identities of various Terraria objects. Only the identity is preserved, no other data such as stack size, damage, etc. These classes are well suited for ModConfig, but can be saved and loaded in a TagCompound as well. 
+            </summary>
+        </member>
+        <member name="T:Terraria.ModLoader.Config.ItemDefinition">
+            <summary>
+            ItemDefinition represents an Item identity. A typical use for this class is usage in ModConfig, perhapse to facilitate an Item tweaking mod.
+            </summary>
+        </member>
+        <member name="T:Terraria.ModLoader.Config.ToFromStringConverter`1">
+            <summary>
+            This TypeConverter facilitates converting to and from the string Type. This is necessary for Objects that are to be used as Dictionary keys, since the JSON for keys needs to be a string. Classes annotated with this TypeConverter need to implement a static FromString method that returns T.
+            </summary>
+            <typeparam name="T">The Type that implementes the static FromString method that returns Type T.</typeparam>
+        </member>
         <member name="T:Terraria.ModLoader.Config.BackgroundColorAttribute">
             <summary>
             Specifies a background color to be used for the property, field, or class in the ModConfig UI. 
@@ -128,9 +144,29 @@
             Use this attribute to specify a custom UI element to be used for the annotated property, field, or class in the ModConfig UI. 
             </summary>
         </member>
+        <member name="T:Terraria.ModLoader.Config.JsonDefaultValueAttribute">
+            <summary>
+            Similar to DefaultValueAttribute but for reference types. It uses a json string that will be used populate this element when initialized. Defines the default value, expressed as json, to be used to populate an object with the NullAllowed attribute. Modders should only use this in conjuction with NullAllowed, as simply initializing the field with a default value is preferred.
+            </summary>
+        </member>
         <member name="T:Terraria.ModLoader.Config.DefaultListValueAttribute">
             <summary>
-            Defines the default value to be added when using the ModConfig UI to add elements to a List
+            Defines the default value to be added when using the ModConfig UI to add elements to a Collection (List, Set, or Dictionary value). Works the same as System.ComponentModel.DefaultValueAttribute, but can't inherit from it because it would break when deserializing any data structure annotated with it.
+            </summary>
+        </member>
+        <member name="T:Terraria.ModLoader.Config.DefaultDictionaryKeyValueAttribute">
+            <summary>
+            Defines the default key value to be added when using the ModConfig UI to add elements to a Dictionary. Works the same as System.ComponentModel.DefaultValueAttribute, but can't inherit from it because it would break when deserializing any data structure annotated with it. This attribute compliments DefaultListValueAttribute when used annotating a Dictionary.
+            </summary>
+        </member>
+        <member name="T:Terraria.ModLoader.Config.JsonDefaultListValueAttribute">
+            <summary>
+            Similar to DefaultListValueAttribute but for reference types. It uses a json string that will be used populate new instances list elements. Defines the default value, expressed as json, to be added when using the ModConfig UI to add elements to a Collection (List, Set, or Dictionary value).
+            </summary>
+        </member>
+        <member name="T:Terraria.ModLoader.Config.JsonDefaultDictionaryKeyValueAttribute">
+            <summary>
+            Similar to JsonDefaultListValueAttribute, but for assigning to the Dictionary Key rather than the Value.
             </summary>
         </member>
         <member name="T:Terraria.ModLoader.Config.OptionStringsAttribute">
@@ -146,7 +182,7 @@
         </member>
         <member name="T:Terraria.ModLoader.Config.RangeAttribute">
             <summary>
-            Specifies a range for primative data values. Without this, default min and max are as follows: float: 0, 1 - int/uint: 0, 100 - byte: 0, 255
+            Specifies a range for primitive data values. Without this, default min and max are as follows: float: 0, 1 - int/uint: 0, 100 - byte: 0, 255
             </summary>
         </member>
         <member name="T:Terraria.ModLoader.Config.SliderAttribute">
@@ -159,9 +195,24 @@
             Add this attribute and the sliders will show white tick marks at each increment.
             </summary>
         </member>
+        <member name="T:Terraria.ModLoader.Config.ColorNoAlphaAttribute">
+            <summary>
+            Add this attribute to a Color item and Alpha will not be presented in the UI and will remain as 255 unless manually edited.
+            </summary>
+        </member>
+        <member name="T:Terraria.ModLoader.Config.ColorHSLSliderAttribute">
+            <summary>
+            Add this attribute to a Color item and the UI will present a Hue, Saturation, and Lightness sliders rather than Red, Green, and Blue sliders. Pass in false to skip Saturation and Lightness.
+            </summary>
+        </member>
         <member name="T:Terraria.ModLoader.Config.SeparatePageAttribute">
             <summary>
             This specifies that the annotated item will appear as a button that leads to a separate page in the UI. Use this to organize hierarchies.
+            </summary>
+        </member>
+        <member name="T:Terraria.ModLoader.Config.NullAllowedAttribute">
+            <summary>
+            This attribute means the annotated item can possibly be null. This will allow the UI to make the item null. It is up to the modder to make sure the item isn't null in the ModConfig constructor and nested classes.
             </summary>
         </member>
         <member name="T:Terraria.ModLoader.Config.ModConfig">
@@ -175,6 +226,7 @@
         <member name="M:Terraria.ModLoader.Config.ModConfig.OnLoaded">
             <summary>
             This method is called when the ModConfig has been loaded for the first time. This happens before regular Autoloading and Mod.Load. You can use this hook to assign a static reference to this instance for easy access.
+            tModLoader will automatically assign (and later unload) this instance to a static field named Instance in the class prior to calling this method, if it exists.
             </summary>
         </member>
         <member name="M:Terraria.ModLoader.Config.ModConfig.OnChanged">
@@ -217,6 +269,30 @@
         <member name="F:Terraria.ModLoader.Config.ConfigScope.ClientSide">
             <summary>
             This config is specific to the client. Use this for personalization options. 
+            </summary>
+        </member>
+        <member name="T:Terraria.ModLoader.Config.ReferenceDefaultsPreservingResolver">
+            <summary>
+            Custom ContractResolver for facilitating refernce type defaults. 
+            The ShouldSerialize code enables unchanged-by-user reference type defaults to properly not serialize. 
+            The ValueProvider code helps during deserialization to not 
+            </summary>
+        </member>
+        <member name="T:Terraria.ModLoader.Core.LogArchiver">
+            <summary>
+            Log archiving is performed after log initialization in a separate class to avoid loading Ionic.Zip before logging initialises and it can be patched
+            Some CLRs will load all required assemblies when the class is entered, not necessarily just the method, so you've got to watch out
+            </summary>
+        </member>
+        <member name="M:Terraria.ModLoader.Core.LoggingHooks.HookWebRequests">
+            <summary>
+            Attempt to hook the .NET internal methods to log when requests are sent to web addresses.
+            Use the right internal methods to capture redirects
+            </summary>
+        </member>
+        <member name="M:Terraria.ModLoader.Core.ZipExtractFix.Init">
+            <summary>
+            When Ionic.Zip extracts an entry it uses \\ for all separators when it should use Path.DirectorySeparatorChar for platform compatibility
             </summary>
         </member>
         <member name="M:Terraria.ModLoader.Core.TmodFile.AddFile(System.String,System.Byte[])">
@@ -1716,14 +1792,7 @@
             <param name="npc"></param>
             <param name="frameHeight"></param>
         </member>
-        <member name="M:Terraria.ModLoader.GlobalNPC.HitEffect(Terraria.NPC,System.Int32,System.Double)">
-            <summary>
-            Allows you to make things happen whenever an NPC is hit, such as creating dust or gores.
-            </summary>
-            <param name="npc"></param>
-            <param name="hitDirection"></param>
-            <param name="damage"></param>
-        </member>
+        <!-- Badly formed XML comment ignored for member "M:Terraria.ModLoader.GlobalNPC.HitEffect(Terraria.NPC,System.Int32,System.Double)" -->
         <member name="M:Terraria.ModLoader.GlobalNPC.UpdateLifeRegen(Terraria.NPC,System.Int32@)">
             <summary>
             Allows you to make the NPC either regenerate health or take damage over time by setting npc.lifeRegen. Regeneration or damage will occur at a rate of half of npc.lifeRegen per second. The damage parameter is the number that appears above the NPC's head if it takes damage over time.
@@ -1760,9 +1829,17 @@
         </member>
         <member name="M:Terraria.ModLoader.GlobalNPC.NPCLoot(Terraria.NPC)">
             <summary>
-            Allows you to add drops to an NPC when it dies.
+            Allows you to make things happen when an NPC dies (for example, dropping items and setting ModWorld fields). This hook runs on the server/single player. For client-side effects, such as dust, gore, and sounds, see HitEffect
             </summary>
             <param name="npc"></param>
+        </member>
+        <member name="M:Terraria.ModLoader.GlobalNPC.OnCatchNPC(Terraria.NPC,Terraria.Player,Terraria.Item)">
+            <summary>
+            Allows you to make things happen when an NPC is caught. Ran Serverside.
+            </summary>
+            <param name="npc">The caught NPC</param>
+            <param name="player">The player catching the NPC</param>
+            <param name="item">The item that will be spawned</param>
         </member>
         <member name="M:Terraria.ModLoader.GlobalNPC.CanHitPlayer(Terraria.NPC,Terraria.Player,System.Int32@)">
             <summary>
@@ -3274,12 +3351,6 @@
             Calls ModItem.PostDrawInInventory, then all GlobalItem.PostDrawInInventory hooks.
             </summary>
         </member>
-        <member name="M:Terraria.ModLoader.Logging.HookWebRequests">
-            <summary>
-            Attempt to hook the .NET internal methods to log when requests are sent to web addresses.
-            Use the right internal methods to capture redirects
-            </summary>
-        </member>
         <member name="T:Terraria.ModLoader.Mod">
             <summary>
             Mod is an abstract class that you will override. It serves as a central place from which the mod's contents are stored. It provides methods for you to use or override.
@@ -3338,6 +3409,11 @@
         <member name="M:Terraria.ModLoader.Mod.Unload">
             <summary>
             This is called whenever this mod is unloaded from the game. Use it to undo changes that you've made in Load that aren't automatically handled (for example, modifying the texture of a vanilla item). Mods are guaranteed to be unloaded in the reverse order they were loaded in.
+            </summary>
+        </member>
+        <member name="P:Terraria.ModLoader.Mod.ExtraPlayerBuffSlots">
+            <summary>
+            The amount of extra buff slots this mod desires for Players. This value is checked after Mod.Load but before Mod.PostSetupContent. The actual number of buffs the player can use will be 22 plus the max value of all enabled mods. In-game use Player.MaxBuffs to check the maximum number of buffs.
             </summary>
         </member>
         <member name="M:Terraria.ModLoader.Mod.AddRecipeGroups">
@@ -4953,6 +5029,56 @@
             Returns the ModUgBgStyle object with the given ID.
             </summary>
         </member>
+        <member name="M:Terraria.ModLoader.ModContent.ItemType``1">
+            <summary>
+            Get the id (type) of a ModItem by class. Assumes one instance per class.
+            </summary>
+        </member>
+        <member name="M:Terraria.ModLoader.ModContent.PrefixType``1">
+            <summary>
+            Get the id (type) of a ModPrefix by class. Assumes one instance per class.
+            </summary>
+        </member>
+        <member name="M:Terraria.ModLoader.ModContent.DustType``1">
+            <summary>
+            Get the id (type) of a ModDust by class. Assumes one instance per class.
+            </summary>
+        </member>
+        <member name="M:Terraria.ModLoader.ModContent.TileType``1">
+            <summary>
+            Get the id (type) of a ModTile by class. Assumes one instance per class.
+            </summary>
+        </member>
+        <member name="M:Terraria.ModLoader.ModContent.TileEntityType``1">
+            <summary>
+            Get the id (type) of a ModTileEntity by class. Assumes one instance per class.
+            </summary>
+        </member>
+        <member name="M:Terraria.ModLoader.ModContent.WallType``1">
+            <summary>
+            Get the id (type) of a ModWall by class. Assumes one instance per class.
+            </summary>
+        </member>
+        <member name="M:Terraria.ModLoader.ModContent.ProjectileType``1">
+            <summary>
+            Get the id (type) of a ModProjectile by class. Assumes one instance per class.
+            </summary>
+        </member>
+        <member name="M:Terraria.ModLoader.ModContent.NPCType``1">
+            <summary>
+            Get the id (type) of a ModNPC by class. Assumes one instance per class.
+            </summary>
+        </member>
+        <member name="M:Terraria.ModLoader.ModContent.BuffType``1">
+            <summary>
+            Get the id (type) of a ModBuff by class. Assumes one instance per class.
+            </summary>
+        </member>
+        <member name="M:Terraria.ModLoader.ModContent.MountType``1">
+            <summary>
+            Get the id (type) of a ModMountData by class. Assumes one instance per class.
+            </summary>
+        </member>
         <member name="M:Terraria.ModLoader.ModContent.CleanupModReferences">
             <summary>
             Several arrays and other fields hold references to various classes from mods, we need to clean them up to give properly coded mods a chance to be completely free of references
@@ -5583,7 +5709,13 @@
             The passed reforge price equals the item.value. Vanilla pricing will apply 20% discount if applicable and then price the reforge at a third of that value.
             </summary>
         </member>
-        <!-- Badly formed XML comment ignored for member "M:Terraria.ModLoader.ModItem.NewPreReforge" -->
+        <member name="M:Terraria.ModLoader.ModItem.NewPreReforge">
+            <summary>
+            This hook gets called when the player clicks on the reforge button and can afford the reforge.
+            Returns whether the reforge will take place. If false is returned, the PostReforge hook is never called.
+            Reforging preserves modded data on the item. 
+            </summary>
+        </member>
         <member name="M:Terraria.ModLoader.ModItem.PostReforge">
             <summary>
             This hook gets called immediately after an item gets reforged by the Goblin Tinkerer.
@@ -6197,13 +6329,7 @@
             </summary>
             <param name="frameHeight"></param>
         </member>
-        <member name="M:Terraria.ModLoader.ModNPC.HitEffect(System.Int32,System.Double)">
-            <summary>
-            Allows you to make things happen whenever this NPC is hit, such as creating dust or gores.
-            </summary>
-            <param name="hitDirection"></param>
-            <param name="damage"></param>
-        </member>
+        <!-- Badly formed XML comment ignored for member "M:Terraria.ModLoader.ModNPC.HitEffect(System.Int32,System.Double)" -->
         <member name="M:Terraria.ModLoader.ModNPC.UpdateLifeRegen(System.Int32@)">
             <summary>
             Allows you to make the NPC either regenerate health or take damage over time by setting npc.lifeRegen. Regeneration or damage will occur at a rate of half of npc.lifeRegen per second. The damage parameter is the number that appears above the NPC's head if it takes damage over time.
@@ -6236,8 +6362,15 @@
         </member>
         <member name="M:Terraria.ModLoader.ModNPC.NPCLoot">
             <summary>
-            Allows you to make things happen when this NPC dies (for example, dropping items).
+            Allows you to make things happen when this NPC dies (for example, dropping items and setting ModWorld fields). This hook runs on the server/single player. For client-side effects, such as dust, gore, and sounds, see HitEffect
             </summary>
+        </member>
+        <member name="M:Terraria.ModLoader.ModNPC.OnCatchNPC(Terraria.Player,Terraria.Item)">
+            <summary>
+            Allows you to make things happen when this NPC is caught. Ran Serverside
+            </summary>
+            <param name="player">The player catching this NPC</param>
+            <param name="item">The item that will be spawned</param>
         </member>
         <member name="M:Terraria.ModLoader.ModNPC.BossLoot(System.String@,System.Int32@)">
             <summary>
@@ -8334,6 +8467,14 @@
             </summary>
             <param name="i">The x position in tile coordinates.</param>
             <param name="j">The y position in tile coordinates.</param>
+        </member>
+        <member name="M:Terraria.ModLoader.ModTile.NewRightClick(System.Int32,System.Int32)">
+            <summary>
+            Allows you to make something happen when this tile is right-clicked by the player. Return true to indicate that a tile interaction has occurred, preventing other right click actions like minion targetting from happening. Returns false by default.
+            </summary>
+            <param name="i">The x position in tile coordinates.</param>
+            <param name="j">The y position in tile coordinates.</param>
+            <returns>Return true to indicate that a tile interaction has occurred, preventing other right click actions like minion targetting from happening. Returns false by default.</returns>
         </member>
         <member name="M:Terraria.ModLoader.ModTile.MouseOver(System.Int32,System.Int32)">
             <summary>
