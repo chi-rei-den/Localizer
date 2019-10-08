@@ -1,15 +1,17 @@
+using System.Globalization;
 using Localizer.DataModel;
 
 namespace Localizer.Services.File
 {
-    public interface IFileImportService : IService
+    public interface IFileImportService<T> : IService where T : IFile
     {
         /// <summary>
         ///     Import a file into correspond mod.
         /// </summary>
         /// <param name="file"></param>
         /// <param name="mod"></param>
-        void Import(IFile file, IMod mod);
+        /// <param name="culture"></param>
+        void Import(T file, IMod mod, CultureInfo culture);
 
         /// <summary>
         ///     Merge an entry into another one.
@@ -17,7 +19,7 @@ namespace Localizer.Services.File
         /// <param name="main"></param>
         /// <param name="addition"></param>
         /// <returns></returns>
-        IFile Merge(IFile main, IFile addition);
+        T Merge(T main, T addition);
 
         void Reset();
     }

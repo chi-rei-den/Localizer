@@ -6,9 +6,9 @@ namespace Localizer.DataModel.Default
 {
     public class ItemEntry : IEntry
     {
-        [TModLocalizeTextProp("DisplayName")] public BaseEntry Name { get; set; }
+        [ModTranslationProp("DisplayName")] public BaseEntry Name { get; set; }
 
-        [TModLocalizeTextProp("Tooltip")] public BaseEntry Tooltip { get; set; }
+        [ModTranslationProp("Tooltip")] public BaseEntry Tooltip { get; set; }
 
         public IEntry Clone()
         {
@@ -22,7 +22,7 @@ namespace Localizer.DataModel.Default
 
     public class BasicItemFile : IFile
     {
-        [TModLocalizeField("items")]
+        [ModTranslationOwnerField("items")]
         public Dictionary<string, ItemEntry> Items { get; set; } = new Dictionary<string, ItemEntry>();
 
         public List<string> GetKeys()

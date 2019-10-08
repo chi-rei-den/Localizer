@@ -48,13 +48,13 @@
     <Reference Include="Microsoft.Xna.Framework.Game, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=x86" />
     <Reference Include="Microsoft.Xna.Framework.Graphics, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=x86" />
     <Reference Include="Microsoft.Xna.Framework.Xact, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=x86" />
-    <Reference Include="Mono.Cecil, Version=0.10.3.0, Culture=neutral, PublicKeyToken=50cebf1cceb9d05e">
+    <Reference Include="Mono.Cecil, Version=0.10.4.0, Culture=neutral, PublicKeyToken=50cebf1cceb9d05e">
       <HintPath>$(USERPROFILE)\Documents\My Games\Terraria\ModLoader\references\Mono.Cecil.dll</HintPath>
     </Reference>
-    <Reference Include="MonoMod.RuntimeDetour, Version=19.5.19.1, Culture=neutral, PublicKeyToken=null">
+    <Reference Include="MonoMod.RuntimeDetour, Version=19.10.5.2, Culture=neutral, PublicKeyToken=null">
       <HintPath>$(USERPROFILE)\Documents\My Games\Terraria\ModLoader\references\MonoMod.RuntimeDetour.dll</HintPath>
     </Reference>
-    <Reference Include="MonoMod.Utils, Version=19.5.19.1, Culture=neutral, PublicKeyToken=null">
+    <Reference Include="MonoMod.Utils, Version=19.10.5.2, Culture=neutral, PublicKeyToken=null">
       <HintPath>$(USERPROFILE)\Documents\My Games\Terraria\ModLoader\references\MonoMod.Utils.dll</HintPath>
     </Reference>
     <Reference Include="TerrariaHooks, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
@@ -75,8 +75,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Attributes\TModLocalizeFieldAttribute.cs" />
-    <Compile Include="Attributes\TModLocalizeTextPropAttribute.cs" />
+    <Compile Include="Attributes\ModTranslationOwnerFieldAttribute.cs" />
+    <Compile Include="Attributes\ModTranslationPropAttribute.cs" />
     <Compile Include="Configuration.cs" />
     <Compile Include="DataModel\Default\BaseEntry.cs" />
     <Compile Include="DataModel\Default\BasicNPCFile.cs" />
@@ -127,32 +127,33 @@
     <Compile Include="ServiceInterfaces\Package\IPackagePackService.cs" />
     <Compile Include="ServiceInterfaces\Package\IPackageSaveService.cs" />
     <Compile Include="ServiceInterfaces\Package\IPackageUpdateService.cs" />
-    <Compile Include="Services\File\BasicFileExportService.cs" />
-    <Compile Include="Services\File\BasicFileImportService.cs" />
-    <Compile Include="Services\File\BasicFileUpdateService.cs" />
-    <Compile Include="Services\File\CustomModTranslationFileExportService.cs" />
-    <Compile Include="Services\File\CustomModTranslationFileImportService.cs" />
-    <Compile Include="Services\File\CustomModTranslationFileUpdateService.cs" />
-    <Compile Include="Services\File\HarmonyLdstrFileImportService.cs" />
-    <Compile Include="Services\File\JsonFileLoadService.cs" />
-    <Compile Include="Services\File\JsonFileSaveService.cs" />
-    <Compile Include="Services\File\LdstrFileExportService.cs" />
-    <Compile Include="Services\File\MonoModLdstrFileImportService.cs" />
-    <Compile Include="Services\File\LdstrFileUpdateService.cs" />
+    <Compile Include="Services\File\BasicFile\BasicFileExport.cs" />
+    <Compile Include="Services\File\BasicFile\BasicFileImport.cs" />
+    <Compile Include="Services\File\BasicFile\BasicFileUpdate.cs" />
+    <Compile Include="Services\File\CustomModTranslationFile\CustomModTranslationFileExport.cs" />
+    <Compile Include="Services\File\CustomModTranslationFile\CustomModTranslationFileImport.cs" />
+    <Compile Include="Services\File\CustomModTranslationFile\CustomModTranslationFileUpdate.cs" />
+    <Compile Include="Services\File\JsonFileLoad.cs" />
+    <Compile Include="Services\File\JsonFileSave.cs" />
+    <Compile Include="Services\File\LdstrFile\HarmonyLdstrFileImport.cs" />
+    <Compile Include="Services\File\LdstrFile\LdstrFileExport.cs" />
+    <Compile Include="Services\File\LdstrFile\LdstrFileImportBase.cs" />
+    <Compile Include="Services\File\LdstrFile\LdstrFileUpdate.cs" />
+    <Compile Include="Services\File\LdstrFile\MonoModLdstrFileImport.cs" />
     <Compile Include="Services\IService.cs" />
-    <Compile Include="Services\Network\DownloadManagerService.cs" />
-    <Compile Include="Services\Network\GitHubModUpdateService.cs" />
-    <Compile Include="Services\Network\PackageBrowserService.cs" />
+    <Compile Include="Services\Network\DownloadManager.cs" />
+    <Compile Include="Services\Network\GitHubModUpdate.cs" />
+    <Compile Include="Services\Network\PackageBrowser.cs" />
     <Compile Include="Services\RefreshLanguageService.cs" />
-    <Compile Include="Services\UpdateLogService.cs" />
-    <Compile Include="Services\Package\PackageExportService.cs" />
-    <Compile Include="Services\Package\PackageImportService.cs" />
-    <Compile Include="Services\Package\PackageManageService.cs" />
-    <Compile Include="Services\Package\PackageSaveService.cs" />
-    <Compile Include="Services\Package\PackageUpdateService.cs" />
-    <Compile Include="Services\Package\PackedPackageLoadService.cs" />
-    <Compile Include="Services\Package\SourcePackageLoadService.cs" />
-    <Compile Include="Services\Package\ZipPackagePackService.cs" />
+    <Compile Include="Services\UpdateLog.cs" />
+    <Compile Include="Services\Package\PackageExport.cs" />
+    <Compile Include="Services\Package\PackageImport.cs" />
+    <Compile Include="Services\Package\PackageManage.cs" />
+    <Compile Include="Services\Package\PackageSave.cs" />
+    <Compile Include="Services\Package\PackageUpdate.cs" />
+    <Compile Include="Services\Package\PackedPackageLoad.cs" />
+    <Compile Include="Services\Package\SourcePackageLoad.cs" />
+    <Compile Include="Services\Package\ZipPackagePack.cs" />
     <Compile Include="Helpers\Utils.cs" />
   </ItemGroup>
   <ItemGroup>

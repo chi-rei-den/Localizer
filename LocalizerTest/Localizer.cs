@@ -1,5 +1,5 @@
 namespace LocalizerTest
 {
-    public class Localizer
+    public class LocalizerTest
     { }
 }

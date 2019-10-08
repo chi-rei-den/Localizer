@@ -34,8 +34,8 @@ namespace LocalizerWPF.ViewModel
             else
             {
                 packageManageService = Localizer.Localizer.Kernel.Get<IPackageManageService>();
-                sourcePackageLoadServiceService = Localizer.Localizer.Kernel.Get<SourcePackageLoadService<Package>>();
-                packedPackageLoadServiceService = Localizer.Localizer.Kernel.Get<PackedPackageLoadService<Package>>();
+                sourcePackageLoadServiceService = Localizer.Localizer.Kernel.Get<SourcePackageLoad<Package>>();
+                packedPackageLoadServiceService = Localizer.Localizer.Kernel.Get<PackedPackageLoad<Package>>();
                 packageImportService = Localizer.Localizer.Kernel.Get<IPackageImportService>();
                 fileLoadService = Localizer.Localizer.Kernel.Get<IFileLoadService>();
 

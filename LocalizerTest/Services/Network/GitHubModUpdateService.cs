@@ -9,7 +9,7 @@ namespace LocalizerTest.Services.Network
 {
     public class GitHubModUpdateServiceTest
     {
-        private GitHubModUpdateService service;
+        private GitHubModUpdate service;
         
         private JObject releaseInfo;
         
@@ -21,7 +21,7 @@ namespace LocalizerTest.Services.Network
             
             releaseInfo = JObject.Parse(jsonString);
             
-            service = new GitHubModUpdateService();
+            service = new GitHubModUpdate();
         }
         
         [Fact]

@@ -1,3 +1,5 @@
+using System;
+using Localizer.DataModel;
 using Localizer.DataModel.Default;
 using Localizer.Services.File;
 using Ninject.Modules;
@@ -8,13 +10,19 @@ namespace Localizer.Modules
     {
         public override void Load()
         {
-            Bind<IFileImportService>().To<BasicFileImportService<BasicItemFile>>().InSingletonScope();
-            Bind<IFileImportService>().To<BasicFileImportService<BasicNPCFile>>().InSingletonScope();
-            Bind<IFileImportService>().To<BasicFileImportService<BasicBuffFile>>().InSingletonScope();
-            Bind<IFileImportService>().To<BasicFileImportService<BasicProjectileFile>>().InSingletonScope();
-            Bind<IFileImportService>().To<BasicFileImportService<BasicPrefixFile>>().InSingletonScope();
-            Bind<IFileImportService>().To<CustomModTranslationFileImportService>().InSingletonScope();
-            Bind<IFileImportService>().To<HarmonyLdstrFileImportService>().InSingletonScope();
+            BindImport<BasicItemFile>(typeof(BasicFileImport<BasicItemFile>));
+            BindImport<BasicNPCFile>(typeof(BasicFileImport<BasicNPCFile>));
+            BindImport<BasicBuffFile>(typeof(BasicFileImport<BasicBuffFile>));
+            BindImport<BasicProjectileFile>(typeof(BasicFileImport<BasicProjectileFile>));
+            BindImport<BasicPrefixFile>(typeof(BasicFileImport<BasicPrefixFile>));
+            BindImport<CustomModTranslationFile>(typeof(CustomModTranslationFileImport));
+            BindImport<LdstrFile>(typeof(HarmonyLdstrFileImport));
+        }
+
+        private void BindImport<T>(Type serviceType) where T : IFile
+        {
+            Bind(typeof(IFileImportService<>), typeof(IFileImportService<T>))
+                .To(serviceType).InSingletonScope();
         }
     }
 }

@@ -6,7 +6,7 @@ namespace Localizer.DataModel.Default
 {
     public class ProjectileEntry : IEntry
     {
-        [TModLocalizeTextProp("DisplayName")] public BaseEntry Name { get; set; }
+        [ModTranslationProp("DisplayName")] public BaseEntry Name { get; set; }
 
         public IEntry Clone()
         {
@@ -16,7 +16,7 @@ namespace Localizer.DataModel.Default
 
     public class BasicProjectileFile : IFile
     {
-        [TModLocalizeField("projectiles")]
+        [ModTranslationOwnerField("projectiles")]
         public Dictionary<string, ProjectileEntry> Projectiles { get; set; } = new Dictionary<string, ProjectileEntry>();
 
         public List<string> GetKeys()

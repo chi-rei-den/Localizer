@@ -106,21 +106,21 @@ namespace Localizer
             }
         }
 
-        public static PropertyInfo[] GetTModLocalizeFieldPropInfos(this Type type)
+        public static PropertyInfo[] ModTranslationOwnerField(this Type type)
         {
-            return type.GetProperties().Where(p => p.GetCustomAttribute<TModLocalizeFieldAttribute>() != null)
+            return type.GetProperties().Where(p => p.GetCustomAttribute<ModTranslationOwnerFieldAttribute>() != null)
                        .ToArray();
         }
 
-        public static string GetTModLocalizeFieldName(this PropertyInfo prop)
+        public static string ModTranslationOwnerFieldName(this PropertyInfo prop)
         {
-            return (prop.GetCustomAttribute(typeof(TModLocalizeFieldAttribute)) as TModLocalizeFieldAttribute)
+            return (prop.GetCustomAttribute(typeof(ModTranslationOwnerFieldAttribute)) as ModTranslationOwnerFieldAttribute)
                 ?.FieldName;
         }
 
-        public static PropertyInfo[] GetTModLocalizePropPropInfos(this Type type)
+        public static PropertyInfo[] ModTranslationProp(this Type type)
         {
-            return type.GetProperties().Where(p => p.GetCustomAttribute<TModLocalizeTextPropAttribute>() != null)
+            return type.GetProperties().Where(p => p.GetCustomAttribute<ModTranslationPropAttribute>() != null)
                        .ToArray();
         }
 
