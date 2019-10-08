@@ -40,7 +40,7 @@ namespace Localizer.Services.Package
                 {
                     var s = GetImportService(f);
                     Utils.LogDebug($"Importing [{f.GetType()}] using [{s.GetType()}]");
-                    s.Import(f, group.Mod);
+                    s.Import(f, group.Mod, group.Packages.ToList()[0].Language);
                     Utils.LogDebug($"Imported");
                 }
             }
