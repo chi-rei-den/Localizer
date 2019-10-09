@@ -55,11 +55,15 @@
     <Compile Include="Helper\Utils.cs" />
     <Compile Include="Localizer.cs" />
     <Compile Include="Ninject.cs" />
+    <Compile Include="NonTest\UpdateLogger.cs" />
     <Compile Include="Services\File\BasicFile\BasicFileExport.cs" />
     <Compile Include="Services\File\BasicFile\BasicFileImport.cs" />
+    <Compile Include="Services\File\BasicFile\BasicFileUpdate.cs" />
     <Compile Include="Services\File\CustomModTranslationFile\CustomModTranslationFileImport.cs" />
+    <Compile Include="Services\File\CustomModTranslationFile\CustomModTranslationFileUpdate.cs" />
     <Compile Include="Services\File\LdstrFile\HarmonyLdstrImport.cs" />
     <Compile Include="Services\File\LdstrFile\LdstrFileImportBase.cs" />
+    <Compile Include="Services\File\LdstrFile\LdstrFileUpdate.cs" />
     <Compile Include="Services\Network\GitHubModUpdateService.cs" />
     <Compile Include="Tests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -1,3 +1,5 @@
+using System;
+using Localizer.DataModel;
 using Localizer.DataModel.Default;
 using Localizer.ServiceInterfaces;
 using Localizer.Services;
@@ -10,15 +12,21 @@ namespace Localizer.Modules
     {
         public override void Load()
         {
-            Bind<IFileUpdateService>().To<BasicFileUpdate<BasicItemFile>>().InSingletonScope();
-            Bind<IFileUpdateService>().To<BasicFileUpdate<BasicNPCFile>>().InSingletonScope();
-            Bind<IFileUpdateService>().To<BasicFileUpdate<BasicBuffFile>>().InSingletonScope();
-            Bind<IFileUpdateService>().To<BasicFileUpdate<BasicProjectileFile>>().InSingletonScope();
-            Bind<IFileUpdateService>().To<BasicFileUpdate<BasicPrefixFile>>().InSingletonScope();
-            Bind<IFileUpdateService>().To<CustomModTranslationFileUpdate>().InSingletonScope();
-            Bind<IFileUpdateService>().To<LdstrFileUpdate>().InSingletonScope();
+            BindUpdate<BasicItemFile>(typeof(BasicFileUpdate<BasicItemFile>));
+            BindUpdate<BasicNPCFile>(typeof(BasicFileUpdate<BasicNPCFile>));
+            BindUpdate<BasicBuffFile>(typeof(BasicFileUpdate<BasicBuffFile>));
+            BindUpdate<BasicProjectileFile>(typeof(BasicFileUpdate<BasicProjectileFile>));
+            BindUpdate<BasicPrefixFile>(typeof(BasicFileUpdate<BasicPrefixFile>));
+            BindUpdate<CustomModTranslationFile>(typeof(CustomModTranslationFileUpdate));
+            BindUpdate<LdstrFile>(typeof(LdstrFileUpdate));
 
             Bind<IUpdateLogService>().To<UpdateLog>();
+        }
+        
+        private void BindUpdate<T>(Type serviceType) where T : IFile
+        {
+            Bind(typeof(IFileUpdateService<>), typeof(IFileUpdateService<T>))
+                .To(serviceType).InSingletonScope();
         }
     }
 }

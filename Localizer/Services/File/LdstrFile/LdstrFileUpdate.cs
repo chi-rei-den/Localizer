@@ -5,17 +5,12 @@ using Localizer.ServiceInterfaces;
 
 namespace Localizer.Services.File
 {
-    public class LdstrFileUpdate : IFileUpdateService
+    public class LdstrFileUpdate : IFileUpdateService<LdstrFile>
     {
-        public void Update(IFile oldFile, IFile newFile, IUpdateLogService logger)
+        public void Update(LdstrFile oldFile, LdstrFile newFile, IUpdateLogService logger)
         {
-            if (oldFile.GetType() != typeof(LdstrFile) || newFile.GetType() != typeof(LdstrFile))
-            {
-                return;
-            }
-
-            var oldEntries = (oldFile as LdstrFile).LdstrEntries;
-            var newEntries = (newFile as LdstrFile).LdstrEntries;
+            var oldEntries = oldFile.LdstrEntries;
+            var newEntries = newFile.LdstrEntries;
 
             foreach (var newEntryKey in newEntries.Keys)
             {

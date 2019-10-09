@@ -3,7 +3,7 @@ using Localizer.ServiceInterfaces;
 
 namespace Localizer.Services.File
 {
-    public interface IFileUpdateService : IService
+    public interface IFileUpdateService<T> : IService where T : IFile
     {
         /// <summary>
         ///     Compare two packages and merge differences into old one.
@@ -12,6 +12,6 @@ namespace Localizer.Services.File
         /// <param name="oldFile"></param>
         /// <param name="newFile"></param>
         /// <param name="logger"></param>
-        void Update(IFile oldFile, IFile newFile, IUpdateLogService logger);
+        void Update(T oldFile, T newFile, IUpdateLogService logger);
     }
 }

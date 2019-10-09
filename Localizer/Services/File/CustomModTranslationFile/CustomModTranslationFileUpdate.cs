@@ -5,18 +5,12 @@ using Localizer.ServiceInterfaces;
 
 namespace Localizer.Services.File
 {
-    public class CustomModTranslationFileUpdate : IFileUpdateService
+    public class CustomModTranslationFileUpdate : IFileUpdateService<CustomModTranslationFile>
     {
-        public void Update(IFile oldFile, IFile newFile, IUpdateLogService logger)
+        public void Update(CustomModTranslationFile oldFile, CustomModTranslationFile newFile, IUpdateLogService logger)
         {
-            if (oldFile.GetType() != typeof(CustomModTranslationFile) ||
-                newFile.GetType() != typeof(CustomModTranslationFile))
-            {
-                return;
-            }
-
-            var oldEntries = (oldFile as CustomModTranslationFile).Translations;
-            var newEntries = (newFile as CustomModTranslationFile).Translations;
+            var oldEntries = oldFile.Translations;
+            var newEntries = newFile.Translations;
 
             foreach (var newEntryKey in newEntries.Keys)
             {
@@ -40,6 +34,7 @@ namespace Localizer.Services.File
             }
 
             var removed = oldEntries.Keys.Where(k => !newEntries.ContainsKey(k));
+            
             foreach (var r in removed)
             {
                 logger.Remove($"[{r}]");
