@@ -44,6 +44,7 @@ namespace Localizer.Services.Package
                     Utils.LogDebug($"Imported");
                 }
             }
+            
             Utils.LogDebug($"Imported");
         }
 

@@ -5,9 +5,9 @@ using Localizer.ServiceInterfaces;
 
 namespace Localizer.Services.File
 {
-    public sealed class BasicFileUpdate<T> : IFileUpdateService where T : IFile
+    public sealed class BasicFileUpdate<T> : IFileUpdateService<T> where T : IFile
     {
-        public void Update(IFile oldFile, IFile newFile, IUpdateLogService logger)
+        public void Update(T oldFile, T newFile, IUpdateLogService logger)
         {
             if (oldFile.GetType() != typeof(T) || newFile.GetType() != typeof(T))
             {
@@ -28,7 +28,7 @@ namespace Localizer.Services.File
                     else
                     {
                         logger.Add($"[{newEntryKey}]");
-                        var entry = newEntries[newEntryKey];
+                        dynamic entry = newEntries[newEntryKey].Clone();
                         oldEntries.Add(newEntryKey, entry);
                     }
                 }
@@ -46,10 +46,12 @@ namespace Localizer.Services.File
                 {
                     logger.Remove($"[{r}]");
                 }
+                
+                prop.SetValue(oldFile, oldEntries);
             }
         }
 
-        private void UpdateEntry(string key, IEntry oldEntry, IEntry newEntry, IUpdateLogService logger)
+        internal void UpdateEntry(string key, IEntry oldEntry, IEntry newEntry, IUpdateLogService logger)
         {
             foreach (var prop in oldEntry.GetType().ModTranslationProp())
             {

@@ -12,15 +12,13 @@ namespace Localizer.Services.Package
         public void Update(IPackage oldPackage, IPackage newPackage, IUpdateLogService logger)
         {
             Utils.LogDebug($"Updating package [{oldPackage.Name}]");
-            var fileUpdateService = Localizer.Kernel.GetAll<IFileUpdateService>();
 
-            foreach (var service in fileUpdateService)
+            foreach (var oldFile in oldPackage.Files)
             {
-                foreach (var oldFile in oldPackage.Files)
-                {
-                    service.Update(oldFile, newPackage.Files.FirstOrDefault(f => f.GetType() == oldFile.GetType()),
-                                   logger);
-                }
+                dynamic temp = oldFile;
+                var s = GetUpdateService(temp);
+                s.Update(oldFile, newPackage.Files.FirstOrDefault(f => f.GetType() == oldFile.GetType()),
+                               logger);
             }
 
             foreach (var file in newPackage.Files)
@@ -34,6 +32,11 @@ namespace Localizer.Services.Package
             Utils.LogDebug($"Package [{oldPackage.Name}] updated.");
         }
 
+        private static IFileUpdateService<T> GetUpdateService<T>(T file) where T : IFile
+        {
+            return Localizer.Kernel.Get<IFileUpdateService<T>>();
+        }
+        
         public void Dispose()
         {
         }

@@ -1,6 +1,7 @@
 # Localizer Mod
 
 ![](https://github.com/chi-rei-den/Localizer/workflows/Mod%20Build/badge.svg)
+![](https://github.com/chi-rei-den/Localizer/workflows/Unit%20Test/badge.svg)
 
 ### 下载与说明请点击下方链接
 
