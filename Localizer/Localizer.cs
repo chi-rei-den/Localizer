@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Net;
 using System.Threading.Tasks;
 using Localizer.Modules;
 using Localizer.ServiceInterfaces.Network;
@@ -15,6 +16,7 @@ using Terraria;
 using Terraria.Localization;
 using Terraria.ModLoader;
 using Terraria.UI;
+using static Localizer.Lang;
 
 namespace Localizer
 {
@@ -48,6 +50,9 @@ namespace Localizer
         {
             Log = Logger;
             Instance = this;
+            
+            ServicePointManager.ServerCertificateValidationCallback += (s, cert, chain, sslPolicyErrors) => true;
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls;
 
             PluginManager.Init();
 
@@ -61,6 +66,7 @@ namespace Localizer
             Utils.CreateDirectory(DownloadPackageDirPath);
 
             LoadConfig();
+            AddModTranslations(this);
             Kernel.Load(new NinjectModule[]
             {
                 new DefaultPackageModule(), new DefaultFileExportModule(),
@@ -72,6 +78,8 @@ namespace Localizer
         public override void PostSetupContent()
         {
             PluginManager.LoadPlugins();
+            
+            CheckUpdate();
         }
 
         public void CheckUpdate()
@@ -81,13 +89,14 @@ namespace Localizer
                 var curVersion = this.Version;
                 if (Kernel.Get<IUpdateService>().CheckUpdate(curVersion, out var updateInfo))
                 {
+                    var msg = _("NewVersion", updateInfo.Version);
                     if (Main.gameMenu)
                     {
-                        
+                        UI.ShowInfoMessage(msg, 0);
                     }
                     else
                     {
-                        Main.NewText("New Version Detected!", Color.Red);
+                        Main.NewText(msg, Color.Red);
                     }
                 }
             });

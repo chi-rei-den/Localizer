@@ -170,7 +170,8 @@ namespace Localizer
             var request = (HttpWebRequest)WebRequest.Create(url);
             request.Method = "GET";
             request.ContentType = "application/json;charset=UTF-8";
-            request.UserAgent = null;
+            request.Accept = "application/vnd.github.v3+json";
+            request.UserAgent = "Localizer";
             request.Timeout = 9000;
 
             return (HttpWebResponse)request.GetResponse();
@@ -186,7 +187,7 @@ namespace Localizer
             {
                 encoding = Encoding.GetEncoding(response.ContentEncoding);
             }
-            catch (ArgumentException e)
+            catch (Exception e)
             {
                 encoding = Encoding.UTF8;
             }

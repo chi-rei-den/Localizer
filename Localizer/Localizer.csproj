@@ -101,6 +101,7 @@
     <Compile Include="DataModel\IUpdateInfo.cs" />
     <Compile Include="Helpers\Extensions.cs" />
     <Compile Include="Helpers\UI.cs" />
+    <Compile Include="Lang\Lang.cs" />
     <Compile Include="LocalizerKernel.cs" />
     <Compile Include="Localizer.cs" />
     <Compile Include="Modules\DefaultFileExportModule.cs" />

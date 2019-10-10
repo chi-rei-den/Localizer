@@ -1,6 +1,10 @@
 using System;
 using System.IO;
+using System.Linq;
+using System.Reflection;
+using Localizer;
 using LocalizerWPF;
+using Terraria.ModLoader;
 
 namespace Launcher
 {
@@ -17,6 +21,12 @@ namespace Launcher
                 var localizer = new Localizer.Localizer();
                 localizer.Load();
 
+                
+                var ui = typeof(Mod).Module.GetType("Terraria.ModLoader.UI.Interface");
+
+                var infoField = ui.GetField("infoMessage", BindingFlags.Static | BindingFlags.NonPublic);
+                var info = infoField.GetValue(null);
+                
                 var app = new App();
                 app.InitializeComponent();
                 app.Run();
