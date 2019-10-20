@@ -73,11 +73,11 @@ namespace Localizer
                 new DefaultFileUpdateModule(), new DefaultFileImportModule(),
                 new DefaultNetworkModule(),
             });
+            PluginManager.LoadPlugins();
         }
 
         public override void PostSetupContent()
         {
-            PluginManager.LoadPlugins();
             
             CheckUpdate();
         }

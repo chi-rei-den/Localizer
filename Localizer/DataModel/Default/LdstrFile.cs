@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using Localizer.Attributes;
 
 namespace Localizer.DataModel.Default
 {
@@ -20,6 +21,7 @@ namespace Localizer.DataModel.Default
         }
     }
 
+    [AllowEarlyImport]
     public class LdstrFile : IFile
     {
         public Dictionary<string, LdstrEntry> LdstrEntries { get; set; } = new Dictionary<string, LdstrEntry>();

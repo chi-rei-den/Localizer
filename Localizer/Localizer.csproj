@@ -75,6 +75,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Attributes\AllowEarlyImportAttribute.cs" />
     <Compile Include="Attributes\ModTranslationOwnerFieldAttribute.cs" />
     <Compile Include="Attributes\ModTranslationPropAttribute.cs" />
     <Compile Include="Configuration.cs" />

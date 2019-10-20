@@ -29,7 +29,7 @@ namespace Localizer.Services.Package
             Utils.LogDebug($"Queued [{package.Name}]");
         }
 
-        public void Import()
+        public void Import(bool early = false)
         {
             Utils.LogDebug($"Begin importing");
 

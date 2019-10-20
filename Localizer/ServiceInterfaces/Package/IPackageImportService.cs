@@ -14,7 +14,7 @@ namespace Localizer.Services.Package
         /// <summary>
         ///     Start the import process.
         /// </summary>
-        void Import();
+        void Import(bool early);
 
         /// <summary>
         ///     Clear internal queue and ready for next work.

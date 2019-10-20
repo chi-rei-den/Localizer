@@ -114,8 +114,7 @@ namespace Localizer
 
         public static string ModTranslationOwnerFieldName(this PropertyInfo prop)
         {
-            return (prop.GetCustomAttribute(typeof(ModTranslationOwnerFieldAttribute)) as ModTranslationOwnerFieldAttribute)
-                ?.FieldName;
+            return prop.GetCustomAttribute<ModTranslationOwnerFieldAttribute>()?.FieldName;
         }
 
         public static PropertyInfo[] ModTranslationProp(this Type type)

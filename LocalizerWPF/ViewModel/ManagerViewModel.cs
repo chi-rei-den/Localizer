@@ -87,7 +87,7 @@ namespace LocalizerWPF.ViewModel
                     }
                 }
 
-                packageImportService.Import();
+                packageImportService.Import(false);
 
                 Localizer.Localizer.RefreshLanguages();
 
