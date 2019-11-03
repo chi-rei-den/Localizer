@@ -1,11 +1,10 @@
 using System;
-using System.Linq;
 using FluentAssertions;
 using Localizer;
 using Localizer.DataModel.Default;
 using Xunit;
 
-namespace LocalizerTest
+namespace LocalizerTest.Helper
 {
     public class Extensions
     {

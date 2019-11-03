@@ -258,7 +258,7 @@ namespace Localizer
 
         public static ICollection<IMod> GetLoadedMods()
         {
-            return ModLoader.Mods?.Select(m => new ModWrapper(m)).ToArray();
+            return ModLoader.Mods?.Select(m => Localizer.GetWrappedMod(m.Name)).ToArray();
         }
 
         public static Mod GetModByName(string name)

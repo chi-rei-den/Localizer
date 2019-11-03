@@ -37,13 +37,13 @@ namespace Localizer.Package
                 return null;
             }
 
-            var tmod = ModLoader.Mods.FirstOrDefault(m => m.Name == package.ModName);
-            if (tmod == null)
+            var mod = Localizer.GetWrappedMod(package.ModName);
+            if (mod == null)
             {
                 return null;
             }
 
-            package.Mod = new ModWrapper(tmod);
+            package.Mod = mod;
 
             foreach (var fileTypeName in package.FileList)
             {

@@ -1,5 +1,6 @@
 using System;
 using System.Reflection;
+using Terraria.ModLoader.Core;
 
 namespace Localizer.DataModel
 {
@@ -24,5 +25,10 @@ namespace Localizer.DataModel
         ///     Version of the mod.
         /// </summary>
         Version Version { get; }
+        
+        /// <summary>
+        /// File of the mod.
+        /// </summary>
+        TmodFile File { get; }
     }
 }

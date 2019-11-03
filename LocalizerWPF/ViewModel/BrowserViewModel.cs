@@ -47,8 +47,8 @@ namespace LocalizerWPF.ViewModel
 
         public BrowserViewModel()
         {
-            packageBrowserService = Localizer.Localizer.Kernel.Get<IPackageBrowserService>();
-            downloadManager = Localizer.Localizer.Kernel.Get<IDownloadManagerService>();
+            packageBrowserService = Plugin.Kernel.Get<IPackageBrowserService>();
+            downloadManager = Plugin.Kernel.Get<IDownloadManagerService>();
 
             RefreshCommand = new RelayCommand(Refresh);
             DownloadCommand = new RelayCommand<IPackage>(Download, CanDownload);

@@ -35,14 +35,17 @@ namespace Localizer.Services.Package
 
             foreach (var group in packageGroups)
             {
-                var merged = Merge(group);
-                foreach (dynamic f in merged.Files)
+                Utils.SafeWrap(() =>
                 {
-                    var s = GetImportService(f);
-                    Utils.LogDebug($"Importing [{f.GetType()}] using [{s.GetType()}]");
-                    s.Import(f, group.Mod, group.Packages.ToList()[0].Language);
-                    Utils.LogDebug($"Imported");
-                }
+                    var merged = Merge(group);
+                    foreach (dynamic f in merged.Files)
+                    {
+                        var s = GetImportService(f);
+                        Utils.LogDebug($"Importing [{f.GetType()}] using [{s.GetType()}]");
+                        s.Import(f, group.Mod, group.Packages.ToList()[0].Language);
+                        Utils.LogDebug($"Imported");
+                    }
+                });
             }
             
             Utils.LogDebug($"Imported");
@@ -74,21 +77,24 @@ namespace Localizer.Services.Package
 
             foreach (var package in group.Packages)
             {
-                foreach (dynamic file in package.Files)
+                Utils.SafeWrap(() =>
                 {
-                    if (result.Files.All(f => f.GetType() != file.GetType()))
+                    foreach (dynamic file in package.Files)
                     {
-                        result.Files.Add(file);
+                        if (result.Files.All(f => f.GetType() != file.GetType()))
+                        {
+                            result.Files.Add(file);
+                        }
+                        else
+                        {
+                            var main = package.Files.FirstOrDefault(f => f.GetType() == file.GetType());
+                            var s = GetImportService(file);
+                            var merged = s.Merge(main, file);
+                            result.Files.Remove(main);
+                            result.Files.Add(merged);
+                        }
                     }
-                    else
-                    {
-                        var main = package.Files.FirstOrDefault(f => f.GetType() == file.GetType());
-                        var s = GetImportService(file);
-                        var merged = s.Merge(main, file);
-                        result.Files.Remove(main);
-                        result.Files.Add(merged);
-                    }
-                }
+                });
             }
 
             return result;

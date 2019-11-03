@@ -1,22 +1,29 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.IO;
 using System.Net;
+using System.Reflection;
 using System.Threading.Tasks;
+using Harmony;
+using Localizer.DataModel;
+using Localizer.DataModel.Default;
 using Localizer.Modules;
 using Localizer.ServiceInterfaces.Network;
 using Localizer.Services;
 using log4net;
 using Microsoft.Xna.Framework;
+using MonoMod.Cil;
 using MonoMod.RuntimeDetour.HookGen;
 using Ninject;
 using Ninject.Modules;
 using Terraria;
 using Terraria.Localization;
 using Terraria.ModLoader;
+using Terraria.ModLoader.Core;
 using Terraria.UI;
+using static Localizer.ReflectionHelper;
 using static Localizer.Lang;
+using File = System.IO.File;
 
 namespace Localizer
 {
@@ -26,35 +33,50 @@ namespace Localizer
         public static string SourcePackageDirPath;
         public static string DownloadPackageDirPath;
         public static string ConfigPath;
+        public static Localizer Instance { get; private set; }
+        public static ILog Log { get; private set; }
+        public static TmodFile TmodFile { get; private set; }
+        public static Configuration Config { get; set; }
+        public static OperationTiming State { get; private set; }
+        internal static LocalizerKernel Kernel { get; private set; }
+        internal static HarmonyInstance HarmonyInstance { get; set; }
 
         private static Dictionary<int, GameCulture> _gameCultures;
 
+        private static bool _initiated = false;
+
         public Localizer()
         {
-            _gameCultures =
-                typeof(GameCulture).GetFieldDirectly(null, "_legacyCultures") as Dictionary<int, GameCulture>;
-            
-            Kernel = new LocalizerKernel();
-            Kernel.Bind<RefreshLanguageService>().To<RefreshLanguageService>().InSingletonScope();
-            Kernel.Get<RefreshLanguageService>();
-        }
-
-        public static ILog Log { get; private set; }
-        public static Localizer Instance { get; private set; }
-
-        public static LocalizerKernel Kernel { get; private set; }
-
-        public static Configuration Config { get; set; }
-
-        public override void Load()
-        {
-            Log = Logger;
             Instance = this;
             
+            HarmonyInstance = HarmonyInstance.Create(nameof(Localizer));
+            var prefix = new HarmonyMethod(typeof(Localizer).GetMethod(nameof(AfterLocalizerCtorHook), ReflectionHelper.All));
+            HarmonyInstance.Patch(Tr().GetType("Terraria.ModLoader.Core.AssemblyManager")
+                                             .GetMethod("Instantiate", ReflectionHelper.All), prefix);
+        }
+
+        private static void AfterLocalizerCtorHook(object mod)
+        {
+            if (!_initiated)
+            {
+                Log = Instance.Logger;
+                TmodFile = Instance.Prop("File") as TmodFile;
+                Init();
+                _initiated = true;
+                State = OperationTiming.BeforeModLoad;
+            }
+            else
+            {
+                Hooks.InvokeBeforeModCtor(mod);
+            }
+        }
+
+        private static void Init()
+        {
+            _gameCultures = typeof(GameCulture).Field("_legacyCultures") as Dictionary<int, GameCulture>;
+
             ServicePointManager.ServerCertificateValidationCallback += (s, cert, chain, sslPolicyErrors) => true;
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls;
-
-            PluginManager.Init();
 
             SavePath = "./Localizer/";
             SourcePackageDirPath = SavePath + "/Source/";
@@ -66,20 +88,29 @@ namespace Localizer
             Utils.CreateDirectory(DownloadPackageDirPath);
 
             LoadConfig();
-            AddModTranslations(this);
-            Kernel.Load(new NinjectModule[]
-            {
-                new DefaultPackageModule(), new DefaultFileExportModule(),
-                new DefaultFileUpdateModule(), new DefaultFileImportModule(),
-                new DefaultNetworkModule(),
-            });
-            PluginManager.LoadPlugins();
+            AddModTranslations(Instance);
+            Kernel = new LocalizerKernel();
+        }
+
+        public override void Load()
+        {
+            if(!_initiated)
+                throw new Exception("Localizer not initialized.");
+            State = OperationTiming.BeforeContentLoad;
+            Hooks.InvokeBeforeLoad();
+            Kernel.Get<RefreshLanguageService>();
         }
 
         public override void PostSetupContent()
         {
-            
-            CheckUpdate();
+            State = OperationTiming.PostContentLoad;
+            Hooks.InvokePostSetupContent();
+//            CheckUpdate();
+        }
+
+        public override void UpdateUI(GameTime gameTime)
+        {
+            Hooks.InvokeOnGameUpdate(gameTime);
         }
 
         public void CheckUpdate()
@@ -108,16 +139,15 @@ namespace Localizer
             {
                 SaveConfig();
 
-                PluginManager.UnloadPlugins();
-
                 HookEndpointManager.RemoveAllOwnedBy(this);
-
+                HarmonyInstance.UnpatchAll(nameof(Localizer));
                 Kernel.Dispose();
 
+                HarmonyInstance = null;
                 Kernel = null;
                 _gameCultures = null;
-                Instance = null;
                 Config = null;
+                Instance = null;
             }
             catch (Exception e)
             {
@@ -125,6 +155,7 @@ namespace Localizer
             }
             finally
             {
+                _initiated = false;
                 Log = null;
             }
 
@@ -135,13 +166,14 @@ namespace Localizer
         {
             if (File.Exists(ConfigPath))
             {
-                Config = Utils.ReadFileAndDeserializeJson<Configuration>(ConfigPath);
+                Config = Utils.ReadFileAndDeserializeJson<Configuration>(ConfigPath) ?? new Configuration();
             }
             else
             {
                 Config = new Configuration();
-                Utils.SerializeJsonAndCreateFile(Config, ConfigPath);
             }
+            
+            Utils.SerializeJsonAndCreateFile(Config, ConfigPath);
         }
 
         public static void SaveConfig()
@@ -167,9 +199,47 @@ namespace Localizer
             Kernel.Get<RefreshLanguageService>().Refresh();
         }
 
-        public static void CloseTmodFile()
+        public static string GetEacPath()
         {
+            string GetEacPathInternal()
+            {
+                var propFile = Instance.GetFileStream("Info");
+                
+                var buildProp = Tr().GetType("Terraria.ModLoader.Core.BuildProperties")
+                                    .Method("ReadFromStream", propFile);
+
+                var eacPath = buildProp.Field("eacPath") as string;
+
+                return eacPath;
+            }
+
+            if (TmodFile.IsOpen)
+            {
+                return GetEacPathInternal();
+            }
             
+            using (TmodFile.Open())
+            {
+                return GetEacPathInternal();
+            }
+        }
+
+        public static IMod GetWrappedMod(string name)
+        {
+            if (State < OperationTiming.PostContentLoad)
+            {
+                var loadedMods = Tr().GetType("Terraria.ModLoader.Core.AssemblyManager")
+                                     .Field("loadedMods");
+                if ((bool)loadedMods.Method("ContainsKey", name))
+                {
+                    return new LoadedModWrapper(loadedMods.Method("get_Item", name));
+                }
+            }
+            
+            var mod = Utils.GetModByName(name);
+            if (mod is null)
+                return null;
+            return new ModWrapper(mod);
         }
     }
 }

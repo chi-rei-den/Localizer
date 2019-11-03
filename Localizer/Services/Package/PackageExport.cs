@@ -15,7 +15,7 @@ namespace Localizer.Services.Package
 
             if (package.Mod == null || package.Mod.GetType() != typeof(Mod))
             {
-                package.Mod = new ModWrapper(ModLoader.Mods.FirstOrDefault(m => m.Name == package.ModName));
+                package.Mod = Localizer.GetWrappedMod(package.ModName);
             }
 
             foreach (var service in fileExportServices)

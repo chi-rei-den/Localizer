@@ -14,9 +14,8 @@ namespace Localizer.Services.File
                 return;
             }
 
-            var translations =
-                typeof(Mod).GetFieldDirectly<Dictionary<string, ModTranslation>>(
-                    Utils.GetModByName(package.ModName), "translations");
+            var translations = Utils.GetModByName(package.ModName).Field("translations") 
+                as Dictionary<string, ModTranslation>;
 
             if (translations == null)
             {

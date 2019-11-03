@@ -3,7 +3,7 @@ using Localizer.DataModel.Default;
 using Xunit;
 using ModUtils = Localizer.Utils;
 
-namespace LocalizerTest
+namespace LocalizerTest.Helper
 {
     public class Utils
     {

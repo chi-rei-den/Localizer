@@ -52,7 +52,7 @@ namespace LocalizerWPF
 
         private void OnSourceUpdated(object sender, DataTransferEventArgs e)
         {
-            ServiceLocator.Current.GetInstance<ManagerViewModel>().SaveStateCommand.Execute(null);
+            SimpleIoc.Default.GetInstance<ManagerViewModel>().SaveStateCommand.Execute(null);
         }
     }
 }

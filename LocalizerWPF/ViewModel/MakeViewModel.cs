@@ -79,14 +79,14 @@ namespace LocalizerWPF.ViewModel
             ExportCommand = new RelayCommand(Export);
             PackUpCommand = new RelayCommand(PackUp);
 
-            packageManageService = Localizer.Localizer.Kernel.Get<IPackageManageService>();
-            packageExportService = Localizer.Localizer.Kernel.Get<IPackageExportService>();
-            packagePackService = Localizer.Localizer.Kernel.Get<IPackagePackService>();
-            packageSaveService = Localizer.Localizer.Kernel.Get<IPackageSaveService>();
-            packageUpdateService = Localizer.Localizer.Kernel.Get<IPackageUpdateService>();
-            fileSaveService = Localizer.Localizer.Kernel.Get<IFileSaveService>();
-            sourcePackageLoadServiceService = Localizer.Localizer.Kernel.Get<SourcePackageLoad<Package>>();
-            fileLoadService = Localizer.Localizer.Kernel.Get<IFileLoadService>();
+            packageManageService = Plugin.Kernel.Get<IPackageManageService>();
+            packageExportService = Plugin.Kernel.Get<IPackageExportService>();
+            packagePackService = Plugin.Kernel.Get<IPackagePackService>();
+            packageSaveService = Plugin.Kernel.Get<IPackageSaveService>();
+            packageUpdateService = Plugin.Kernel.Get<IPackageUpdateService>();
+            fileSaveService = Plugin.Kernel.Get<IFileSaveService>();
+            sourcePackageLoadServiceService = Plugin.Kernel.Get<SourcePackageLoad<Package>>();
+            fileLoadService = Plugin.Kernel.Get<IFileLoadService>();
         }
 
         private void Export()
@@ -145,7 +145,7 @@ namespace LocalizerWPF.ViewModel
 
                 if (!ForceOverride && oldPack != null)
                 {
-                    var updateLogger = Localizer.Localizer.Kernel.Get<IUpdateLogService>();
+                    var updateLogger = Plugin.Kernel.Get<IUpdateLogService>();
                     updateLogger.Init($"{package.Name}-{Utils.DateTimeToFileName(DateTime.Now)}");
 
                     packageUpdateService.Update(oldPack, package, updateLogger);

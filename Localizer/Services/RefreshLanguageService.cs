@@ -14,10 +14,10 @@ namespace Localizer.Services
         {
             items = new List<WeakReference<Item>>();
             
-            On.Terraria.Item.SetDefaults += (orig, self, type, check) =>
+            On.Terraria.Item.ctor += (orig, self) =>
             {
+                orig(self);
                 items.Add(new WeakReference<Item>(self));
-                orig(self, type, check);
             };
         }
 
@@ -25,13 +25,19 @@ namespace Localizer.Services
         {
             ModContent.RefreshModLanguage(LanguageManager.Instance.ActiveCulture);
 
+            var deads = new List<WeakReference<Item>>();
             foreach (var wr in items)
             {
                 if (wr.TryGetTarget(out var i))
                 {
                     i.RebuildTooltip();
                 }
+                else
+                {
+                    deads.Add(wr);
+                }
             }
+            deads.ForEach(i => items.Remove(i));
         }
         
         public void Dispose()

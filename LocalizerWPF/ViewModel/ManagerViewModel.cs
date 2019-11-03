@@ -33,11 +33,11 @@ namespace LocalizerWPF.ViewModel
             }
             else
             {
-                packageManageService = Localizer.Localizer.Kernel.Get<IPackageManageService>();
-                sourcePackageLoadServiceService = Localizer.Localizer.Kernel.Get<SourcePackageLoad<Package>>();
-                packedPackageLoadServiceService = Localizer.Localizer.Kernel.Get<PackedPackageLoad<Package>>();
-                packageImportService = Localizer.Localizer.Kernel.Get<IPackageImportService>();
-                fileLoadService = Localizer.Localizer.Kernel.Get<IFileLoadService>();
+                packageManageService = Plugin.Kernel.Get<IPackageManageService>();
+                sourcePackageLoadServiceService = Plugin.Kernel.Get<SourcePackageLoad<Package>>();
+                packedPackageLoadServiceService = Plugin.Kernel.Get<PackedPackageLoad<Package>>();
+                packageImportService = Plugin.Kernel.Get<IPackageImportService>();
+                fileLoadService = Plugin.Kernel.Get<IFileLoadService>();
 
                 packageManageService.PackageGroups = new ObservableCollection<IPackageGroup>();
             }
@@ -118,24 +118,30 @@ namespace LocalizerWPF.ViewModel
             {
                 foreach (var dir in new DirectoryInfo(Localizer.Localizer.SourcePackageDirPath).GetDirectories())
                 {
-                    var pack = sourcePackageLoadServiceService.Load(dir.FullName, fileLoadService);
-                    if (pack == null)
+                    Utils.SafeWrap(() =>
                     {
-                        continue;
-                    }
+                        var pack = sourcePackageLoadServiceService.Load(dir.FullName, fileLoadService);
+                        if (pack == null)
+                        {
+                            return;
+                        }
 
-                    packageManageService.AddPackage(pack);
+                        packageManageService.AddPackage(pack);
+                    });
                 }
 
                 foreach (var file in new DirectoryInfo(Localizer.Localizer.DownloadPackageDirPath).GetFiles())
                 {
-                    var pack = packedPackageLoadServiceService.Load(file.FullName, fileLoadService);
-                    if (pack == null)
+                    Utils.SafeWrap(() =>
                     {
-                        continue;
-                    }
+                        var pack = packedPackageLoadServiceService.Load(file.FullName, fileLoadService);
+                        if (pack == null)
+                        {
+                            return;
+                        }
 
-                    packageManageService.AddPackage(pack);
+                        packageManageService.AddPackage(pack);
+                    });
                 }
 
                 foreach (var pg in PackageGroups)

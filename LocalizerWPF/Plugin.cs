@@ -5,11 +5,18 @@ using LocalizerWPF.ViewModel;
 
 namespace LocalizerWPF
 {
-    public class WPFPlugin : Plugin
+    public class Plugin : LocalizerPlugin
     {
-        public override void Initialize()
+        public static LocalizerKernel Kernel { get; private set; }
+        
+        public override string Name => "LocalizerUI-WPF";
+        public override string Author => "Chireiden";
+        public override string Description => "An official UI component of Localizer.";
+
+        public override void Initialize(LocalizerKernel kernel)
         {
-            Localizer.Localizer.Kernel.Load(new[] { new WPFModule() });
+            Kernel = kernel;
+            kernel.Load(new[] { new WPFModule() });
 
             if (Application.Current == null)
             {
@@ -47,15 +54,13 @@ namespace LocalizerWPF
             }
         }
 
-        protected override void OnDispose()
+        protected override void DisposeUnmanaged()
         {
             var app = Application.Current;
             app?.Dispatcher.Invoke(() =>
             {
                 app.MainWindow?.Close();
             });
-            app?.Dispatcher.Thread.Join(1000);
-
         }
     }
 }

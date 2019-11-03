@@ -1,6 +1,7 @@
 using System;
 using System.Globalization;
 using System.Linq;
+using Localizer.Attributes;
 using Localizer.DataModel;
 using Localizer.DataModel.Default;
 using Terraria.Localization;
@@ -8,6 +9,7 @@ using Terraria.ModLoader;
 
 namespace Localizer.Services.File
 {
+    [OperationTiming(OperationTiming.PostContentLoad)]
     public sealed class BasicFileImport<T> : IFileImportService<T> where T : IFile, new()
     {
         public void Import(T file, IMod mod, CultureInfo culture)
@@ -16,7 +18,7 @@ namespace Localizer.Services.File
             {
                 var fieldName = prop.ModTranslationOwnerFieldName();
 
-                dynamic field = typeof(Mod).GetFieldDirectly(Utils.GetModByName(mod.Name), fieldName);
+                dynamic field = Utils.GetModByName(mod.Name).Field(fieldName);
 
                 var entryType = prop.PropertyType.GenericTypeArguments
                                     .FirstOrDefault(g => g.GetInterfaces().Contains(typeof(IEntry)));

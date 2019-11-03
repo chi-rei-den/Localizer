@@ -1,7 +1,9 @@
 using System;
 using Localizer.DataModel;
 using Localizer.DataModel.Default;
+using Localizer.Services;
 using Localizer.Services.File;
+using Ninject;
 using Ninject.Modules;
 
 namespace Localizer.Modules
@@ -17,6 +19,8 @@ namespace Localizer.Modules
             BindImport<BasicPrefixFile>(typeof(BasicFileImport<BasicPrefixFile>));
             BindImport<CustomModTranslationFile>(typeof(CustomModTranslationFileImport));
             BindImport<LdstrFile>(typeof(HarmonyLdstrFileImport));
+            
+            Bind<RefreshLanguageService>().To<RefreshLanguageService>().InSingletonScope();
         }
 
         private void BindImport<T>(Type serviceType) where T : IFile

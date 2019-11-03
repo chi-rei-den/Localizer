@@ -3,11 +3,13 @@ using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using Harmony;
+using Localizer.Attributes;
 using Localizer.DataModel;
 using Localizer.DataModel.Default;
 
 namespace Localizer.Services.File
 {
+    [OperationTiming(OperationTiming.BeforeContentLoad | OperationTiming.PostContentLoad)]
     public sealed class HarmonyLdstrFileImport : LdstrFileImportBase, IFileImportService<LdstrFile>
     {
         private HarmonyInstance harmony;

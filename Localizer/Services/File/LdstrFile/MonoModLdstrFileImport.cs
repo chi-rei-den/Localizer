@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
+using Localizer.Attributes;
 using Localizer.DataModel;
 using Localizer.DataModel.Default;
 using MonoMod.Cil;
@@ -12,6 +13,7 @@ using Terraria.ModLoader;
 
 namespace Localizer.Services.File
 {
+    [OperationTiming(OperationTiming.BeforeContentLoad | OperationTiming.PostContentLoad)]
     public class MonoModLdstrFileImport : LdstrFileImportBase, IFileImportService<LdstrFile>
     {
         private Dictionary<MethodBase, ILContext.Manipulator> modifications;

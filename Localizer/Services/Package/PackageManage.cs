@@ -12,6 +12,8 @@ namespace Localizer.Services.Package
 
         public ICollection<IPackageGroup> PackageGroups { get; set; }
 
+        private List<PackageGroupState> oldPackageGroupStates;
+
         /// <summary>
         ///     Add a package into PackageGroups.
         /// </summary>
@@ -51,10 +53,10 @@ namespace Localizer.Services.Package
                 return;
             }
 
-            var states = Utils.ReadFileAndDeserializeJson<List<PackageGroupState>>(stateSavePath) ??
+            oldPackageGroupStates = Utils.ReadFileAndDeserializeJson<List<PackageGroupState>>(stateSavePath) ??
                          new List<PackageGroupState>();
 
-            foreach (var state in states)
+            foreach (var state in oldPackageGroupStates)
             {
                 var packageGroup = PackageGroups.FirstOrDefault(pg => pg.Mod.Name == state.ModName);
                 if (packageGroup == null)
@@ -74,14 +76,15 @@ namespace Localizer.Services.Package
 
         public void SaveState()
         {
-            var states = new List<PackageGroupState>();
-
             foreach (var pg in PackageGroups)
             {
-                states.Add(new PackageGroupState(pg));
+                var state = oldPackageGroupStates.FirstOrDefault(s => s.ModName == pg.Mod.Name);
+                if (state != null)
+                    oldPackageGroupStates.Remove(state);
+                oldPackageGroupStates.Add(new PackageGroupState(pg));
             }
 
-            Utils.SerializeJsonAndCreateFile(states, stateSavePath);
+            Utils.SerializeJsonAndCreateFile(oldPackageGroupStates, stateSavePath);
         }
 
         public void Dispose()

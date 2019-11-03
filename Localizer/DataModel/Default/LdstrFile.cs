@@ -21,7 +21,7 @@ namespace Localizer.DataModel.Default
         }
     }
 
-    [AllowEarlyImport]
+    [OperationTiming]
     public class LdstrFile : IFile
     {
         public Dictionary<string, LdstrEntry> LdstrEntries { get; set; } = new Dictionary<string, LdstrEntry>();

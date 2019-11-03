@@ -9,8 +9,6 @@
   </PropertyGroup>
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{95D54B28-B67B-4248-B83A-B5E5426C3806}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
@@ -26,7 +24,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <OutputPath>bin\x86\Release\</OutputPath>
+    <OutputPath>bin\Release\</OutputPath>
     <PlatformTarget>x86</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
@@ -36,7 +34,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <OutputPath>bin\x86\Debug\</OutputPath>
+    <OutputPath>bin\Debug\</OutputPath>
     <PlatformTarget>x86</PlatformTarget>
   </PropertyGroup>
   <ItemGroup>
@@ -75,7 +73,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Attributes\AllowEarlyImportAttribute.cs" />
+    <Compile Include="Attributes\OperationTimingAttribute.cs" />
     <Compile Include="Attributes\ModTranslationOwnerFieldAttribute.cs" />
     <Compile Include="Attributes\ModTranslationPropAttribute.cs" />
     <Compile Include="Configuration.cs" />
@@ -84,6 +82,7 @@
     <Compile Include="DataModel\Default\BasicPrefixFile.cs" />
     <Compile Include="DataModel\Default\BasicProjectileFile.cs" />
     <Compile Include="DataModel\Default\File.cs" />
+    <Compile Include="DataModel\Default\LoadedModWrapper.cs" />
     <Compile Include="DataModel\Default\ModWrapper.cs" />
     <Compile Include="DataModel\Default\Package.cs" />
     <Compile Include="DataModel\Default\PackageGroup.cs" />
@@ -101,7 +100,9 @@
     <Compile Include="DataModel\IPackageGroup.cs" />
     <Compile Include="DataModel\IUpdateInfo.cs" />
     <Compile Include="Helpers\Extensions.cs" />
+    <Compile Include="Helpers\ReflectionHelper.cs" />
     <Compile Include="Helpers\UI.cs" />
+    <Compile Include="Hooks.cs" />
     <Compile Include="Lang\Lang.cs" />
     <Compile Include="LocalizerKernel.cs" />
     <Compile Include="Localizer.cs" />
@@ -110,8 +111,8 @@
     <Compile Include="Modules\DefaultFileUpdateModule.cs" />
     <Compile Include="Modules\DefaultNetworkModule.cs" />
     <Compile Include="Modules\DefaultPackageModule.cs" />
-    <Compile Include="Plugin\Plugin.cs" />
-    <Compile Include="Plugin\PluginManager.cs" />
+    <Compile Include="LocalizerPlugin.cs" />
+    <Compile Include="OperationTiming.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ServiceInterfaces\File\IFileExportService.cs" />
     <Compile Include="ServiceInterfaces\File\IFileImportService.cs" />
@@ -129,6 +130,7 @@
     <Compile Include="ServiceInterfaces\Package\IPackagePackService.cs" />
     <Compile Include="ServiceInterfaces\Package\IPackageSaveService.cs" />
     <Compile Include="ServiceInterfaces\Package\IPackageUpdateService.cs" />
+    <Compile Include="Services\AutoImportService.cs" />
     <Compile Include="Services\File\BasicFile\BasicFileExport.cs" />
     <Compile Include="Services\File\BasicFile\BasicFileImport.cs" />
     <Compile Include="Services\File\BasicFile\BasicFileUpdate.cs" />

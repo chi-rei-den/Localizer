@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Globalization;
+using Localizer.Attributes;
 using Localizer.DataModel;
 using Localizer.DataModel.Default;
 using Terraria.Localization;
@@ -7,16 +8,21 @@ using Terraria.ModLoader;
 
 namespace Localizer.Services.File
 {
+    [OperationTiming(OperationTiming.PostContentLoad)]
     public class CustomModTranslationFileImport : IFileImportService<CustomModTranslationFile>
     {
         public void Import(CustomModTranslationFile file, IMod mod, CultureInfo culture)
         {
             var entryDict = file.Translations;
 
-            var translations =
-                typeof(Mod).GetFieldDirectly(Utils.GetModByName(mod.Name), "translations") as
+            var translations = Utils.GetModByName(mod.Name).Field("translations") as
                     IDictionary<string, ModTranslation>;
 
+            if (translations == null)
+            {
+                return;
+            }
+            
             foreach (var pair in entryDict)
             {
                 if (!translations.ContainsKey(pair.Key))

@@ -26,7 +26,7 @@ namespace Localizer.Services.File
             {
                 var fieldName = prop.ModTranslationOwnerFieldName();
 
-                dynamic field = typeof(Mod).GetFieldDirectly(mod, fieldName);
+                dynamic field = mod.Field(fieldName);
 
                 var entryType = prop.PropertyType.GenericTypeArguments
                                     .FirstOrDefault(g => g.GetInterfaces().Contains(typeof(IEntry)));
