@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using Terraria.Localization;
 using Terraria.ModLoader;
 
+// ReSharper disable once CheckNamespace
 namespace Localizer
 {
     public static class Lang

@@ -4,7 +4,7 @@ using Mono.Cecil;
 using MonoMod.Utils;
 using Terraria;
 
-namespace Localizer
+namespace Localizer.Helpers
 {
     public static class ReflectionHelper
     {
@@ -84,12 +84,12 @@ namespace Localizer
             return Assembly.GetAssembly(typeof(Main)).ManifestModule;
         }
 
-        public static MethodInfo FindMethod(this Module module, string findableID)
+        public static MethodBase FindMethod(this Module module, string findableID)
         {
             try
             {
                 var typeName = findableID.Split(' ')[1].Split(new[] { "::" }, StringSplitOptions.RemoveEmptyEntries)[0];
-                return module.GetType(typeName)?.FindMethod(findableID);
+                return module.GetType(typeName)?.FindMethodAndConstructor(findableID);
             }
             catch (Exception e)
             {
@@ -97,7 +97,30 @@ namespace Localizer
                 return null;
             }
         }
+        
+        public static MethodBase FindMethodAndConstructor(this Type type, string findableID)
+        {
+            try
+            {
+                var m = type.FindMethod(findableID);
+                if (m is null)
+                {
+                    foreach (var c in type.GetConstructors(ReflectionHelper.All))
+                    {
+                        if (c.GetID() == findableID)
+                            return c;
+                    }
+                }
 
+                return m;
+            }
+            catch (Exception e)
+            {
+                Localizer.Log.Debug(e);
+                return null;
+            }
+        }
+        
         public static MethodDefinition FindMethod(this ModuleDefinition module, string findableID)
         {
             try
@@ -112,5 +135,9 @@ namespace Localizer
             }
         }
 
+        public static T GetAttribute<T>(Type type) where T : Attribute
+        {
+            return type.GetCustomAttribute<T>();
+        }
     }
 }

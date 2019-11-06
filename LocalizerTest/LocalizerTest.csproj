@@ -49,21 +49,19 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DataModel\GitHubUpdateInfoTest.cs" />
-    <Compile Include="Helper\Extensions.cs" />
+    <Compile Include="Helper\ExtensionsTest.cs" />
     <Compile Include="Helper\ReflectionHelperTest.cs" />
-    <Compile Include="Helper\Utils.cs" />
+    <Compile Include="Helper\UtilsTest.cs" />
     <Compile Include="LocalizerTest.cs" />
+    <Compile Include="Network\GitHubModUpdateService.cs" />
     <Compile Include="Ninject.cs" />
     <Compile Include="NonTest\UpdateLogger.cs" />
-    <Compile Include="Services\File\BasicFile\BasicFileExportTest.cs" />
-    <Compile Include="Services\File\BasicFile\BasicFileImportTest.cs" />
-    <Compile Include="Services\File\BasicFile\BasicFileUpdateTest.cs" />
-    <Compile Include="Services\File\CustomModTranslationFile\CustomModTranslationFileImportTest.cs" />
-    <Compile Include="Services\File\CustomModTranslationFile\CustomModTranslationFileUpdateTest.cs" />
-    <Compile Include="Services\File\LdstrFile\HarmonyLdstrImportTest.cs" />
-    <Compile Include="Services\File\LdstrFile\LdstrFileImportBaseTest.cs" />
-    <Compile Include="Services\File\LdstrFile\LdstrFileUpdateTest.cs" />
-    <Compile Include="Services\Network\GitHubModUpdateService.cs" />
+    <Compile Include="Packages\Import\BasicFileImportTest.cs" />
+    <Compile Include="Packages\Import\CustomModTranslationFileImportTest.cs" />
+    <Compile Include="Packages\Import\LdstrFileImportBaseTest.cs" />
+    <Compile Include="Packages\Update\BasicFileUpdateTest.cs" />
+    <Compile Include="Packages\Update\CustomModTranslationFileUpdateTest.cs" />
+    <Compile Include="Packages\Update\LdstrFileUpdateTest.cs" />
     <Compile Include="Tests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -75,6 +73,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="DataModel\" />
+    <Folder Include="Packages\Export" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="FluentAssertions">

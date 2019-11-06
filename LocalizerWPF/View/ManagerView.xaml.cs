@@ -7,9 +7,8 @@ using GalaSoft.MvvmLight.Ioc;
 using Localizer.DataModel;
 using LocalizerWPF.ViewModel;
 using MahApps.Metro.Controls;
-using Microsoft.Practices.ServiceLocation;
 
-namespace LocalizerWPF
+namespace LocalizerWPF.View
 {
     /// <summary>
     ///     Interaction logic for ModTranslationManager.xaml

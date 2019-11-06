@@ -44,7 +44,7 @@
                         <TextBlock Text="{DynamicResource Tab-Manager}" />
                     </DataTemplate>
                 </TabItem.HeaderTemplate>
-                <local:ManagerView x:Name="ManagerView" />
+                <view:ManagerView x:Name="ManagerView" />
             </TabItem>
             <TabItem BorderBrush="RoyalBlue" BorderThickness="1 2 1 2" Margin="1">
                 <TabItem.HeaderTemplate>
@@ -52,7 +52,7 @@
                         <TextBlock Text="{DynamicResource Tab-Browser}" />
                     </DataTemplate>
                 </TabItem.HeaderTemplate>
-                <local:BrowserView x:Name="BrowserView" />
+                <view:BrowserView x:Name="BrowserView" />
             </TabItem>
             <TabItem BorderBrush="RoyalBlue" BorderThickness="1 2 1 2" Margin="1">
                 <TabItem.HeaderTemplate>
@@ -60,7 +60,7 @@
                         <TextBlock Text="{DynamicResource Tab-Make}" />
                     </DataTemplate>
                 </TabItem.HeaderTemplate>
-                <local:MakeView x:Name="ExportView" />
+                <view:MakeView x:Name="ExportView" />
             </TabItem>
         </Controls:MetroAnimatedTabControl>
     </Grid>

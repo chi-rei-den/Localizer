@@ -30,11 +30,13 @@ namespace Localizer
             
             Plugins = new List<LocalizerPlugin>();
             PluginEnableStatus = new Dictionary<string, bool>();
-            
+        }
+
+        public void Init()
+        {
             Load(new NinjectModule[]
             {
-                new DefaultPackageModule(), new DefaultFileExportModule(),
-                new DefaultFileUpdateModule(), new DefaultFileImportModule(),
+                new DefaultPackageModule(),
                 new DefaultNetworkModule(),
             });
 
@@ -149,7 +151,7 @@ namespace Localizer
                 }
 
                 var referencedAsm = Assembly.GetExecutingAssembly().GetReferencedAssemblies()
-                                            .FirstOrDefault(a => a.Name.StartsWith($"Localizer_{asmName.Name}_"));
+                                            .FirstOrDefault(a => a.Name.StartsWith($"!Localizer_{asmName.Name}_"));
                 if (referencedAsm != null)
                 {
                     return Assembly.Load(referencedAsm);

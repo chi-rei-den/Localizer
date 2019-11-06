@@ -3,7 +3,7 @@ using System.Reflection;
 using Terraria.ModLoader;
 using Terraria.UI;
 
-namespace Localizer
+namespace Localizer.Helpers
 {
     public static class UI
     {

@@ -1,5 +1,5 @@
 using Localizer.Package;
-using Localizer.Services.Package;
+using Localizer.Package.Load;
 using LocalizerWPF.Model;
 using Ninject.Modules;
 

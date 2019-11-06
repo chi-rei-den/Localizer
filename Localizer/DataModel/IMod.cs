@@ -30,5 +30,7 @@ namespace Localizer.DataModel
         /// File of the mod.
         /// </summary>
         TmodFile File { get; }
+        
+        bool Enabled { get; }
     }
 }

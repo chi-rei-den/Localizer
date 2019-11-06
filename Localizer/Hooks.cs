@@ -18,6 +18,14 @@ namespace Localizer
             BeforeLoad?.Invoke();
         }
         
+        public delegate void BeforeSetupContentHandler();
+        public static event BeforeSetupContentHandler BeforeSetupContent;
+        internal static void InvokeBeforeSetupContent()
+        {
+            BeforeSetupContent?.Invoke();
+        }
+
+        
         public delegate void PostSetupContentHandler();
         public static event PostSetupContentHandler PostSetupContent;
         internal static void InvokePostSetupContent()
@@ -25,11 +33,11 @@ namespace Localizer
             PostSetupContent?.Invoke();
         }
 
-        public delegate void OnGameUpdateHandler(GameTime gameTime);
-        public static event OnGameUpdateHandler OnGameUpdate;
+        public delegate void GameUpdateHandler(GameTime gameTime);
+        public static event GameUpdateHandler GameUpdate;
         internal static void InvokeOnGameUpdate(GameTime gameTime)
         {
-            OnGameUpdate?.Invoke(gameTime);
+            GameUpdate?.Invoke(gameTime);
         }
     }
 }

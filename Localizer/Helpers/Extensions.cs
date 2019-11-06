@@ -4,11 +4,9 @@ using System.Linq;
 using System.Reflection;
 using Localizer.Attributes;
 using Localizer.DataModel.Default;
-using Mono.Cecil;
-using MonoMod.Utils;
 using Terraria.ModLoader;
 
-namespace Localizer
+namespace Localizer.Helpers
 {
     public static class Extensions
     {

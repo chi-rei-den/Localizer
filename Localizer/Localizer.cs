@@ -5,11 +5,13 @@ using System.Net;
 using System.Reflection;
 using System.Threading.Tasks;
 using Harmony;
+using Localizer.Attributes;
 using Localizer.DataModel;
 using Localizer.DataModel.Default;
+using Localizer.Helpers;
 using Localizer.Modules;
-using Localizer.ServiceInterfaces.Network;
-using Localizer.Services;
+using Localizer.Network;
+using Localizer.Package.Import;
 using log4net;
 using Microsoft.Xna.Framework;
 using MonoMod.Cil;
@@ -21,7 +23,7 @@ using Terraria.Localization;
 using Terraria.ModLoader;
 using Terraria.ModLoader.Core;
 using Terraria.UI;
-using static Localizer.ReflectionHelper;
+using static Localizer.Helpers.ReflectionHelper;
 using static Localizer.Lang;
 using File = System.IO.File;
 
@@ -37,7 +39,7 @@ namespace Localizer
         public static ILog Log { get; private set; }
         public static TmodFile TmodFile { get; private set; }
         public static Configuration Config { get; set; }
-        public static OperationTiming State { get; private set; }
+        public static OperationTiming State { get; internal set; }
         internal static LocalizerKernel Kernel { get; private set; }
         internal static HarmonyInstance HarmonyInstance { get; set; }
 
@@ -59,16 +61,14 @@ namespace Localizer
         {
             if (!_initiated)
             {
+                State = OperationTiming.BeforeModCtor;
                 Log = Instance.Logger;
                 TmodFile = Instance.Prop("File") as TmodFile;
                 Init();
                 _initiated = true;
-                State = OperationTiming.BeforeModLoad;
             }
-            else
-            {
-                Hooks.InvokeBeforeModCtor(mod);
-            }
+            
+            Hooks.InvokeBeforeModCtor(mod);
         }
 
         private static void Init()
@@ -90,22 +90,31 @@ namespace Localizer
             LoadConfig();
             AddModTranslations(Instance);
             Kernel = new LocalizerKernel();
+            Kernel.Init();
+
+            var autoImportService = Kernel.Get<AutoImportService>();
         }
 
         public override void Load()
         {
             if(!_initiated)
                 throw new Exception("Localizer not initialized.");
-            State = OperationTiming.BeforeContentLoad;
+            State = OperationTiming.BeforeModLoad;
             Hooks.InvokeBeforeLoad();
             Kernel.Get<RefreshLanguageService>();
         }
 
         public override void PostSetupContent()
         {
+            State = OperationTiming.BeforeContentLoad;
+            Hooks.InvokeBeforeSetupContent();
+//            CheckUpdate();
+        }
+
+        public override void PostAddRecipes()
+        {
             State = OperationTiming.PostContentLoad;
             Hooks.InvokePostSetupContent();
-//            CheckUpdate();
         }
 
         public override void UpdateUI(GameTime gameTime)
@@ -164,21 +173,30 @@ namespace Localizer
 
         public static void LoadConfig()
         {
+            Log.Info("Loading config");
             if (File.Exists(ConfigPath))
             {
-                Config = Utils.ReadFileAndDeserializeJson<Configuration>(ConfigPath) ?? new Configuration();
+                Config = Utils.ReadFileAndDeserializeJson<Configuration>(ConfigPath);
+                if (Config is null)
+                {
+                    throw new Exception("Config read failed!");
+                }
             }
             else
             {
+                Log.Info("No config file, creating...");
                 Config = new Configuration();
             }
             
             Utils.SerializeJsonAndCreateFile(Config, ConfigPath);
+            Log.Info("Config loaded");
         }
 
         public static void SaveConfig()
         {
+            Log.Info("Saving config...");
             Utils.SerializeJsonAndCreateFile(Config, ConfigPath);
+            Log.Info("Config saved");
         }
 
         public static GameCulture AddGameCulture(CultureInfo culture)
@@ -234,12 +252,25 @@ namespace Localizer
                 {
                     return new LoadedModWrapper(loadedMods.Method("get_Item", name));
                 }
+
+                return null;
             }
             
             var mod = Utils.GetModByName(name);
             if (mod is null)
                 return null;
             return new ModWrapper(mod);
+        }
+
+        public static bool CanDoOperationNow(Type t)
+        {
+            var attribute = t.GetCustomAttribute<OperationTimingAttribute>();
+            return attribute == null || CanDoOperationNow(attribute.Timing);
+        }
+        
+        public static bool CanDoOperationNow(OperationTiming t)
+        {
+            return (t & State) != 0;
         }
     }
 }

@@ -8,7 +8,7 @@ using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using Localizer;
 using Localizer.DataModel;
-using Localizer.ServiceInterfaces.Network;
+using Localizer.Network;
 using Ninject;
 
 namespace LocalizerWPF.ViewModel

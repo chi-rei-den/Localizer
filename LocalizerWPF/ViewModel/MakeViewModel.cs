@@ -8,10 +8,11 @@ using GalaSoft.MvvmLight.Command;
 using Localizer;
 using Localizer.DataModel;
 using Localizer.Package;
-using Localizer.ServiceInterfaces;
-using Localizer.ServiceInterfaces.Package;
-using Localizer.Services.File;
-using Localizer.Services.Package;
+using Localizer.Package.Export;
+using Localizer.Package.Load;
+using Localizer.Package.Pack;
+using Localizer.Package.Save;
+using Localizer.Package.Update;
 using LocalizerWPF.Model;
 using Microsoft.Win32;
 using Ninject;
@@ -29,7 +30,7 @@ namespace LocalizerWPF.ViewModel
         private IPackagePackService packagePackService;
         private IPackageSaveService packageSaveService;
         private IPackageUpdateService packageUpdateService;
-        private IPackageLoadService<Package> sourcePackageLoadServiceService;
+        private IPackageLoadService<Package> sourcePackageLoadService;
 
         public ObservableCollection<IMod> Mods
         {
@@ -61,6 +62,7 @@ namespace LocalizerWPF.ViewModel
 
         public RelayCommand ExportCommand { get; }
         public RelayCommand PackUpCommand { get; }
+        public RelayCommand RefreshCommand { get; }
 
 
         public MakeViewModel()
@@ -78,6 +80,7 @@ namespace LocalizerWPF.ViewModel
 
             ExportCommand = new RelayCommand(Export);
             PackUpCommand = new RelayCommand(PackUp);
+            RefreshCommand = new RelayCommand(Refresh);
 
             packageManageService = Plugin.Kernel.Get<IPackageManageService>();
             packageExportService = Plugin.Kernel.Get<IPackageExportService>();
@@ -85,7 +88,7 @@ namespace LocalizerWPF.ViewModel
             packageSaveService = Plugin.Kernel.Get<IPackageSaveService>();
             packageUpdateService = Plugin.Kernel.Get<IPackageUpdateService>();
             fileSaveService = Plugin.Kernel.Get<IFileSaveService>();
-            sourcePackageLoadServiceService = Plugin.Kernel.Get<SourcePackageLoad<Package>>();
+            sourcePackageLoadService = Plugin.Kernel.Get<SourcePackageLoad<Package>>();
             fileLoadService = Plugin.Kernel.Get<IFileLoadService>();
         }
 
@@ -126,7 +129,7 @@ namespace LocalizerWPF.ViewModel
                 IPackage oldPack;
                 if (Directory.Exists(dirPath))
                 {
-                    oldPack = sourcePackageLoadServiceService.Load(dirPath, fileLoadService);
+                    oldPack = sourcePackageLoadService.Load(dirPath, fileLoadService);
                 }
                 else
                 {
@@ -145,7 +148,7 @@ namespace LocalizerWPF.ViewModel
 
                 if (!ForceOverride && oldPack != null)
                 {
-                    var updateLogger = Plugin.Kernel.Get<IUpdateLogService>();
+                    var updateLogger = Plugin.Kernel.Get<IUpdateLogger>();
                     updateLogger.Init($"{package.Name}-{Utils.DateTimeToFileName(DateTime.Now)}");
 
                     packageUpdateService.Update(oldPack, package, updateLogger);
@@ -191,6 +194,11 @@ namespace LocalizerWPF.ViewModel
             {
                 MessageBox.Show(e.ToString());
             }
+        }
+
+        private void Refresh()
+        {
+            RaisePropertyChanged("Mods");
         }
     }
 }

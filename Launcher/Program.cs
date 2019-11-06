@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -8,7 +9,7 @@ using Terraria.ModLoader;
 
 namespace Launcher
 {
-    internal class Program
+    public class Program
     {
         [STAThread]
         private static void Main(string[] args)

@@ -1,6 +1,6 @@
 using System.Windows.Controls;
 
-namespace LocalizerWPF
+namespace LocalizerWPF.View
 {
     public partial class BrowserView : UserControl
     {

@@ -1,6 +1,7 @@
 using System.Reflection;
 using FluentAssertions;
 using Localizer;
+using Localizer.Helpers;
 using Xunit;
 
 namespace LocalizerTest.Helper
@@ -32,9 +33,9 @@ namespace LocalizerTest.Helper
         public void Field_Correct()
         {
             var foo = new Foo();
-            (foo.Field("Bar") as string).Should().Be("Bar");
+            (foo.Field("bar") as string).Should().Be("Bar");
             
-            (typeof(Foo).Field("Bar") as string).Should().Be("StillBar");
+            (typeof(Foo).Field("staticBar") as string).Should().Be("StillBar");
         }
         
         [Fact]
@@ -43,7 +44,7 @@ namespace LocalizerTest.Helper
             var foo = new Foo();
             (foo.Prop("Baz") as string).Should().Be("Baz");
             
-            (typeof(Foo).Prop("Baz") as string).Should().Be("StillBaz");
+            (typeof(Foo).Prop("StaticBaz") as string).Should().Be("StillBaz");
         }
         
         [Fact]

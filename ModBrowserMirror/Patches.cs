@@ -4,6 +4,7 @@ using System.Reflection;
 using System.Reflection.Emit;
 using Harmony;
 using Localizer;
+using Localizer.Helpers;
 using Terraria.ModLoader;
 
 namespace ModBrowserMirror
