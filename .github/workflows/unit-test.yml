@@ -7,18 +7,28 @@ jobs:
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v1
+
       - name: Download tModLoader
-        run: powershell "$source = (New-Object System.Net.WebClient).DownloadString(\"https://gist.githubusercontent.com/sgkoishi/f80d3b59973f8499383d215cd747ad74/raw/\") ; $references = (\"System.IO.Compression.FileSystem, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089\", \"Microsoft.CSharp, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a\"); Add-Type -ReferencedAssemblies $references -TypeDefinition \"$source\" ; [SetupModLoader]::Download((Get-Item -Path \".\\\").FullName);"
+        run: |
+          $source = (New-Object System.Net.WebClient).DownloadString("https://gist.githubusercontent.com/sgkoishi/f80d3b59973f8499383d215cd747ad74/raw/");
+          $references = (
+            "mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089",
+            "System.Runtime.Extensions, Version=4.2.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a",
+            "System.IO.Compression.FileSystem, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089",
+            "Microsoft.CSharp, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"
+          );
+          Add-Type -ReferencedAssemblies $references -TypeDefinition "$source";
+          [SetupModLoader]::Download((Get-Item -Path ".\").FullName);
 
       - name: Install XNA
         run: start /i /wait xnafx40_redist.msi /passive /norestart
-        
+
       - name: Install NuGet client
         uses: warrenbuckley/Setup-Nuget@v1
-        
+
       - name: Restore NuGet Packages
         run: nuget restore Localizer.sln
-        
+
       - name: Release x86 Build
         run: '"C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current\Bin\MSBuild.exe" Localizer.sln /p:Configuration=Release /p:Platform=x86'
 
