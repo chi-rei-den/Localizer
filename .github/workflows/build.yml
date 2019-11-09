@@ -6,28 +6,30 @@ jobs:
   build:
     runs-on: windows-latest
     steps:
-    - uses: actions/checkout@v1
-    - name: Download MSBuild installer
-      run: powershell "$source = (New-Object System.Net.WebClient).DownloadString(\"https://gist.githubusercontent.com/sgkoishi/87e613881f9164bf03849603dd4f4266/raw/\") ; Add-Type
-        -TypeDefinition \"$source\" ; [SetupMSBuild]::Download((Get-Item -Path \".\\\").FullName);
-        "
-    - name: Setup .NET SDK
-      run: start /i /wait vs_BuildTools.exe --add "Microsoft.VisualStudio.Workload.ManagedDesktopBuildTools" -p --wait --installPath "%cd%\VSBuildTools" --norestart --nocache
-    - name: Download tModLoader
-      run: powershell "$source = (New-Object System.Net.WebClient).DownloadString(\"https://gist.githubusercontent.com/sgkoishi/f80d3b59973f8499383d215cd747ad74/raw/\") ; $references = (\"System.IO.Compression.FileSystem, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089\", \"Microsoft.CSharp, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a\"); Add-Type -ReferencedAssemblies $references -TypeDefinition \"$source\" ; [SetupModLoader]::Download((Get-Item -Path \".\\\").FullName);
-        "
-    - name: Install XNA
-      run: start /i /wait xnafx40_redist.msi /passive /norestart
-    - name: Release build
-      run: '"%cd%\VSBuildTools\MSBuild\Current\Bin\MSBuild.exe" /restore Localizer.sln /p:Configuration=Release /p:Platform=x86'
-    - name: Packaging
-      run: '".\\build-mod-release.bat"'
-    - name: Clean artifact
-      run: |
-        mkdir .\Artifact\Artifact\
-        copy "%USERPROFILE%\Documents\My Games\Terraria\ModLoader\Mods\" .\Artifact\Artifact
-        del Artifact\Artifact\enabled.json
-    - uses: actions/upload-artifact@master
-      with:
-        name: Build Artifact
-        path: Artifact
+      - uses: actions/checkout@v1
+
+      - name: Install NuGet client
+        uses: warrenbuckley/Setup-Nuget@v1
+
+      - name: Setup tModLoader
+        uses: chi-rei-den/SetupModLoader@v1
+
+      - name: Restore NuGet Packages
+        run: nuget restore Localizer.sln
+
+      - name: Release build
+        run: '& "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current\Bin\MSBuild.exe" Localizer.sln /p:Configuration=Release /p:Platform=x86'
+
+      - name: Packaging
+        run: '& ".\\build-mod-release.bat"'
+
+      - name: Clean artifact
+        run: |
+          mkdir .\Artifact\Artifact\
+          Copy-Item -Path "$ENV:UserProfile\Documents\My Games\Terraria\ModLoader\Mods\*" -Destination .\Artifact\Artifact
+          del .\Artifact\Artifact\enabled.json
+
+      - uses: actions/upload-artifact@master
+        with:
+          name: Build Artifact
+          path: Artifact
