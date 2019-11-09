@@ -56,12 +56,12 @@
     <Compile Include="Network\GitHubModUpdateService.cs" />
     <Compile Include="Ninject.cs" />
     <Compile Include="NonTest\UpdateLogger.cs" />
-    <Compile Include="Packages\Import\BasicFileImportTest.cs" />
-    <Compile Include="Packages\Import\CustomModTranslationFileImportTest.cs" />
-    <Compile Include="Packages\Import\LdstrFileImportBaseTest.cs" />
-    <Compile Include="Packages\Update\BasicFileUpdateTest.cs" />
-    <Compile Include="Packages\Update\CustomModTranslationFileUpdateTest.cs" />
-    <Compile Include="Packages\Update\LdstrFileUpdateTest.cs" />
+    <Compile Include="Package\Import\BasicFileImportTest.cs" />
+    <Compile Include="Package\Import\CustomModTranslationFileImportTest.cs" />
+    <Compile Include="Package\Import\LdstrFileImportBaseTest.cs" />
+    <Compile Include="Package\Update\BasicFileUpdateTest.cs" />
+    <Compile Include="Package\Update\CustomModTranslationFileUpdateTest.cs" />
+    <Compile Include="Package\Update\LdstrFileUpdateTest.cs" />
     <Compile Include="Tests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -73,7 +73,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="DataModel\" />
-    <Folder Include="Packages\Export" />
+    <Folder Include="Package\Export" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="FluentAssertions">
