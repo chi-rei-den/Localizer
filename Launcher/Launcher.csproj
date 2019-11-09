@@ -41,9 +41,6 @@
       <HintPath>..\Localizer\Plugins\LocalizerWPF.dll</HintPath>
     </Reference>
     <Reference Include="PresentationFramework" />
-    <Reference Include="ReLogic, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
-      <HintPath>..\References\ModCompile\ReLogic.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
