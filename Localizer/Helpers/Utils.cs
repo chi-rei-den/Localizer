@@ -11,12 +11,14 @@ using Harmony.ILCopying;
 using Localizer.Attributes;
 using Localizer.DataModel;
 using Localizer.DataModel.Default;
+using Localizer.Helpers;
 using Mono.Cecil;
 using MonoMod.Utils;
 using Newtonsoft.Json;
 using Terraria.ModLoader;
 using File = System.IO.File;
 
+// ReSharper disable once CheckNamespace
 namespace Localizer
 {
     public static partial class Utils
@@ -141,26 +143,34 @@ namespace Localizer
 
         #region Log
 
-        public static void LogDebug(object o)
+        public static void LogFatal(object o)
         {
-            Localizer.Log.Debug(o);
+            Localizer.Log.Fatal(o);
         }
-
+        
         public static void LogError(object o)
         {
-            Localizer.Log.Error(o);
+            if(Localizer.Config.LogLevel >= LogLevel.Error)
+                Localizer.Log.Error(o);
         }
 
         public static void LogWarn(object o)
         {
-            Localizer.Log.Warn(o);
+            if(Localizer.Config.LogLevel >= LogLevel.Warn)
+                Localizer.Log.Warn(o);
         }
 
         public static void LogInfo(object o)
         {
-            Localizer.Log.Info(o);
+            if(Localizer.Config.LogLevel >= LogLevel.Info)
+                Localizer.Log.Info(o);
         }
 
+        public static void LogDebug(object o)
+        {
+            if(Localizer.Config.LogLevel >= LogLevel.Debug)
+                Localizer.Log.Debug(o);
+        }
         #endregion
 
         #region Network
@@ -170,7 +180,8 @@ namespace Localizer
             var request = (HttpWebRequest)WebRequest.Create(url);
             request.Method = "GET";
             request.ContentType = "application/json;charset=UTF-8";
-            request.UserAgent = null;
+            request.Accept = "application/vnd.github.v3+json";
+            request.UserAgent = "Localizer";
             request.Timeout = 9000;
 
             return (HttpWebResponse)request.GetResponse();
@@ -181,15 +192,7 @@ namespace Localizer
             if (response == null)
                 return null;
             
-            Encoding encoding;
-            try
-            {
-                encoding = Encoding.GetEncoding(response.ContentEncoding);
-            }
-            catch (ArgumentException e)
-            {
-                encoding = Encoding.UTF8;
-            }
+            Encoding encoding = Encoding.UTF8;
             
             using (var myResponseStream = response.GetResponseStream())
             {
@@ -257,7 +260,7 @@ namespace Localizer
 
         public static ICollection<IMod> GetLoadedMods()
         {
-            return ModLoader.Mods?.Select(m => new ModWrapper(m)).ToArray();
+            return ModLoader.Mods?.Select(m => Localizer.GetWrappedMod(m.Name)).ToArray();
         }
 
         public static Mod GetModByName(string name)
@@ -275,9 +278,13 @@ namespace Localizer
             return path.Trim(Path.GetInvalidPathChars());
         }
 
-        public static List<ILInstruction> GetInstructions(MethodInfo method)
+        public static List<ILInstruction> GetInstructions(MethodBase method)
         {
             var dummy = new DynamicMethod("Dummy", typeof(void), new Type[] { });
+            if (method.GetMethodBody() is null)
+            {
+                return null;
+            }
             return MethodBodyReader.GetInstructions(dummy.GetILGenerator(), method);
         }
 

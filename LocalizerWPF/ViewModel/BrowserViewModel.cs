@@ -8,7 +8,7 @@ using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using Localizer;
 using Localizer.DataModel;
-using Localizer.ServiceInterfaces.Network;
+using Localizer.Network;
 using Ninject;
 
 namespace LocalizerWPF.ViewModel
@@ -47,8 +47,8 @@ namespace LocalizerWPF.ViewModel
 
         public BrowserViewModel()
         {
-            packageBrowserService = Localizer.Localizer.Kernel.Get<IPackageBrowserService>();
-            downloadManager = Localizer.Localizer.Kernel.Get<IDownloadManagerService>();
+            packageBrowserService = Plugin.Kernel.Get<IPackageBrowserService>();
+            downloadManager = Plugin.Kernel.Get<IDownloadManagerService>();
 
             RefreshCommand = new RelayCommand(Refresh);
             DownloadCommand = new RelayCommand<IPackage>(Download, CanDownload);

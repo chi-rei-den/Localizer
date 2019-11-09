@@ -1,5 +1,6 @@
 del ".\Localizer\Plugins\*.pdb"
 del ".\Localizer\Plugins\*.dll.config"
+del ".\Localizer\Plugins\*.xml"
 del ".\Localizer\Plugins\Terraria.exe"
 del ".\Localizer\Plugins\TerrariaHooks.dll"
 del ".\Localizer\Plugins\Steamworks.NET.dll"
@@ -12,5 +13,6 @@ del ".\Localizer\Plugins\log4net.dll"
 del ".\Localizer\Plugins\Localizer.dll"
 del ".\Localizer\Plugins\0Harmony.dll"
 del ".\Localizer\Plugins\System.*.dll"
+del ".\Localizer\Plugins\Microsoft.Xna.*.dll"
 
 ".\References\Terraria" -build ".\Localizer" -unsafe

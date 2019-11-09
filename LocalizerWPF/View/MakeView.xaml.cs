@@ -1,6 +1,6 @@
 ﻿using System.Windows.Controls;
 
-namespace LocalizerWPF
+namespace LocalizerWPF.View
 {
     /// <summary>
     ///     ExportView.xaml 的交互逻辑

@@ -1,5 +1,4 @@
-using Localizer.ServiceInterfaces.Network;
-using Localizer.Services.Network;
+using Localizer.Network;
 using Ninject.Modules;
 
 namespace Localizer.Modules

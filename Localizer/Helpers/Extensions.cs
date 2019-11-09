@@ -4,11 +4,9 @@ using System.Linq;
 using System.Reflection;
 using Localizer.Attributes;
 using Localizer.DataModel.Default;
-using Mono.Cecil;
-using MonoMod.Utils;
 using Terraria.ModLoader;
 
-namespace Localizer
+namespace Localizer.Helpers
 {
     public static class Extensions
     {
@@ -50,62 +48,6 @@ namespace Localizer
         #endregion
 
         #region Reflection
-
-        public static object GetFieldDirectly(this Type type, object obj, string fieldName)
-        {
-            return type.GetField(fieldName,
-                                 BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance |
-                                 BindingFlags.Static).GetValue(obj);
-        }
-
-
-        public static T GetFieldDirectly<T>(this Type type, object obj, string fieldName) where T : class
-        {
-            return GetFieldDirectly(type, obj, fieldName) as T;
-        }
-
-        public static object GetPropDirectly(this Type type, object obj, string propName)
-        {
-            return type.GetProperty(
-                           propName,
-                           BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static)
-                       .GetValue(obj);
-        }
-
-
-        public static T GetPropDirectly<T>(this Type type, object obj, string propName) where T : class
-        {
-            return GetPropDirectly(type, obj, propName) as T;
-        }
-
-        public static MethodInfo FindMethod(this Module module, string findableID)
-        {
-            try
-            {
-                var typeName = findableID.Split(' ')[1].Split(new[] { "::" }, StringSplitOptions.RemoveEmptyEntries)[0];
-                return module.GetType(typeName)?.FindMethod(findableID);
-            }
-            catch (Exception e)
-            {
-                Localizer.Log.Debug(e);
-                return null;
-            }
-        }
-
-        public static MethodDefinition FindMethod(this ModuleDefinition module, string findableID)
-        {
-            try
-            {
-                var typeName = findableID.Split(' ')[1].Split(new[] { "::" }, StringSplitOptions.RemoveEmptyEntries)[0];
-                return module.GetType(typeName)?.FindMethod(findableID);
-            }
-            catch (Exception e)
-            {
-                Localizer.Log.Debug(e);
-                return null;
-            }
-        }
-
         public static PropertyInfo[] ModTranslationOwnerField(this Type type)
         {
             return type.GetProperties().Where(p => p.GetCustomAttribute<ModTranslationOwnerFieldAttribute>() != null)
@@ -114,8 +56,7 @@ namespace Localizer
 
         public static string ModTranslationOwnerFieldName(this PropertyInfo prop)
         {
-            return (prop.GetCustomAttribute(typeof(ModTranslationOwnerFieldAttribute)) as ModTranslationOwnerFieldAttribute)
-                ?.FieldName;
+            return prop.GetCustomAttribute<ModTranslationOwnerFieldAttribute>()?.FieldName;
         }
 
         public static PropertyInfo[] ModTranslationProp(this Type type)

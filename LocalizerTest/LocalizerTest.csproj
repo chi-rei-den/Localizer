@@ -2,8 +2,6 @@
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{019C1A68-7B2C-400C-BCAE-FC9EF658A3BC}</ProjectGuid>
     <ProjectTypeGuids>{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <OutputType>Library</OutputType>
@@ -19,7 +17,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <OutputPath>bin\x86\Release\</OutputPath>
+    <OutputPath>bin\Release\</OutputPath>
     <PlatformTarget>x86</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
@@ -29,7 +27,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <OutputPath>bin\x86\Debug\</OutputPath>
+    <OutputPath>bin\Debug\</OutputPath>
     <PlatformTarget>x86</PlatformTarget>
   </PropertyGroup>
   <ItemGroup>
@@ -50,21 +48,20 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DataModel\GitHubUpdateInfo.cs" />
-    <Compile Include="Helper\Extensions.cs" />
-    <Compile Include="Helper\Utils.cs" />
-    <Compile Include="Localizer.cs" />
+    <Compile Include="DataModel\GitHubUpdateInfoTest.cs" />
+    <Compile Include="Helper\ExtensionsTest.cs" />
+    <Compile Include="Helper\ReflectionHelperTest.cs" />
+    <Compile Include="Helper\UtilsTest.cs" />
+    <Compile Include="LocalizerTest.cs" />
+    <Compile Include="Network\GitHubModUpdateService.cs" />
     <Compile Include="Ninject.cs" />
     <Compile Include="NonTest\UpdateLogger.cs" />
-    <Compile Include="Services\File\BasicFile\BasicFileExport.cs" />
-    <Compile Include="Services\File\BasicFile\BasicFileImport.cs" />
-    <Compile Include="Services\File\BasicFile\BasicFileUpdate.cs" />
-    <Compile Include="Services\File\CustomModTranslationFile\CustomModTranslationFileImport.cs" />
-    <Compile Include="Services\File\CustomModTranslationFile\CustomModTranslationFileUpdate.cs" />
-    <Compile Include="Services\File\LdstrFile\HarmonyLdstrImport.cs" />
-    <Compile Include="Services\File\LdstrFile\LdstrFileImportBase.cs" />
-    <Compile Include="Services\File\LdstrFile\LdstrFileUpdate.cs" />
-    <Compile Include="Services\Network\GitHubModUpdateService.cs" />
+    <Compile Include="Package\Import\BasicFileImportTest.cs" />
+    <Compile Include="Package\Import\CustomModTranslationFileImportTest.cs" />
+    <Compile Include="Package\Import\LdstrFileImportBaseTest.cs" />
+    <Compile Include="Package\Update\BasicFileUpdateTest.cs" />
+    <Compile Include="Package\Update\CustomModTranslationFileUpdateTest.cs" />
+    <Compile Include="Package\Update\LdstrFileUpdateTest.cs" />
     <Compile Include="Tests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -76,6 +73,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="DataModel\" />
+    <Folder Include="Package\Export" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="FluentAssertions">

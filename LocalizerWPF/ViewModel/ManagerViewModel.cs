@@ -7,8 +7,8 @@ using GalaSoft.MvvmLight.Command;
 using Localizer;
 using Localizer.DataModel;
 using Localizer.Package;
-using Localizer.Services.File;
-using Localizer.Services.Package;
+using Localizer.Package.Import;
+using Localizer.Package.Load;
 using LocalizerWPF.Model;
 using Ninject;
 
@@ -18,7 +18,7 @@ namespace LocalizerWPF.ViewModel
     {
         private IFileLoadService fileLoadService;
         private IPackageImportService packageImportService;
-        private IPackageManageService packageManageService;
+        private IPackageManageService packageManageDisposable;
         private IPackageLoadService<Package> packedPackageLoadServiceService;
         private IPackageLoadService<Package> sourcePackageLoadServiceService;
 
@@ -33,33 +33,26 @@ namespace LocalizerWPF.ViewModel
             }
             else
             {
-                packageManageService = Localizer.Localizer.Kernel.Get<IPackageManageService>();
-                sourcePackageLoadServiceService = Localizer.Localizer.Kernel.Get<SourcePackageLoad<Package>>();
-                packedPackageLoadServiceService = Localizer.Localizer.Kernel.Get<PackedPackageLoad<Package>>();
-                packageImportService = Localizer.Localizer.Kernel.Get<IPackageImportService>();
-                fileLoadService = Localizer.Localizer.Kernel.Get<IFileLoadService>();
-
-                packageManageService.PackageGroups = new ObservableCollection<IPackageGroup>();
+                packageManageDisposable = Plugin.Kernel.Get<IPackageManageService>();
+                sourcePackageLoadServiceService = Plugin.Kernel.Get<SourcePackageLoad<Package>>();
+                packedPackageLoadServiceService = Plugin.Kernel.Get<PackedPackageLoad<Package>>();
+                packageImportService = Plugin.Kernel.Get<IPackageImportService>();
+                fileLoadService = Plugin.Kernel.Get<IFileLoadService>();
+                packageManageDisposable.PackageGroups = new ObservableCollection<IPackageGroup>();
             }
 
             ReloadCommand = new RelayCommand(Reload, () => !loading && !importing);
             SaveStateCommand = new RelayCommand(SaveState, () => !loading && !importing);
             ImportAllCommand = new RelayCommand(ImportAll, () => !loading && !importing);
 
-            Application.Current.Dispatcher.InvokeAsync(() =>
-            {
-                LoadPackages();
-                if (Localizer.Localizer.Config.AutoImport)
-                {
-                    ImportAll();
-                }
-            });
+            packageManageDisposable.PackageGroups.Clear();
+            LoadPackages();
         }
 
         public ObservableCollection<IPackageGroup> PackageGroups
         {
-            get => packageManageService?.PackageGroups as ObservableCollection<IPackageGroup>;
-            set => packageManageService.PackageGroups = value;
+            get => packageManageDisposable.PackageGroups as ObservableCollection<IPackageGroup>;
+            set => packageManageDisposable.PackageGroups = value;
         }
 
         public RelayCommand ReloadCommand { get; }
@@ -74,6 +67,11 @@ namespace LocalizerWPF.ViewModel
 
             try
             {
+                var ss = Plugin.Kernel.GetAll(typeof(FileImporter));
+                foreach (var s in ss)
+                {
+                    s.GetType();
+                }
                 packageImportService.Reset();
 
                 foreach (var pg in PackageGroups)
@@ -87,7 +85,7 @@ namespace LocalizerWPF.ViewModel
                     }
                 }
 
-                packageImportService.Import();
+                packageImportService.Import(false);
 
                 Localizer.Localizer.RefreshLanguages();
 
@@ -105,7 +103,7 @@ namespace LocalizerWPF.ViewModel
 
         private void Reload()
         {
-            packageManageService.PackageGroups.Clear();
+            packageManageDisposable.PackageGroups.Clear();
             LoadPackages();
             Utils.LogDebug("Packages Reloaded");
         }
@@ -118,24 +116,30 @@ namespace LocalizerWPF.ViewModel
             {
                 foreach (var dir in new DirectoryInfo(Localizer.Localizer.SourcePackageDirPath).GetDirectories())
                 {
-                    var pack = sourcePackageLoadServiceService.Load(dir.FullName, fileLoadService);
-                    if (pack == null)
+                    Utils.SafeWrap(() =>
                     {
-                        continue;
-                    }
+                        var pack = sourcePackageLoadServiceService.Load(dir.FullName, fileLoadService);
+                        if (pack == null)
+                        {
+                            return;
+                        }
 
-                    packageManageService.AddPackage(pack);
+                        packageManageDisposable.AddPackage(pack);
+                    });
                 }
 
                 foreach (var file in new DirectoryInfo(Localizer.Localizer.DownloadPackageDirPath).GetFiles())
                 {
-                    var pack = packedPackageLoadServiceService.Load(file.FullName, fileLoadService);
-                    if (pack == null)
+                    Utils.SafeWrap(() =>
                     {
-                        continue;
-                    }
+                        var pack = packedPackageLoadServiceService.Load(file.FullName, fileLoadService);
+                        if (pack == null)
+                        {
+                            return;
+                        }
 
-                    packageManageService.AddPackage(pack);
+                        packageManageDisposable.AddPackage(pack);
+                    });
                 }
 
                 foreach (var pg in PackageGroups)
@@ -143,7 +147,7 @@ namespace LocalizerWPF.ViewModel
                     pg.Packages = new ObservableCollection<IPackage>(pg.Packages);
                 }
 
-                packageManageService.LoadState();
+                packageManageDisposable.LoadState();
             }
             catch (Exception e)
             {
@@ -157,7 +161,7 @@ namespace LocalizerWPF.ViewModel
 
         private void SaveState()
         {
-            packageManageService.SaveState();
+            packageManageDisposable.SaveState();
         }
     }
 }

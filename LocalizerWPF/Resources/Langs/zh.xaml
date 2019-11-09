@@ -37,6 +37,7 @@
     <!-- Make View -->
     <system:String x:Key="Make-Button-Export">导出</system:String>
     <system:String x:Key="Make-Button-Pack">打包</system:String>
+    <system:String x:Key="Make-Button-Refresh">刷新</system:String>
     
     <system:String x:Key="Make-CheckBox-MakeBackup">制作备份</system:String>
     <system:String x:Key="Make-CheckBox-ForceOverride">强制覆盖</system:String>

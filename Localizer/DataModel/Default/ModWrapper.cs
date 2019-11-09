@@ -1,6 +1,9 @@
 using System;
 using System.Reflection;
+using Localizer.Helpers;
+using Terraria;
 using Terraria.ModLoader;
+using Terraria.ModLoader.Core;
 
 namespace Localizer.DataModel.Default
 {
@@ -10,6 +13,8 @@ namespace Localizer.DataModel.Default
 
         public ModWrapper(Mod mod)
         {
+            if(mod is null)
+                throw new ArgumentNullException(nameof(mod));
             wrapped = new WeakReference<Mod>(mod);
         }
 
@@ -25,8 +30,25 @@ namespace Localizer.DataModel.Default
 
         public string Name => Mod?.Name ?? "";
 
-        public Assembly Code => Mod?.Code;
+        public Assembly Code
+        {
+            get
+            {
+                
+                if (Name == "ModLoader")
+                {
+                    return Assembly.GetAssembly(typeof(Main));
+                }
+                else
+                {
+                    return Mod?.Code;
+                }
+            }
+        }
+
         public string DisplayName => Mod.DisplayName ?? "";
         public Version Version => Mod?.Version;
+        public TmodFile File => Mod?.Prop("File") as TmodFile;
+        public bool Enabled => (bool)typeof(ModLoader).Method("IsEnabled", Name);
     }
 }

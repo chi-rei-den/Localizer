@@ -4,6 +4,7 @@ using System.Reflection;
 using System.Reflection.Emit;
 using Harmony;
 using Localizer;
+using Localizer.Helpers;
 using Terraria.ModLoader;
 
 namespace ModBrowserMirror
@@ -27,26 +28,26 @@ namespace ModBrowserMirror
                                       .GetMethods(bindingFlags)
                                       .FirstOrDefault(m => m.Name.Contains(populateModBrowserMethodName));
             var populateModBrowserTranspiler = typeof(ReplaceURLs).GetMethod(nameof(PopulateModBrowserTranspiler), bindingFlags);
-            Plugin.HarmonyInstance.Patch(populateModBrowser, null, null, new HarmonyMethod(populateModBrowserTranspiler));
+            LocalizerPlugin.HarmonyInstance.Patch(populateModBrowser, null, null, new HarmonyMethod(populateModBrowserTranspiler));
 
             var fromJson = typeof(Mod).Module
                                        .GetType("Terraria.ModLoader.UI.ModBrowser.UIModDownloadItem")
                                        .GetMethod(fromJsonMethodName, bindingFlags);
             var fromJsonTranspiler = typeof(ReplaceURLs).GetMethod(nameof(FromJSONTranspiler), bindingFlags);
-            Plugin.HarmonyInstance.Patch(fromJson, null, null, new HarmonyMethod(fromJsonTranspiler));
+            LocalizerPlugin.HarmonyInstance.Patch(fromJson, null, null, new HarmonyMethod(fromJsonTranspiler));
 
             var onActivate = typeof(Mod).Module
                                        .GetType("Terraria.ModLoader.UI.UIModInfo")
                                       .GetMethods(bindingFlags)
                                       .FirstOrDefault(m => m.Name.Contains(onActivateMethodName));
             var onActivateTranspiler = typeof(ReplaceURLs).GetMethod(nameof(OnActivateTranspiler), bindingFlags);
-            Plugin.HarmonyInstance.Patch(onActivate, null, null, new HarmonyMethod(onActivateTranspiler));
+            LocalizerPlugin.HarmonyInstance.Patch(onActivate, null, null, new HarmonyMethod(onActivateTranspiler));
 
             var uiModDownloadItemCtor = typeof(Mod).Module
                                         .GetType("Terraria.ModLoader.UI.ModBrowser.UIModDownloadItem")
                                         .GetConstructors(bindingFlags)[0];
             var removeIconTranspiler = typeof(ReplaceURLs).GetMethod(nameof(RemoveIconTranspiler), bindingFlags);
-            Plugin.HarmonyInstance.Patch(uiModDownloadItemCtor, null, null, new HarmonyMethod(removeIconTranspiler));
+            LocalizerPlugin.HarmonyInstance.Patch(uiModDownloadItemCtor, null, null, new HarmonyMethod(removeIconTranspiler));
 
             Utils.LogInfo("ModBrowser Patched");
         }

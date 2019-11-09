@@ -37,6 +37,7 @@
     <!-- Make View -->
     <system:String x:Key="Make-Button-Export">Export</system:String>
     <system:String x:Key="Make-Button-Pack">Pack up</system:String>
+    <system:String x:Key="Make-Button-Refresh">Refresh</system:String>
     
     <system:String x:Key="Make-CheckBox-MakeBackup">Make Backup</system:String>
     <system:String x:Key="Make-CheckBox-ForceOverride">Force Override</system:String>

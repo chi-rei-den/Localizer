@@ -1,9 +1,10 @@
 using System.Collections.Generic;
-using Localizer.ServiceInterfaces;
+using Localizer;
+using Localizer.Package.Update;
 
 namespace LocalizerTest.NonTest
 {
-    public sealed class UpdateLogger : IUpdateLogService
+    public sealed class UpdateLogger : IUpdateLogger
     {
         public List<string> Added { get; private set; }
         public List<string> Removed { get; private set; }

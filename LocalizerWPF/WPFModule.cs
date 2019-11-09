@@ -1,5 +1,5 @@
 using Localizer.Package;
-using Localizer.Services.Package;
+using Localizer.Package.Load;
 using LocalizerWPF.Model;
 using Ninject.Modules;
 
@@ -9,8 +9,8 @@ namespace LocalizerWPF
     {
         public override void Load()
         {
-            Localizer.Localizer.Kernel.Bind<SourcePackageLoad<Package>>().ToSelf().InSingletonScope();
-            Localizer.Localizer.Kernel.Bind<PackedPackageLoad<Package>>().ToSelf().InSingletonScope();
+            Bind<SourcePackageLoad<Package>>().ToSelf().InSingletonScope();
+            Bind<PackedPackageLoad<Package>>().ToSelf().InSingletonScope();
         }
     }
 }
