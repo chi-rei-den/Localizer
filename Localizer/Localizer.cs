@@ -50,24 +50,26 @@ namespace Localizer
         public Localizer()
         {
             Instance = this;
+            var mod = new LoadedModWrapper(Tr().GetType("Terraria.ModLoader.Core.AssemblyManager")
+                                               .Field("loadedMods")
+                                               .Method("get_Item", "!Localizer"));
+            this.SetField("<File>k__BackingField", mod.File);
+            this.SetField("<Code>k__BackingField", mod.Code);
+            Log = LogManager.GetLogger(nameof(Localizer));
             
             HarmonyInstance = HarmonyInstance.Create(nameof(Localizer));
             var prefix = new HarmonyMethod(typeof(Localizer).GetMethod(nameof(AfterLocalizerCtorHook), ReflectionHelper.All));
             HarmonyInstance.Patch(Tr().GetType("Terraria.ModLoader.Core.AssemblyManager")
                                              .GetMethod("Instantiate", ReflectionHelper.All), prefix);
+            
+            State = OperationTiming.BeforeModCtor;
+            TmodFile = Instance.Prop("File") as TmodFile;
+            Init();
+            _initiated = true;
         }
 
         private static void AfterLocalizerCtorHook(object mod)
         {
-            if (!_initiated)
-            {
-                State = OperationTiming.BeforeModCtor;
-                Log = Instance.Logger;
-                TmodFile = Instance.Prop("File") as TmodFile;
-                Init();
-                _initiated = true;
-            }
-            
             Hooks.InvokeBeforeModCtor(mod);
         }
 
@@ -108,7 +110,7 @@ namespace Localizer
         {
             State = OperationTiming.BeforeContentLoad;
             Hooks.InvokeBeforeSetupContent();
-//            CheckUpdate();
+            CheckUpdate();
         }
 
         public override void PostAddRecipes()

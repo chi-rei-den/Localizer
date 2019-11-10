@@ -15,9 +15,16 @@ namespace Localizer.Helpers
         {
             if(o is null)
                 throw new ArgumentNullException(nameof(o));
-            var field = o.GetType().GetField(name, flags) ??
-                        throw new Exception($"Cannot find field: {o.GetType().FullName}.{name}");
+            var field = o.GetType().GetFieldRecursively(name, flags);
             return field.GetValue(o);
+        }
+        
+        public static void SetField(this object o, string name, object value, BindingFlags flags = All)
+        {
+            if(o is null)
+                throw new ArgumentNullException(nameof(o));
+            var field = o.GetType().GetFieldRecursively(name, flags);
+            field.SetValue(o, value);
         }
         
         public static object Field(this Type t, string name, BindingFlags flags = All)
@@ -27,6 +34,15 @@ namespace Localizer.Helpers
             var field = t.GetField(name, flags) ??
                         throw new Exception($"Cannot find field: {t.FullName}.{name}");
             return field.GetValue(null);
+        }
+        
+        public static void SetField(this Type t, string name, object value, BindingFlags flags = All)
+        {
+            if(t is null)
+                throw new ArgumentNullException(nameof(t));
+            var field = t.GetField(name, flags) ??
+                        throw new Exception($"Cannot find field: {t.FullName}.{name}");
+            field.SetValue(null, value);
         }
         
         public static object Prop(this object o, string name, BindingFlags flags = All)
@@ -77,6 +93,28 @@ namespace Localizer.Helpers
             if(t is null)
                 throw new ArgumentNullException(nameof(t));
             return t.Method(name, new[] {arg}, flags);
+        }
+
+        public static FieldInfo GetFieldRecursively(this Type type, string name, BindingFlags flags = All)
+        {
+            if(type is null)
+                throw new ArgumentNullException(nameof(type));
+            
+            var t = type;
+            FieldInfo result;
+            while ((result = t.GetField(name, flags)) is null)
+            {
+                t = t.BaseType;
+                if(t == typeof(object))
+                    break;
+            }
+
+            if (result is null)
+            {
+                throw new Exception($"Cannot find field: {type.FullName}.{name}");
+            }
+
+            return result;
         }
 
         public static Module Tr()
