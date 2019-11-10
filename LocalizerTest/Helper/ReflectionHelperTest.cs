@@ -26,9 +26,23 @@ namespace LocalizerTest.Helper
             return $"StillQux: {qux}";
         }
     }
+
+    class Foo2 : Foo
+    {
+        
+    }
     
     public class ReflectionHelperTest
     {
+        [Fact]
+        public void GetFieldRecursively_Correct()
+        {
+            var foo = new Foo2();
+            foo.GetType().GetFieldRecursively("bar").GetValue(foo).Should().Be("Bar");
+            
+            (typeof(Foo2).GetFieldRecursively("staticBar").GetValue(foo) as string).Should().Be("StillBar");
+        }
+        
         [Fact]
         public void Field_Correct()
         {
@@ -36,6 +50,17 @@ namespace LocalizerTest.Helper
             (foo.Field("bar") as string).Should().Be("Bar");
             
             (typeof(Foo).Field("staticBar") as string).Should().Be("StillBar");
+        }
+        
+        [Fact]
+        public void SetField_Correct()
+        {
+            var foo = new Foo();
+            foo.SetField("bar", "Bar2");
+            (foo.Field("bar") as string).Should().Be("Bar2");
+            
+            typeof(Foo).SetField("staticBar", "StillBar2");
+            (typeof(Foo).Field("staticBar") as string).Should().Be("StillBar2");
         }
         
         [Fact]
