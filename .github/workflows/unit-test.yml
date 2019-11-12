@@ -12,7 +12,9 @@ jobs:
         uses: warrenbuckley/Setup-Nuget@v1
 
       - name: Setup tModLoader
-        uses: chi-rei-den/SetupModLoader@v1
+        uses: chi-rei-den/ModLoaderTools@v1
+        with:
+          command: setup
 
       - name: Restore NuGet Packages
         run: nuget restore Localizer.sln
