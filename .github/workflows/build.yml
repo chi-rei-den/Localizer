@@ -50,6 +50,9 @@ jobs:
           command: build
           path: Localizer
 
+      - name: Release build
+        run: ModPatch\bin\Debug\ModPatch.exe
+
       - name: Publish Mod
         uses: chi-rei-den/ModLoaderTools@v1
         with:

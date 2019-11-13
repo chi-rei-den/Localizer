@@ -16,6 +16,9 @@ jobs:
         with:
           command: setup
 
+      - name: Add reference search path
+        run: Get-ChildItem -Directory | ForEach-Object { Copy reference.xml "$($_.FullName)\$($_.Name).csproj.user" }
+
       - name: Restore NuGet Packages
         run: nuget restore Localizer.sln
 

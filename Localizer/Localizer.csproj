@@ -166,7 +166,7 @@
     </PackageReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <PropertyGroup>  
+  <PropertyGroup>
     <AssemblySearchPaths>
       $(AssemblySearchPaths);
       $(tModLoaderPath);

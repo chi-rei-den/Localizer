@@ -10,7 +10,7 @@ namespace Localizer.Helpers
     {
         public const BindingFlags All = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static |
                                         BindingFlags.Instance;
-        
+
         public static object Field(this object o, string name, BindingFlags flags = All)
         {
             if(o is null)
@@ -18,7 +18,7 @@ namespace Localizer.Helpers
             var field = o.GetType().GetFieldRecursively(name, flags);
             return field.GetValue(o);
         }
-        
+
         public static void SetField(this object o, string name, object value, BindingFlags flags = All)
         {
             if(o is null)
@@ -26,7 +26,7 @@ namespace Localizer.Helpers
             var field = o.GetType().GetFieldRecursively(name, flags);
             field.SetValue(o, value);
         }
-        
+
         public static object Field(this Type t, string name, BindingFlags flags = All)
         {
             if(t is null)
@@ -35,7 +35,7 @@ namespace Localizer.Helpers
                         throw new Exception($"Cannot find field: {t.FullName}.{name}");
             return field.GetValue(null);
         }
-        
+
         public static void SetField(this Type t, string name, object value, BindingFlags flags = All)
         {
             if(t is null)
@@ -44,7 +44,7 @@ namespace Localizer.Helpers
                         throw new Exception($"Cannot find field: {t.FullName}.{name}");
             field.SetValue(null, value);
         }
-        
+
         public static object Prop(this object o, string name, BindingFlags flags = All)
         {
             if(o is null)
@@ -53,7 +53,7 @@ namespace Localizer.Helpers
                         throw new Exception($"Cannot find property: {o.GetType().FullName}.{name}");
             return prop.GetValue(o);
         }
-        
+
         public static object Prop(this Type t, string name, BindingFlags flags = All)
         {
             if(t is null)
@@ -69,7 +69,7 @@ namespace Localizer.Helpers
                 throw new ArgumentNullException(nameof(o));
             return o.Method(name, new[] {arg}, flags);
         }
-        
+
         public static object Method(this object o, string name, object[] args = null, BindingFlags flags = All)
         {
             if(o is null)
@@ -87,7 +87,7 @@ namespace Localizer.Helpers
                          throw new Exception($"Cannot find method: {t.FullName}.{name}");
             return method.Invoke(null, args);
         }
-        
+
         public static object Method(this Type t, string name, object arg, BindingFlags flags = All)
         {
             if(t is null)
@@ -99,7 +99,7 @@ namespace Localizer.Helpers
         {
             if(type is null)
                 throw new ArgumentNullException(nameof(type));
-            
+
             var t = type;
             FieldInfo result;
             while ((result = t.GetField(name, flags)) is null)
@@ -135,7 +135,7 @@ namespace Localizer.Helpers
                 return null;
             }
         }
-        
+
         public static MethodBase FindMethodAndConstructor(this Type type, string findableID)
         {
             try
@@ -158,7 +158,7 @@ namespace Localizer.Helpers
                 return null;
             }
         }
-        
+
         public static MethodDefinition FindMethod(this ModuleDefinition module, string findableID)
         {
             try

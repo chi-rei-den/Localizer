@@ -79,15 +79,15 @@
       <Version>2.4.1</Version>
     </PackageReference>
   </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />  
-  <PropertyGroup>  
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
     <AssemblySearchPaths>
       $(AssemblySearchPaths);
       $(tModLoaderPath);
       $(USERPROFILE)\Documents\My Games\Terraria\ModLoader\references\
     </AssemblySearchPaths>
   </PropertyGroup>
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
          Other similar extension points exist, see Microsoft.Common.targets.
     <Target Name="BeforeBuild">
     </Target>
