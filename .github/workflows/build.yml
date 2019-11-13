@@ -50,8 +50,8 @@ jobs:
           command: build
           path: Localizer
 
-      - name: Release build
-        run: ModPatch\bin\Debug\ModPatch.exe
+      - name: Patch Mod
+        run: '& "$ENV:GITHUB_WORKSPACE\ModPatch\bin\Release\ModPatch.exe"'
 
       - name: Publish Mod
         uses: chi-rei-den/ModLoaderTools@v1
