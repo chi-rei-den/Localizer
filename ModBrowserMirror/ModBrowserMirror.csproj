@@ -46,18 +46,10 @@
       <Name>Localizer</Name>
     </ProjectReference>
     <Reference Include="Terraria" />
-    <Reference Include="Mono.Cecil, Version=0.10.4.0, Culture=neutral, PublicKeyToken=50cebf1cceb9d05e">
-      <HintPath>$(USERPROFILE)\Documents\My Games\Terraria\ModLoader\references\Mono.Cecil.dll</HintPath>
-    </Reference>
-    <Reference Include="MonoMod.RuntimeDetour, Version=19.10.5.2, Culture=neutral, PublicKeyToken=null">
-      <HintPath>$(USERPROFILE)\Documents\My Games\Terraria\ModLoader\references\MonoMod.RuntimeDetour.dll</HintPath>
-    </Reference>
-    <Reference Include="MonoMod.Utils, Version=19.10.5.2, Culture=neutral, PublicKeyToken=null">
-      <HintPath>$(USERPROFILE)\Documents\My Games\Terraria\ModLoader\references\MonoMod.Utils.dll</HintPath>
-    </Reference>
-    <Reference Include="TerrariaHooks">
-      <HintPath>$(USERPROFILE)\Documents\My Games\Terraria\ModLoader\references\TerrariaHooks.dll</HintPath>
-    </Reference>
+    <Reference Include="Mono.Cecil, Version=0.10.4.0, Culture=neutral, PublicKeyToken=50cebf1cceb9d05e" />
+    <Reference Include="MonoMod.RuntimeDetour, Version=19.10.5.2, Culture=neutral, PublicKeyToken=null" />
+    <Reference Include="MonoMod.Utils, Version=19.10.5.2, Culture=neutral, PublicKeyToken=null" />
+    <Reference Include="TerrariaHooks" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Lib.Harmony">
@@ -68,7 +60,8 @@
   <PropertyGroup>  
     <AssemblySearchPaths>
       $(AssemblySearchPaths);
-      $(tModLoaderPath)
+      $(tModLoaderPath);
+      $(USERPROFILE)\Documents\My Games\Terraria\ModLoader\references\
     </AssemblySearchPaths>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

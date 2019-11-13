@@ -83,7 +83,8 @@
   <PropertyGroup>  
     <AssemblySearchPaths>
       $(AssemblySearchPaths);
-      $(tModLoaderPath)
+      $(tModLoaderPath);
+      $(USERPROFILE)\Documents\My Games\Terraria\ModLoader\references\
     </AssemblySearchPaths>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
