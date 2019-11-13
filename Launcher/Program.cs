@@ -18,7 +18,7 @@ namespace Launcher
             {
                 var localizer = new Localizer.Localizer();
                 localizer.Load();
-                
+
                 var app = new App();
                 app.InitializeComponent();
                 app.Run();

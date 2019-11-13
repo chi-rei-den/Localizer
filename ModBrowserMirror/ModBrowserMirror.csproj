@@ -45,9 +45,7 @@
       <Project>{95d54b28-b67b-4248-b83a-b5e5426c3806}</Project>
       <Name>Localizer</Name>
     </ProjectReference>
-    <Reference Include="Terraria">
-      <HintPath>..\References\Terraria.exe</HintPath>
-    </Reference>
+    <Reference Include="Terraria" />
     <Reference Include="Mono.Cecil, Version=0.10.4.0, Culture=neutral, PublicKeyToken=50cebf1cceb9d05e">
       <HintPath>$(USERPROFILE)\Documents\My Games\Terraria\ModLoader\references\Mono.Cecil.dll</HintPath>
     </Reference>
@@ -67,6 +65,12 @@
     </PackageReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>  
+    <AssemblySearchPaths>
+      $(AssemblySearchPaths);
+      C:\Program Files (x86)\Steam\steamapps\common\Terraria\
+    </AssemblySearchPaths>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
            Other similar extension points exist, see Microsoft.Common.targets.
       <Target Name="BeforeBuild">
