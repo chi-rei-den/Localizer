@@ -12,7 +12,12 @@ jobs:
         uses: warrenbuckley/Setup-Nuget@v1
 
       - name: Setup tModLoader
-        uses: chi-rei-den/SetupModLoader@v1
+        uses: chi-rei-den/ModLoaderTools@v1
+        with:
+          command: setup
+
+      - name: Add reference search path
+        run: Get-ChildItem -Directory | ForEach-Object { Copy reference.xml "$($_.FullName)\$($_.Name).csproj.user" }
 
       - name: Restore NuGet Packages
         run: nuget restore Localizer.sln
@@ -20,8 +25,42 @@ jobs:
       - name: Release build
         run: '& "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current\Bin\MSBuild.exe" Localizer.sln /p:Configuration=Release /p:Platform=x86'
 
-      - name: Packaging
-        run: '& ".\\build-mod-release.bat"'
+      - name: Clean binary
+        run: |
+          del ".\Localizer\Plugins\*.pdb"
+          del ".\Localizer\Plugins\*.dll.config"
+          del ".\Localizer\Plugins\*.xml"
+          del ".\Localizer\Plugins\Terraria.exe"
+          del ".\Localizer\Plugins\TerrariaHooks.dll"
+          del ".\Localizer\Plugins\Steamworks.NET.dll"
+          del ".\Localizer\Plugins\ReLogic.dll"
+          del ".\Localizer\Plugins\Ninject.dll"
+          del ".\Localizer\Plugins\Newtonsoft.Json.dll"
+          del ".\Localizer\Plugins\MonoMod.*.dll"
+          del ".\Localizer\Plugins\Mono.Cecil.dll"
+          del ".\Localizer\Plugins\log4net.dll"
+          del ".\Localizer\Plugins\Localizer.dll"
+          del ".\Localizer\Plugins\0Harmony.dll"
+          del ".\Localizer\Plugins\System.*.dll"
+          del ".\Localizer\Plugins\Microsoft.Xna.*.dll"
+
+      - name: Build Mod
+        uses: chi-rei-den/ModLoaderTools@v1
+        with:
+          command: build
+          path: Localizer
+
+      - name: Patch Mod
+        run: '& "$ENV:GITHUB_WORKSPACE\ModPatch\bin\Release\ModPatch.exe"'
+
+      - name: Publish Mod
+        uses: chi-rei-den/ModLoaderTools@v1
+        with:
+          command: publish
+          path: Localizer
+        env:
+          steamid64: ${{ secrets.steamid64 }}
+          passphrase: ${{ secrets.mod_browser_passphrase }}
 
       - name: Clean artifact
         run: |

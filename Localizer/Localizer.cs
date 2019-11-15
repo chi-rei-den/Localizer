@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Net;
@@ -56,12 +56,12 @@ namespace Localizer
             this.SetField("<File>k__BackingField", mod.File);
             this.SetField("<Code>k__BackingField", mod.Code);
             Log = LogManager.GetLogger(nameof(Localizer));
-            
+
             HarmonyInstance = HarmonyInstance.Create(nameof(Localizer));
             var prefix = new HarmonyMethod(typeof(Localizer).GetMethod(nameof(AfterLocalizerCtorHook), ReflectionHelper.All));
             HarmonyInstance.Patch(Tr().GetType("Terraria.ModLoader.Core.AssemblyManager")
                                              .GetMethod("Instantiate", ReflectionHelper.All), prefix);
-            
+
             State = OperationTiming.BeforeModCtor;
             TmodFile = Instance.Prop("File") as TmodFile;
             Init();
@@ -189,7 +189,7 @@ namespace Localizer
                 Log.Info("No config file, creating...");
                 Config = new Configuration();
             }
-            
+
             Utils.SerializeJsonAndCreateFile(Config, ConfigPath);
             Log.Info("Config loaded");
         }
@@ -213,7 +213,7 @@ namespace Localizer
             var gc = GameCulture.FromName(culture.Name);
             return gc ?? AddGameCulture(culture);
         }
-        
+
         public static void RefreshLanguages()
         {
             Kernel.Get<RefreshLanguageService>().Refresh();
@@ -224,7 +224,7 @@ namespace Localizer
             string GetEacPathInternal()
             {
                 var propFile = Instance.GetFileStream("Info");
-                
+
                 var buildProp = Tr().GetType("Terraria.ModLoader.Core.BuildProperties")
                                     .Method("ReadFromStream", propFile);
 
@@ -237,7 +237,7 @@ namespace Localizer
             {
                 return GetEacPathInternal();
             }
-            
+
             using (TmodFile.Open())
             {
                 return GetEacPathInternal();
@@ -257,7 +257,7 @@ namespace Localizer
 
                 return null;
             }
-            
+
             var mod = Utils.GetModByName(name);
             if (mod is null)
                 return null;
@@ -269,7 +269,7 @@ namespace Localizer
             var attribute = t.GetCustomAttribute<OperationTimingAttribute>();
             return attribute == null || CanDoOperationNow(attribute.Timing);
         }
-        
+
         public static bool CanDoOperationNow(OperationTiming t)
         {
             return (t & State) != 0;

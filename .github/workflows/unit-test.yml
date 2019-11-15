@@ -12,7 +12,12 @@ jobs:
         uses: warrenbuckley/Setup-Nuget@v1
 
       - name: Setup tModLoader
-        uses: chi-rei-den/SetupModLoader@v1
+        uses: chi-rei-den/ModLoaderTools@v1
+        with:
+          command: setup
+
+      - name: Add reference search path
+        run: Get-ChildItem -Directory | ForEach-Object { Copy reference.xml "$($_.FullName)\$($_.Name).csproj.user" }
 
       - name: Restore NuGet Packages
         run: nuget restore Localizer.sln
@@ -21,4 +26,4 @@ jobs:
         run: '& "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current\Bin\MSBuild.exe" Localizer.sln /p:Configuration=Release /p:Platform=x86'
 
       - name: Run Tests
-        run: '& ".\packages\xunit.runner.console.2.4.1\tools\net472\xunit.console.x86.exe" ".\LocalizerTest\bin\Release\LocalizerTest.dll"'
+        run: '& "$ENV:UserProfile\.nuget\packages\xunit.runner.console\2.4.1\tools\net472\xunit.console.x86.exe" ".\LocalizerTest\bin\Release\LocalizerTest.dll"'
