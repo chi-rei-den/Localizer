@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using Localizer.DataModel;
 using Localizer.DataModel.Default;
@@ -22,27 +23,27 @@ namespace Localizer.Package.Update
 
             foreach (var prop in typeof(T).ModTranslationOwnerField())
             {
-                dynamic oldEntries = prop.GetValue(oldFile);
-                dynamic newEntries = prop.GetValue(newFile);
+                var oldEntries = (IDictionary)prop.GetValue(oldFile);
+                var newEntries = (IDictionary)prop.GetValue(newFile);
 
-                foreach (var newEntryKey in newEntries.Keys)
+                foreach (string newEntryKey in newEntries.Keys)
                 {
-                    if (oldEntries.ContainsKey(newEntryKey))
+                    if (oldEntries.Contains(newEntryKey))
                     {
                         UpdateEntry(newEntryKey, oldFile.GetValue(newEntryKey), newFile.GetValue(newEntryKey), logger);
                     }
                     else
                     {
                         logger.Add($"[{newEntryKey}]");
-                        dynamic entry = newEntries[newEntryKey].Clone();
+                        var entry = (newEntries[newEntryKey] as IEntry).Clone();
                         oldEntries.Add(newEntryKey, entry);
                     }
                 }
 
                 var removed = new List<string>();
-                foreach (var k in oldEntries.Keys)
+                foreach (string k in oldEntries.Keys)
                 {
-                    if (!newEntries.ContainsKey(k))
+                    if (!newEntries.Contains(k))
                     {
                         removed.Add(k);
                     }
@@ -52,7 +53,7 @@ namespace Localizer.Package.Update
                 {
                     logger.Remove($"[{r}]");
                 }
-                
+
                 prop.SetValue(oldFile, oldEntries);
             }
         }
