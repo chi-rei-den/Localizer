@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -27,14 +28,14 @@ namespace Localizer.Package.Export
             {
                 var fieldName = prop.ModTranslationOwnerFieldName();
 
-                dynamic field = mod.Field(fieldName);
+                var field = (IDictionary)mod.Field(fieldName);
 
                 var entryType = prop.PropertyType.GenericTypeArguments
                                     .FirstOrDefault(g => g.GetInterfaces().Contains(typeof(IEntry)));
 
                 var entries = CreateEntries(field, entryType, package.Language, config.WithTranslation);
 
-                dynamic entriesOfFile = prop.GetValue(file);
+                var entriesOfFile = (IDictionary)prop.GetValue(file);
                 foreach (var e in entries)
                 {
                     entriesOfFile.Add(e.Key, e.Value);
@@ -44,20 +45,20 @@ namespace Localizer.Package.Export
             package.AddFile(file);
         }
 
-        private Dictionary<string, object> CreateEntries(dynamic localizeOwners, Type entryType, CultureInfo lang,
+        private Dictionary<string, object> CreateEntries(IDictionary localizeOwners, Type entryType, CultureInfo lang,
                                                          bool withTranslation)
         {
             var entries = new Dictionary<string, object>();
 
             var mappings = Utils.CreateEntryMappings(entryType);
 
-            foreach (var pair in localizeOwners)
+            foreach (string key in localizeOwners.Keys)
             {
                 var entry = Activator.CreateInstance(entryType);
 
                 foreach (var mapping in mappings)
                 {
-                    object owner = pair.Value;
+                    object owner = localizeOwners[key];
                     var localizeTrans = owner?.GetType().GetProperty(mapping.Key)?.GetValue(owner) as ModTranslation;
 
                     mapping.Value.SetValue(entry, new BaseEntry
@@ -67,7 +68,7 @@ namespace Localizer.Package.Export
                     });
                 }
 
-                entries.Add(pair.Key, entry);
+                entries.Add(key, entry);
             }
 
             return entries;

@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Globalization;
 using System.Linq;
 using Localizer.Attributes;
@@ -16,19 +17,19 @@ namespace Localizer.Package.Import
         {
             ImportInternal((T)file, mod, culture);
         }
-        
+
         private void ImportInternal(T file, IMod mod, CultureInfo culture)
         {
             foreach (var prop in typeof(T).ModTranslationOwnerField())
             {
                 var fieldName = prop.ModTranslationOwnerFieldName();
 
-                dynamic field = Utils.GetModByName(mod.Name).Field(fieldName);
+                var field = (IDictionary)Utils.GetModByName(mod.Name).Field(fieldName);
 
                 var entryType = prop.PropertyType.GenericTypeArguments
                                     .FirstOrDefault(g => g.GetInterfaces().Contains(typeof(IEntry)));
 
-                dynamic entries = prop.GetValue(file);
+                var entries = (IDictionary)prop.GetValue(file);
 
                 ApplyEntries(entries, field, entryType, culture);
             }
@@ -38,11 +39,11 @@ namespace Localizer.Package.Import
         {
             return MergeInternal((T)main, (T)addition);
         }
-        
+
         internal T MergeInternal(T main, T addition)
         {
             var result = Activator.CreateInstance(typeof(T));
-            
+
             foreach (var prop in typeof(T).ModTranslationOwnerField())
             {
                 dynamic entries = Activator.CreateInstance(prop.PropertyType);
@@ -54,7 +55,7 @@ namespace Localizer.Package.Import
                 {
                     entries.Add(t.Key, t.Value.Clone());
                 }
-                
+
                 foreach (var pair in additionEntryDict)
                 {
                     if (entries.ContainsKey(pair.Key))
@@ -72,7 +73,7 @@ namespace Localizer.Package.Import
 
             return (T)result;
         }
-        
+
         public IEntry Merge(IEntry main, IEntry addition)
         {
             if (main.GetType() != addition.GetType())
@@ -99,24 +100,24 @@ namespace Localizer.Package.Import
             return result;
         }
 
-        private void ApplyEntries(dynamic entries, dynamic field, Type entryType, CultureInfo culture)
+        private void ApplyEntries(IDictionary entries, IDictionary field, Type entryType, CultureInfo culture)
         {
             var mappings = Utils.CreateEntryMappings(entryType);
 
-            foreach (var ePair in entries)
+            foreach (string eKey in entries.Keys)
             {
-                if (!field.ContainsKey(ePair.Key))
+                if (!field.Contains(eKey))
                 {
                     continue;
                 }
 
                 foreach (var mapping in mappings)
                 {
-                    var localizeOwner = field[ePair.Key];
+                    var localizeOwner = field[eKey];
                     var modTrans =
                         localizeOwner?.GetType().GetProperty(mapping.Key)?.GetValue(localizeOwner) as ModTranslation;
 
-                    modTrans?.Import(mapping.Value.GetValue(ePair.Value) as BaseEntry, culture);
+                    modTrans?.Import(mapping.Value.GetValue(entries[eKey]) as BaseEntry, culture);
                 }
             }
         }

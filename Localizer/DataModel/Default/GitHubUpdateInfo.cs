@@ -4,27 +4,17 @@ namespace Localizer.DataModel.Default
 {
     public class GitHubUpdateInfo : IUpdateInfo
     {
-        public UpdateType Type => type;
+        public UpdateType Type { get; }
 
-        public Version Version => version;
-
-        private UpdateType type;
-        private Version version;
+        public Version Version { get; }
 
         private string versionString;
 
         public GitHubUpdateInfo(string versionString)
         {
             this.versionString = versionString;
-            
-            Parse();
-        }
-
-        internal void Parse()
-        {
-            type = ParseType(versionString[0]);
-
-            version = Version.Parse(versionString.Substring(1, versionString.Length - 1));
+            Type = ParseType(versionString[0]);
+            Version = Version.Parse(versionString.Substring(1, versionString.Length - 1));
         }
 
         internal UpdateType ParseType(char t)
