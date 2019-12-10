@@ -15,14 +15,7 @@ namespace Localizer
         
         public Dictionary<string, bool> PluginEnableStatus { get; private set; }
 
-        private static readonly string InternalPluginDirPath = "Plugins/";
         private static readonly string ExternalPluginDirPath = "./Localizer/Plugins/";
-        
-        private static readonly string[] InternalPlugins =
-        {
-            "LocalizerWPF.dll",
-            "ModBrowserMirror.dll",
-        };
         
         public LocalizerKernel()
         {
@@ -39,8 +32,6 @@ namespace Localizer
                 new DefaultPackageModule(),
                 new DefaultNetworkModule(),
             });
-
-            LoadInternalPlugin();
         }
 
         public override void Dispose(bool disposing)
@@ -60,28 +51,6 @@ namespace Localizer
                 }
             }
             base.Dispose(disposing);
-        }
-
-        internal void LoadInternalPlugin()
-        {
-            var internalPlugins = new List<Assembly>();
-#if DEBUG
-            var eacFileInfo = new FileInfo(Localizer.GetEacPath());
-            var pluginDir = new DirectoryInfo(Path.Combine(eacFileInfo.Directory.Parent.Parent.FullName, "Plugins"));
-            foreach (var pluginFileName in InternalPlugins)
-            {
-                internalPlugins.Add(Assembly.Load(File.ReadAllBytes(Path.Combine(pluginDir.FullName, pluginFileName))));
-            }
-#else
-            foreach (var pluginFileName in InternalPlugins)
-            {
-                internalPlugins.Add(Assembly.Load(GetInternalPluginFileBytes(pluginFileName)));
-            }
-#endif
-            foreach (var plugin in internalPlugins)
-            {
-                LoadPlugin(plugin);
-            }
         }
 
         internal void LoadPlugin(Assembly asm)
@@ -159,14 +128,7 @@ namespace Localizer
 
                 var fileName = asmName.Name + ".dll";
 
-                var asmFile = GetInternalPluginFileBytes(fileName);
-
-                if (asmFile != null && asmFile.Length != 0)
-                {
-                    return Assembly.Load(asmFile);
-                }
-
-                asmFile = GetExternalPluginFileBytes(fileName);
+                var asmFile = GetExternalPluginFileBytes(fileName);
 
                 if (asmFile != null && asmFile.Length != 0)
                 {
@@ -189,19 +151,6 @@ namespace Localizer
                 return null;
             
             return File.ReadAllBytes(path);
-        }
-
-        private static byte[] GetInternalPluginFileBytes(string fileName)
-        {
-            if (Localizer.TmodFile.IsOpen)
-            {
-                return Localizer.Instance?.GetFileBytes($"{InternalPluginDirPath}{fileName}");
-            }
-            
-            using (Localizer.TmodFile.Open())
-            {
-                return Localizer.Instance?.GetFileBytes($"{InternalPluginDirPath}{fileName}");
-            }
         }
     }
 }
