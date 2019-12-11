@@ -45,6 +45,11 @@ namespace Localizer
 
         #region Reflection
 
+        public static Module TR()
+        {
+            return typeof(Terraria.Main).Module;
+        }
+        
         /// <summary>
         ///     Return the method matched with the findableName in the given type.
         ///     Return null if fail.
@@ -58,6 +63,18 @@ namespace Localizer
             return method != null ? MethodBase.GetMethodFromHandle(method.MethodHandle) : null;
         }
 
+        public static MethodBase FindMethodByID(Module m, string findableName)
+        {
+            foreach (var t in m.GetTypes())
+            {
+                if (t.FindMethod(findableName) != null)
+                {
+                    return t.FindMethod(findableName);
+                }
+            }
+
+            return null;
+        }
         #endregion
 
         #region Json
@@ -250,7 +267,7 @@ namespace Localizer
         ///     Create directory if doesn't exist.
         /// </summary>
         /// <param name="path"></param>
-        public static void CreateDirectory(string path)
+        public static void EnsureDir(string path)
         {
             if (!Directory.Exists(path))
             {

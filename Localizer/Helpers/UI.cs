@@ -1,5 +1,7 @@
 using System;
 using System.Reflection;
+using Noro;
+using Noro.Access;
 using Terraria.ModLoader;
 using Terraria.UI;
 
@@ -11,13 +13,13 @@ namespace Localizer.Helpers
         {
             var infoMsgUI = GetModLoaderUI("infoMessage") ?? throw new Exception("Cannot Find infoMessage field");
 
-            infoMsgUI.GetType().GetMethod("Show", BindingFlags.Instance | BindingFlags.NonPublic).Invoke(infoMsgUI, new object[] { message, gotoMenu, state, altButtonText, altButtonAction });
+            infoMsgUI.M("Show", message, gotoMenu, state, altButtonText, altButtonAction);
         }
 
         public static object GetModLoaderUI(string uiName)
         {
             var ui = typeof(Mod).Module.GetType("Terraria.ModLoader.UI.Interface");
-            return ui?.GetField(uiName, BindingFlags.Static | BindingFlags.NonPublic)?.GetValue(null);
+            return ui?.F(uiName);
         }
     }
 }

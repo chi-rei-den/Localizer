@@ -16,14 +16,16 @@ using log4net;
 using Microsoft.Xna.Framework;
 using MonoMod.Cil;
 using MonoMod.RuntimeDetour.HookGen;
+using MonoMod.Utils;
 using Ninject;
 using Ninject.Modules;
+using Noro;
+using Noro.Access;
 using Terraria;
 using Terraria.Localization;
 using Terraria.ModLoader;
 using Terraria.ModLoader.Core;
 using Terraria.UI;
-using static Localizer.Helpers.ReflectionHelper;
 using static Localizer.Lang;
 using File = System.IO.File;
 
@@ -41,7 +43,7 @@ namespace Localizer
         public static Configuration Config { get; set; }
         public static OperationTiming State { get; internal set; }
         internal static LocalizerKernel Kernel { get; private set; }
-        internal static HarmonyInstance HarmonyInstance { get; set; }
+        internal static HarmonyInstance Harmony { get; set; }
 
         private static Dictionary<int, GameCulture> _gameCultures;
 
@@ -50,20 +52,19 @@ namespace Localizer
         public Localizer()
         {
             Instance = this;
-            var mod = new LoadedModWrapper(Tr().GetType("Terraria.ModLoader.Core.AssemblyManager")
-                                               .Field("loadedMods")
-                                               .Method("get_Item", "!Localizer"));
-            this.SetField("<File>k__BackingField", mod.File);
-            this.SetField("<Code>k__BackingField", mod.Code);
+            var mod = new LoadedModWrapper(ReflUtils.FindType("Terraria.ModLoader.Core.AssemblyManager")
+                                               .F("loadedMods")
+                                               .M("get_Item", "!Localizer"));
+            this.A()["<File>k__BackingField"] = mod.File;
+            this.A()["<Code>k__BackingField"] = mod.Code;
             Log = LogManager.GetLogger(nameof(Localizer));
 
-            HarmonyInstance = HarmonyInstance.Create(nameof(Localizer));
-            var prefix = new HarmonyMethod(typeof(Localizer).GetMethod(nameof(AfterLocalizerCtorHook), ReflectionHelper.All));
-            HarmonyInstance.Patch(Tr().GetType("Terraria.ModLoader.Core.AssemblyManager")
-                                             .GetMethod("Instantiate", ReflectionHelper.All), prefix);
+            Harmony = HarmonyInstance.Create(nameof(Localizer));
+            Harmony.Prefix<Localizer>(nameof(AfterLocalizerCtorHook))
+                   .Detour("Terraria.ModLoader.Core.AssemblyManager", "Instantiate");
 
             State = OperationTiming.BeforeModCtor;
-            TmodFile = Instance.Prop("File") as TmodFile;
+            TmodFile = Instance.P("File") as TmodFile;
             Init();
             _initiated = true;
         }
@@ -75,7 +76,7 @@ namespace Localizer
 
         private static void Init()
         {
-            _gameCultures = typeof(GameCulture).Field("_legacyCultures") as Dictionary<int, GameCulture>;
+            _gameCultures = typeof(GameCulture).F("_legacyCultures") as Dictionary<int, GameCulture>;
 
             ServicePointManager.ServerCertificateValidationCallback += (s, cert, chain, sslPolicyErrors) => true;
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls;
@@ -85,9 +86,9 @@ namespace Localizer
             DownloadPackageDirPath = SavePath + "/Download/";
             ConfigPath = SavePath + "/Config.json";
 
-            Utils.CreateDirectory(SavePath);
-            Utils.CreateDirectory(SourcePackageDirPath);
-            Utils.CreateDirectory(DownloadPackageDirPath);
+            Utils.EnsureDir(SavePath);
+            Utils.EnsureDir(SourcePackageDirPath);
+            Utils.EnsureDir(DownloadPackageDirPath);
 
             LoadConfig();
             AddModTranslations(Instance);
@@ -104,6 +105,11 @@ namespace Localizer
             State = OperationTiming.BeforeModLoad;
             Hooks.InvokeBeforeLoad();
             Kernel.Get<RefreshLanguageService>();
+            
+            if (LanguageManager.Instance.ActiveCulture == GameCulture.Chinese)
+            {
+                ModBrowser.Patches.Patch();
+            }
         }
 
         public override void PostSetupContent()
@@ -151,10 +157,10 @@ namespace Localizer
                 SaveConfig();
 
                 HookEndpointManager.RemoveAllOwnedBy(this);
-                HarmonyInstance.UnpatchAll(nameof(Localizer));
+                Harmony.UnpatchAll(nameof(Localizer));
                 Kernel.Dispose();
 
-                HarmonyInstance = null;
+                Harmony = null;
                 Kernel = null;
                 _gameCultures = null;
                 Config = null;
@@ -219,40 +225,15 @@ namespace Localizer
             Kernel.Get<RefreshLanguageService>().Refresh();
         }
 
-        public static string GetEacPath()
-        {
-            string GetEacPathInternal()
-            {
-                var propFile = Instance.GetFileStream("Info");
-
-                var buildProp = Tr().GetType("Terraria.ModLoader.Core.BuildProperties")
-                                    .Method("ReadFromStream", propFile);
-
-                var eacPath = buildProp.Field("eacPath") as string;
-
-                return eacPath;
-            }
-
-            if (TmodFile.IsOpen)
-            {
-                return GetEacPathInternal();
-            }
-
-            using (TmodFile.Open())
-            {
-                return GetEacPathInternal();
-            }
-        }
-
         public static IMod GetWrappedMod(string name)
         {
             if (State < OperationTiming.PostContentLoad)
             {
-                var loadedMods = Tr().GetType("Terraria.ModLoader.Core.AssemblyManager")
-                                     .Field("loadedMods");
-                if ((bool)loadedMods.Method("ContainsKey", name))
+                var loadedMods = Utils.TR().F("Terraria.ModLoader.Core.AssemblyManager")
+                                     .F("loadedMods");
+                if ((bool)loadedMods.M("ContainsKey", name))
                 {
-                    return new LoadedModWrapper(loadedMods.Method("get_Item", name));
+                    return new LoadedModWrapper(loadedMods.M("get_Item", name));
                 }
 
                 return null;

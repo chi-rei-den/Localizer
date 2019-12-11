@@ -4,6 +4,7 @@ using Localizer.Attributes;
 using Localizer.DataModel;
 using Localizer.DataModel.Default;
 using Localizer.Helpers;
+using Noro.Access;
 using Terraria.ModLoader;
 
 namespace Localizer.Package.Import
@@ -20,7 +21,7 @@ namespace Localizer.Package.Import
         {
             var entryDict = file.Translations;
 
-            var translations = Utils.GetModByName(mod.Name).Field("translations") as
+            var translations = Utils.GetModByName(mod.Name).F("translations") as
                 IDictionary<string, ModTranslation>;
 
             if (translations == null)

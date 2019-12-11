@@ -79,13 +79,13 @@
     <Compile Include="Enums\OperationTiming.cs" />
     <Compile Include="Enums\PackageType.cs" />
     <Compile Include="Helpers\Extensions.cs" />
-    <Compile Include="Helpers\ReflectionHelper.cs" />
     <Compile Include="Helpers\UI.cs" />
     <Compile Include="Hooks.cs" />
     <Compile Include="Disposable.cs" />
     <Compile Include="Lang\Lang.cs" />
     <Compile Include="LocalizerKernel.cs" />
     <Compile Include="Localizer.cs" />
+    <Compile Include="ModBrowser\Patches.cs" />
     <Compile Include="Modules\DefaultNetworkModule.cs" />
     <Compile Include="Modules\DefaultPackageModule.cs" />
     <Compile Include="LocalizerPlugin.cs" />
@@ -134,12 +134,27 @@
     <Compile Include="Package\Update\PlainUpdateLogger.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Helpers\Utils.cs" />
+    <Compile Include="UIs\Manager\MainUI.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Noro\Noro.Harmony\Noro.Harmony.csproj">
+      <Project>{54c55a4c-b261-4c3c-abf6-7c7423e1898d}</Project>
+      <Name>Noro.Harmony</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Noro\Noro\Noro.csproj">
+      <Project>{d09d98ce-bee8-4226-bc48-31a926c74762}</Project>
+      <Name>Noro</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="BuildMod" AfterTargets="Build">
     <Exec Command="mkdir $(ProjectDir)lib" Condition="!Exists('$(ProjectDir)lib')" />
     <Exec Command="copy $(OutDir)0Harmony.dll $(ProjectDir)lib\0Harmony.dll" />
     <Exec Command="copy $(OutDir)Ninject.dll $(ProjectDir)lib\Ninject.dll" />
+    <Exec Command="copy $(OutDir)Noro.dll $(ProjectDir)lib\Noro.dll" />
+    <Exec Command="copy $(OutDir)Noro.Harmony.dll $(ProjectDir)lib\Noro.Harmony.dll" />
     <Exec Command="$(tMLBuildServerPath) -build $(ProjectDir) -eac $(TargetPath) -define $(DefineConstants) -unsafe $(AllowUnsafeBlocks)" />
+    <Exec Command="$(SolutionDir)ModPatch\bin\Debug\ModPatch.exe"  Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' "/>
+    <Exec Command="$(SolutionDir)ModPatch\bin\Release\ModPatch.exe"  Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' "/>
   </Target>
 </Project>

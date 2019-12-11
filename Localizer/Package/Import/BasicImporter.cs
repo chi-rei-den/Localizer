@@ -6,6 +6,7 @@ using Localizer.Attributes;
 using Localizer.DataModel;
 using Localizer.DataModel.Default;
 using Localizer.Helpers;
+using Noro.Access;
 using Terraria.ModLoader;
 
 namespace Localizer.Package.Import
@@ -24,7 +25,7 @@ namespace Localizer.Package.Import
             {
                 var fieldName = prop.ModTranslationOwnerFieldName();
 
-                var field = (IDictionary)Utils.GetModByName(mod.Name).Field(fieldName);
+                var field = (IDictionary)Utils.GetModByName(mod.Name).F(fieldName);
 
                 var entryType = prop.PropertyType.GenericTypeArguments
                                     .FirstOrDefault(g => g.GetInterfaces().Contains(typeof(IEntry)));

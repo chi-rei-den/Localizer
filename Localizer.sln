@@ -9,6 +9,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LocalizerTest", "LocalizerT
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ModPatch", "ModPatch\ModPatch.csproj", "{D05E5CFB-866F-43D1-BBFE-7CA84249CF36}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Noro", "Noro\Noro\Noro.csproj", "{D09D98CE-BEE8-4226-BC48-31A926C74762}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Noro.Harmony", "Noro\Noro.Harmony\Noro.Harmony.csproj", "{54C55A4C-B261-4C3C-ABF6-7C7423E1898D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -37,6 +41,22 @@ Global
 		{D05E5CFB-866F-43D1-BBFE-7CA84249CF36}.Release|Any CPU.Build.0 = Release|Any CPU
 		{D05E5CFB-866F-43D1-BBFE-7CA84249CF36}.Release|x86.ActiveCfg = Release|Any CPU
 		{D05E5CFB-866F-43D1-BBFE-7CA84249CF36}.Release|x86.Build.0 = Release|Any CPU
+		{D09D98CE-BEE8-4226-BC48-31A926C74762}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D09D98CE-BEE8-4226-BC48-31A926C74762}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D09D98CE-BEE8-4226-BC48-31A926C74762}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{D09D98CE-BEE8-4226-BC48-31A926C74762}.Debug|x86.Build.0 = Debug|Any CPU
+		{D09D98CE-BEE8-4226-BC48-31A926C74762}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D09D98CE-BEE8-4226-BC48-31A926C74762}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D09D98CE-BEE8-4226-BC48-31A926C74762}.Release|x86.ActiveCfg = Release|Any CPU
+		{D09D98CE-BEE8-4226-BC48-31A926C74762}.Release|x86.Build.0 = Release|Any CPU
+		{54C55A4C-B261-4C3C-ABF6-7C7423E1898D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{54C55A4C-B261-4C3C-ABF6-7C7423E1898D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{54C55A4C-B261-4C3C-ABF6-7C7423E1898D}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{54C55A4C-B261-4C3C-ABF6-7C7423E1898D}.Debug|x86.Build.0 = Debug|Any CPU
+		{54C55A4C-B261-4C3C-ABF6-7C7423E1898D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{54C55A4C-B261-4C3C-ABF6-7C7423E1898D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{54C55A4C-B261-4C3C-ABF6-7C7423E1898D}.Release|x86.ActiveCfg = Release|Any CPU
+		{54C55A4C-B261-4C3C-ABF6-7C7423E1898D}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

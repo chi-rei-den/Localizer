@@ -4,11 +4,10 @@ using System.Diagnostics;
 using System.Threading.Tasks;
 using Harmony;
 using Localizer.Helpers;
+using Noro;
 using Terraria;
 using Terraria.Localization;
 using Terraria.ModLoader;
-
-using static Localizer.Helpers.ReflectionHelper;
 
 namespace Localizer.Package.Import
 {
@@ -33,8 +32,8 @@ namespace Localizer.Package.Import
             items = new List<WeakReference>();
             
             _harmony = HarmonyInstance.Create(nameof(RefreshLanguageService));
-            var postfix = new HarmonyMethod(typeof(RefreshLanguageService).GetMethod(nameof(OnModItemCtor), All));
-            _harmony.Patch(typeof(ModItem).GetConstructors()[0], null, postfix);
+            _harmony.Postfix<RefreshLanguageService>(nameof(OnModItemCtor))
+                    .Detour(typeof(ModItem).GetConstructors()[0]);
         }
 
         private static void OnModItemCtor(ModItem __instance)

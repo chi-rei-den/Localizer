@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using Localizer.Attributes;
 using Localizer.DataModel;
 using Localizer.DataModel.Default;
@@ -101,7 +102,7 @@ namespace Localizer.Package.Import
 
         private void Import(IFile f, IPackageGroup group, FileImporter importer, bool preferEarly)
         {
-            var importerTiming = ReflectionHelper.GetAttribute<OperationTimingAttribute>(importer.GetType())
+            var importerTiming = importer.GetType().GetCustomAttribute<OperationTimingAttribute>()
                                                 ?.Timing ?? OperationTiming.Any;
             Utils.LogDebug($"Trying to Import [{f.GetType()}] using [{importer.GetType()}]" +
                            $"\n    ImporterTiming: [{importerTiming}]" +

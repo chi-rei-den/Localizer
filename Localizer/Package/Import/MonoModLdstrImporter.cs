@@ -7,6 +7,7 @@ using Localizer.DataModel.Default;
 using Localizer.Helpers;
 using MonoMod.Cil;
 using MonoMod.RuntimeDetour.HookGen;
+using Noro;
 using Terraria.ModLoader;
 
 namespace Localizer.Package.Import
@@ -29,7 +30,7 @@ namespace Localizer.Package.Import
 
             foreach (var entryPair in entryDict)
             {
-                var method = module.FindMethod(entryPair.Key);
+                var method = Utils.FindMethodByID(module, entryPair.Key);
                 if (method == null)
                 {
                     continue;
@@ -72,12 +73,12 @@ namespace Localizer.Package.Import
             }
         }
 
-        public void Reset()
+        public override void Reset()
         {
             return;
         }
 
-        public void Dispose()
+        protected override void DisposeUnmanaged()
         {
             modifications = null;
         }

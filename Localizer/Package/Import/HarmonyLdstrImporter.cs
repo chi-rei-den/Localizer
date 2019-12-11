@@ -5,7 +5,7 @@ using System.Reflection;
 using Harmony;
 using Localizer.DataModel;
 using Localizer.DataModel.Default;
-using Localizer.Helpers;
+using Noro;
 
 namespace Localizer.Package.Import
 {
@@ -37,7 +37,7 @@ namespace Localizer.Package.Import
                     }
 
                     Utils.LogDebug($"Finding method: [{entryPair.Key}]");
-                    var method = module.FindMethod(entryPair.Key);
+                    var method = Utils.FindMethodByID(module, entryPair.Key);
                     if (method == null)
                     {
                         Utils.LogDebug($"Cannot find.");
@@ -45,10 +45,10 @@ namespace Localizer.Package.Import
                     }
 
                     entries.Add(method, entryPair.Value);
-
-                    var transpiler = typeof(HarmonyLdstrImporter).GetMethod("Transpile", BindingFlags.NonPublic | BindingFlags.Static);
-
-                    harmony.Patch(method, null, null, new HarmonyMethod(transpiler));
+                    
+                    harmony.Transpile<HarmonyLdstrImporter>(nameof(Transpile))
+                           .Detour(method);
+                    
                     Utils.LogDebug($"Patched: {entryPair.Key}"); 
                 });
             }

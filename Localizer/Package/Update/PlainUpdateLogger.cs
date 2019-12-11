@@ -10,7 +10,7 @@ namespace Localizer.Package.Update
 
         public void Init(string name)
         {
-            Utils.CreateDirectory(logDirPath);
+            Utils.EnsureDir(logDirPath);
             path = Path.Combine(logDirPath, name + ".txt");
         }
 

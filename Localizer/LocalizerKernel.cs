@@ -32,6 +32,8 @@ namespace Localizer
                 new DefaultPackageModule(),
                 new DefaultNetworkModule(),
             });
+            
+            LoadPlugins();
         }
 
         public override void Dispose(bool disposing)
@@ -53,6 +55,18 @@ namespace Localizer
             base.Dispose(disposing);
         }
 
+        private void LoadPlugins()
+        {
+            Utils.EnsureDir(ExternalPluginDirPath);
+            
+            var dirInfo = new DirectoryInfo(ExternalPluginDirPath);
+            foreach (var file in dirInfo.GetFiles("*.dll"))
+            {
+                var a = Assembly.Load(File.ReadAllBytes(file.FullName));
+                LoadPlugin(a);
+            }
+        }
+        
         internal void LoadPlugin(Assembly asm)
         {
             try

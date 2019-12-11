@@ -42,7 +42,6 @@
   <ItemGroup>
     <Compile Include="DataModel\GitHubUpdateInfoTest.cs" />
     <Compile Include="Helper\ExtensionsTest.cs" />
-    <Compile Include="Helper\ReflectionHelperTest.cs" />
     <Compile Include="Helper\UtilsTest.cs" />
     <Compile Include="LocalizerTest.cs" />
     <Compile Include="Network\GitHubModUpdateService.cs" />
@@ -54,13 +53,16 @@
     <Compile Include="Package\Update\BasicFileUpdateTest.cs" />
     <Compile Include="Package\Update\CustomModTranslationFileUpdateTest.cs" />
     <Compile Include="Package\Update\LdstrFileUpdateTest.cs" />
-    <Compile Include="Tests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Localizer\Localizer.csproj">
       <Project>{95d54b28-b67b-4248-b83a-b5e5426c3806}</Project>
       <Name>Localizer</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Noro\Noro\Noro.csproj">
+      <Project>{d09d98ce-bee8-4226-bc48-31a926c74762}</Project>
+      <Name>Noro</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
