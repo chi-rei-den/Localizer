@@ -44,18 +44,24 @@ namespace Localizer
 
                 if (disposing)
                 {
-                    foreach (var plugin in Plugins)
-                    {
-                        plugin.Dispose();
-                    }
-
+                    UnloadAllPlugins();
                     Plugins = null;
                 }
             }
             base.Dispose(disposing);
         }
 
-        private void LoadPlugins()
+        internal void UnloadAllPlugins()
+        {
+            foreach (var plugin in Plugins)
+            {
+                plugin.Dispose();
+            }
+
+            Plugins.Clear();
+        }
+        
+        internal void LoadPlugins()
         {
             Utils.EnsureDir(ExternalPluginDirPath);
             

@@ -12,6 +12,8 @@ using Localizer.Helpers;
 using Localizer.Modules;
 using Localizer.Network;
 using Localizer.Package.Import;
+using Localizer.UIs;
+using Localizer.UIs.Views;
 using log4net;
 using Microsoft.Xna.Framework;
 using MonoMod.Cil;
@@ -117,6 +119,31 @@ namespace Localizer
             State = OperationTiming.BeforeContentLoad;
             Hooks.InvokeBeforeSetupContent();
             CheckUpdate();
+            AddPostDrawHook();
+        }
+
+        private UIHost _uiHost;
+        private void AddPostDrawHook()
+        {
+            _uiHost = new UIHost();
+            
+            Main.OnPostDraw += OnPostDraw;
+            Hooks.PostDraw += time =>
+            {
+                _uiHost.Update(time);
+                _uiHost.Draw(time);
+            };
+        }
+
+        private void OnPostDraw(GameTime time)
+        {
+            if (Main.dedServ)
+                return;
+                
+            Main.spriteBatch.SafeBegin();
+            Hooks.InvokeOnPostDraw(time);
+            Main.DrawCursor(Main.DrawThickCursor(false), false);
+            Main.spriteBatch.SafeEnd();
         }
 
         public override void PostAddRecipes()
@@ -156,6 +183,8 @@ namespace Localizer
             {
                 SaveConfig();
 
+                Main.OnPostDraw -= OnPostDraw;
+                
                 HookEndpointManager.RemoveAllOwnedBy(this);
                 Harmony.UnpatchAll(nameof(Localizer));
                 Kernel.Dispose();

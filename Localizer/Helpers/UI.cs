@@ -1,5 +1,6 @@
 using System;
 using System.Reflection;
+using Microsoft.Xna.Framework.Graphics;
 using Noro;
 using Noro.Access;
 using Terraria.ModLoader;
@@ -20,6 +21,39 @@ namespace Localizer.Helpers
         {
             var ui = typeof(Mod).Module.GetType("Terraria.ModLoader.UI.Interface");
             return ui?.F(uiName);
+        }
+
+        
+        public static void SafeBegin(this SpriteBatch sb)
+        {
+            try
+            {
+                sb.Begin();
+            }
+            catch(InvalidOperationException)
+            {
+            }
+        }        
+        public static void SafeBegin(this SpriteBatch sb, SamplerState sampler, RasterizerState rasterizer)
+        {
+            try
+            {
+                sb.Begin(SpriteSortMode.Immediate, BlendState.NonPremultiplied, sampler, null, rasterizer);
+            }
+            catch(InvalidOperationException)
+            {
+            }
+        }
+        
+        public static void SafeEnd(this SpriteBatch sb)
+        {
+            try
+            {
+                sb.End();
+            }
+            catch(InvalidOperationException)
+            {
+            }
         }
     }
 }

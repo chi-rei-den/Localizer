@@ -46,5 +46,11 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Localizer\Localizer.csproj">
+      <Project>{95d54b28-b67b-4248-b83a-b5e5426c3806}</Project>
+      <Name>Localizer</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

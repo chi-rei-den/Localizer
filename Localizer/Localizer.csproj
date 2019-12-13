@@ -33,6 +33,9 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="mscorlib" />
+    <Reference Include="Squid, Version=1.0.0.0, Culture=neutral, PublicKeyToken=5ba804b1072f6e05">
+      <HintPath>lib\Squid.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.IO.Compression" />
     <Reference Include="System.Net.Http.WebRequest" />
@@ -134,7 +137,14 @@
     <Compile Include="Package\Update\PlainUpdateLogger.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Helpers\Utils.cs" />
-    <Compile Include="UIs\Manager\MainUI.cs" />
+    <Compile Include="UIs\Components\TitleBar.cs" />
+    <Compile Include="UIs\Components\BasicWindow.cs" />
+    <Compile Include="UIs\UIHost.cs" />
+    <Compile Include="UIs\Stylesheet.cs" />
+    <Compile Include="UIs\UIRenderer.cs" />
+    <Compile Include="UIs\UIDesktop.cs" />
+    <Compile Include="UIs\Views\ManagerView.cs" />
+    <Compile Include="UIs\Views\TestView.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Noro\Noro.Harmony\Noro.Harmony.csproj">
@@ -154,7 +164,7 @@
     <Exec Command="copy $(OutDir)Noro.dll $(ProjectDir)lib\Noro.dll" />
     <Exec Command="copy $(OutDir)Noro.Harmony.dll $(ProjectDir)lib\Noro.Harmony.dll" />
     <Exec Command="$(tMLBuildServerPath) -build $(ProjectDir) -eac $(TargetPath) -define $(DefineConstants) -unsafe $(AllowUnsafeBlocks)" />
-    <Exec Command="$(SolutionDir)ModPatch\bin\Debug\ModPatch.exe"  Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' "/>
-    <Exec Command="$(SolutionDir)ModPatch\bin\Release\ModPatch.exe"  Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' "/>
+    <Exec Command="$(SolutionDir)ModPatch\bin\Debug\ModPatch.exe" Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' " />
+    <Exec Command="$(SolutionDir)ModPatch\bin\Release\ModPatch.exe" Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' " />
   </Target>
 </Project>

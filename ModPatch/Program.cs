@@ -5,6 +5,7 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
+using Localizer;
 
 namespace ModPatch
 {
@@ -47,7 +48,8 @@ namespace ModPatch
                 }
             }
 
-            modName = "!" + modName;
+            if(!modName.StartsWith("!"))
+                modName = "!" + modName;
             files = files.Select(f => (f.fileName.EndsWith("NA.dll") && !f.fileName.StartsWith("!")) 
                                      ? ("!" + f.fileName, f.length, f.compressedLength, f.content) 
                                      : f).ToList();
@@ -80,6 +82,18 @@ namespace ModPatch
                     bw.Write(hash);
                 }
             }
+            
+            var enabledFilePath =
+                Environment.ExpandEnvironmentVariables(
+                    @"%USERPROFILE%\Documents\My Games\Terraria\ModLoader\Mods\enabled.json");
+
+            if (!File.Exists(enabledFilePath))
+                return;
+
+            var enabled = Utils.ReadFileAndDeserializeJson<List<string>>(enabledFilePath);
+            enabled.Add(modName);
+            
+            Utils.SerializeJsonAndCreateFile(enabled, enabledFilePath);
         }
     }
 }

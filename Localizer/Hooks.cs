@@ -39,5 +39,12 @@ namespace Localizer
         {
             GameUpdate?.Invoke(gameTime);
         }
+        
+        public delegate void PostDrawHandler(GameTime gameTime);
+        public static event PostDrawHandler PostDraw;
+        internal static void InvokeOnPostDraw(GameTime gameTime)
+        {
+            PostDraw?.Invoke(gameTime);
+        }
     }
 }
