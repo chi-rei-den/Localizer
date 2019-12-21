@@ -1,3 +1,6 @@
 [submodule "Noro"]
 	path = Noro
 	url = https://github.com/Nekoite/Noro
+[submodule "Squid"]
+	path = Squid
+	url = https://github.com/chi-rei-den/Squid

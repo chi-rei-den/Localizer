@@ -11,26 +11,30 @@ namespace Localizer.UIs
 
             foreach (var s in GetControlStyles())
             {
-                skin.Styles.Add(s.Key, s.Value);
+                skin.Add(s.Key, s.Value);
             }
             
-            Point cursorSize = new Point(32, 32);
-            Point halfSize = cursorSize / 2;
-
-            skin.Cursors.Add(Cursors.Default, new Cursor { Texture = GetTexturePath("Cursors/Arrow"), Size = cursorSize, HotSpot = Point.Zero });
-            skin.Cursors.Add(Cursors.Link, new Cursor { Texture = GetTexturePath("Cursors/Link"), Size = cursorSize, HotSpot = Point.Zero });
-            skin.Cursors.Add(Cursors.Move, new Cursor { Texture = GetTexturePath("Cursors/Move"), Size = cursorSize, HotSpot = halfSize });
-            skin.Cursors.Add(Cursors.Select, new Cursor { Texture = GetTexturePath("Cursors/Select"), Size = cursorSize, HotSpot = halfSize });
-            skin.Cursors.Add(Cursors.SizeNS, new Cursor { Texture = GetTexturePath("Cursors/SizeNS"), Size = cursorSize, HotSpot = halfSize });
-            skin.Cursors.Add(Cursors.SizeWE, new Cursor { Texture = GetTexturePath("Cursors/SizeWE"), Size = cursorSize, HotSpot = halfSize });
-            skin.Cursors.Add(Cursors.HSplit, new Cursor { Texture = GetTexturePath("Cursors/SizeNS"), Size = cursorSize, HotSpot = halfSize });
-            skin.Cursors.Add(Cursors.VSplit, new Cursor { Texture = GetTexturePath("Cursors/SizeWE"), Size = cursorSize, HotSpot = halfSize });
-            skin.Cursors.Add(Cursors.SizeNESW, new Cursor { Texture = GetTexturePath("Cursors/SizeNESW"), Size = cursorSize, HotSpot = halfSize });
-            skin.Cursors.Add(Cursors.SizeNWSE, new Cursor { Texture = GetTexturePath("Cursors/SizeNWSE"), Size = cursorSize, HotSpot = halfSize });
-
             return skin;
         }
 
+        public static CursorCollection GetCursorSet()
+        {
+            Point cursorSize = new Point(32, 32);
+            Point halfSize = cursorSize / 2;
+            return new CursorCollection()
+            {
+                {CursorNames.Default, new Cursor { Texture = GetTexturePath("Cursors/Arrow"), Size = cursorSize, HotSpot = Point.Zero }},
+                {CursorNames.Link, new Cursor { Texture = GetTexturePath("Cursors/Link"), Size = cursorSize, HotSpot = Point.Zero }},
+                {CursorNames.Move, new Cursor { Texture = GetTexturePath("Cursors/Move"), Size = cursorSize, HotSpot = halfSize }},
+                {CursorNames.Select, new Cursor { Texture = GetTexturePath("Cursors/Select"), Size = cursorSize, HotSpot = halfSize }},
+                {CursorNames.SizeNS, new Cursor { Texture = GetTexturePath("Cursors/SizeNS"), Size = cursorSize, HotSpot = halfSize }},
+                {CursorNames.SizeWE, new Cursor { Texture = GetTexturePath("Cursors/SizeWE"), Size = cursorSize, HotSpot = halfSize }},
+                {CursorNames.HSplit, new Cursor { Texture = GetTexturePath("Cursors/SizeNS"), Size = cursorSize, HotSpot = halfSize }},
+                {CursorNames.VSplit, new Cursor { Texture = GetTexturePath("Cursors/SizeWE"), Size = cursorSize, HotSpot = halfSize }},
+                {CursorNames.SizeNESW, new Cursor { Texture = GetTexturePath("Cursors/SizeNESW"), Size = cursorSize, HotSpot = halfSize }},
+                {CursorNames.SizeNWSE, new Cursor { Texture = GetTexturePath("Cursors/SizeNWSE"), Size = cursorSize, HotSpot = halfSize }},
+            };
+        }
         private static Dictionary<string, ControlStyle> GetControlStyles()
         {
             var baseStyle = new ControlStyle()
@@ -94,7 +98,7 @@ namespace Localizer.UIs
                     Focused =
                     {
                         Texture = GetTexturePath("input_focused"),
-                        Tint = ColorInt.RGBA(1, 0, 0, 1),
+                        Tint = ColorInt.ARGB(1, 1, 0, 0),
                     },
                 }},
                 {"window", new ControlStyle()
@@ -269,8 +273,8 @@ namespace Localizer.UIs
                 {
                     TextPadding = new Margin(8, 0, 8, 0),
                     TextAlign = Alignment.MiddleLeft,
-                    TextColor = ColorInt.RGBA(.8f, .8f, .8f, 1),
-                    BackColor = ColorInt.RGBA(1, 1, 1, .125f),
+                    TextColor = ColorInt.ARGB(1, .8f, .8f, .8f),
+                    BackColor = ColorInt.ARGB(.125f, 1, 1, 1),
                     Default = 
                     {
                         BackColor = 0,

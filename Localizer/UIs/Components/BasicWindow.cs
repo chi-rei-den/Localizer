@@ -15,7 +15,7 @@ namespace Localizer.UIs.Components
             Titlebar.Size = new Squid.Point(122, 35);
             Titlebar.MouseDown += (sender, args) => { StartDrag(); };
             Titlebar.MouseUp += (sender, args) => { StopDrag(); };
-            Titlebar.Cursor = Cursors.Move;
+            Titlebar.Cursor = CursorNames.Move;
             Titlebar.Style = "frame";
             Titlebar.Margin = new Margin(-4, -4, -4, -1);
             Titlebar.Button.MouseClick += Button_OnMouseClick;
@@ -28,13 +28,6 @@ namespace Localizer.UIs.Components
 
         void Button_OnMouseClick(Control sender, MouseEventArgs args)
         {
-            Animation.Custom(FadeAndClose());
-        }
-
-        private System.Collections.IEnumerator FadeAndClose()
-        {
-            yield return Animation.Opacity(0, 500);
-            Close();
         }
     }
 }

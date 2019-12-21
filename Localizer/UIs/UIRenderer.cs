@@ -7,6 +7,7 @@ using Noro.Access;
 using ReLogic.Graphics;
 using Squid;
 using Terraria;
+using Terraria.UI.Chat;
 using Point = Squid.Point;
 using Rectangle = Microsoft.Xna.Framework.Rectangle;
 
@@ -116,9 +117,10 @@ namespace Localizer.UIs
         }
         public void DrawText(string text, int x, int y, int font, int color)
         {
-            Terraria.Utils.DrawBorderStringFourWay(
-                _spriteBatch, fonts[font], text, x, y + 3, 
-                ColorFromtInt32(color), Color.Black, Vector2.Zero, 1);
+            var snippets = ChatManager.ParseMessage(text, ColorFromtInt32(color)).ToArray();
+            ChatManager.DrawColorCodedString(
+                _spriteBatch, fonts[font], snippets, new Vector2(x, y + 3),
+                ColorFromtInt32(color), 0, Vector2.Zero, Vector2.One, out int i, 99999);
         }
         public void DrawTexture(int texture, int x, int y, int w, int h, Squid.Rectangle rect, int color)
         {

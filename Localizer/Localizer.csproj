@@ -33,9 +33,6 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="mscorlib" />
-    <Reference Include="Squid, Version=1.0.0.0, Culture=neutral, PublicKeyToken=5ba804b1072f6e05">
-      <HintPath>lib\Squid.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.IO.Compression" />
     <Reference Include="System.Net.Http.WebRequest" />
@@ -144,6 +141,7 @@
     <Compile Include="UIs\UIRenderer.cs" />
     <Compile Include="UIs\UIDesktop.cs" />
     <Compile Include="UIs\Views\ManagerView.cs" />
+    <Compile Include="UIs\Views\ReloadPluginView.cs" />
     <Compile Include="UIs\Views\TestView.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -155,6 +153,10 @@
       <Project>{d09d98ce-bee8-4226-bc48-31a926c74762}</Project>
       <Name>Noro</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Squid\Squid.csproj">
+      <Project>{205c6e4a-4f9c-44fe-bb81-48f9914f048f}</Project>
+      <Name>Squid</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="BuildMod" AfterTargets="Build">
@@ -163,6 +165,7 @@
     <Exec Command="copy $(OutDir)Ninject.dll $(ProjectDir)lib\Ninject.dll" />
     <Exec Command="copy $(OutDir)Noro.dll $(ProjectDir)lib\Noro.dll" />
     <Exec Command="copy $(OutDir)Noro.Harmony.dll $(ProjectDir)lib\Noro.Harmony.dll" />
+      <Exec Command="copy $(OutDir)Squid.dll $(ProjectDir)lib\Squid.dll" />
     <Exec Command="$(tMLBuildServerPath) -build $(ProjectDir) -eac $(TargetPath) -define $(DefineConstants) -unsafe $(AllowUnsafeBlocks)" />
     <Exec Command="$(SolutionDir)ModPatch\bin\Debug\ModPatch.exe" Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' " />
     <Exec Command="$(SolutionDir)ModPatch\bin\Release\ModPatch.exe" Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' " />

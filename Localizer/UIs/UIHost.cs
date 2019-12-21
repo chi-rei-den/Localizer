@@ -8,28 +8,29 @@ using ButtonState = Microsoft.Xna.Framework.Input.ButtonState;
 
 namespace Localizer.UIs
 {
-    public class UIHost
+    public class UIHost : Disposable
     {
+        public UIDesktop Desktop { get; private set; }
+        
         private int _lastScroll;
         
-        private Desktop desktop;
         private GraphicsDevice gd;
         
         public UIHost()
         {
             gd = Main.graphics.GraphicsDevice;
             
-            GuiHost.Renderer = new UIRenderer();
-            GuiHost.SetSkin(Stylesheet.GetSkin());
+            Gui.Renderer = new UIRenderer();
             
-            desktop = new UIDesktop { Name = "localizer" };
-            desktop.ShowCursor = true;
-            desktop.Size = new Squid.Point(gd.Viewport.Width, gd.Viewport.Height);
+            Desktop = new UIDesktop { Name = "localizer" };
+            Desktop.ShowCursor = true;
+            Desktop.Skin = Stylesheet.GetSkin();
+            Desktop.Size = new Squid.Point(gd.Viewport.Width, gd.Viewport.Height);
         }
 
         internal void Update(GameTime time)
         {
-            GuiHost.TimeElapsed = (float)time.ElapsedGameTime.TotalMilliseconds;
+            Gui.TimeElapsed = (float)time.ElapsedGameTime.TotalMilliseconds;
             
             // Mouse
             MouseState mouseState = Mouse.GetState();
@@ -37,16 +38,21 @@ namespace Localizer.UIs
             int wheel = mouseState.ScrollWheelValue > _lastScroll ? -1 : (mouseState.ScrollWheelValue < _lastScroll ? 1 : 0);
             _lastScroll = mouseState.ScrollWheelValue;
 
-            GuiHost.SetMouse(mouseState.X, mouseState.Y, wheel);
-            GuiHost.SetButtons(mouseState.LeftButton == ButtonState.Pressed, mouseState.RightButton == ButtonState.Pressed);
+            Gui.SetMouse(mouseState.X, mouseState.Y, wheel);
+            Gui.SetButtons(mouseState.LeftButton == ButtonState.Pressed, mouseState.RightButton == ButtonState.Pressed);
             
             //TODO: Keyboard Input Support
         }
 
         internal void Draw(GameTime time)
         {
-            desktop.Update();
-            desktop.Draw();
+            Desktop.Update();
+            Desktop.Draw();
+        }
+
+        protected override void DisposeUnmanaged()
+        {
+            Gui.Renderer = null;
         }
     }
 }

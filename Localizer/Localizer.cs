@@ -122,17 +122,12 @@ namespace Localizer
             AddPostDrawHook();
         }
 
-        private UIHost _uiHost;
+        public UIHost UIHost { get; private set; }
         private void AddPostDrawHook()
         {
-            _uiHost = new UIHost();
+            UIHost = new UIHost();
             
             Main.OnPostDraw += OnPostDraw;
-            Hooks.PostDraw += time =>
-            {
-                _uiHost.Update(time);
-                _uiHost.Draw(time);
-            };
         }
 
         private void OnPostDraw(GameTime time)
@@ -142,6 +137,8 @@ namespace Localizer
                 
             Main.spriteBatch.SafeBegin();
             Hooks.InvokeOnPostDraw(time);
+            UIHost.Update(time);
+            UIHost.Draw(time);
             Main.DrawCursor(Main.DrawThickCursor(false), false);
             Main.spriteBatch.SafeEnd();
         }
@@ -183,6 +180,7 @@ namespace Localizer
             {
                 SaveConfig();
 
+                UIHost.Dispose();
                 Main.OnPostDraw -= OnPostDraw;
                 
                 HookEndpointManager.RemoveAllOwnedBy(this);

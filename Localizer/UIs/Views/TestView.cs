@@ -52,7 +52,7 @@ namespace Localizer.UIs.Views
             button.Style = "button";
             button.Parent = this;
             button.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-            button.Cursor = Cursors.Link;
+            button.Cursor = CursorNames.Link;
             button.MouseClick += (sender, args) =>
             {
             };
@@ -80,10 +80,14 @@ namespace Localizer.UIs.Views
             for (int i = 0; i < 10; i++)
             {
                 ListBoxItem item = new ListBoxItem();
-                item.Text = "listboxitem";
-                item.Size = new Squid.Point(100, 35);
-                item.Margin = new Margin(0, 0, 0, 4);
-                item.Style = "item";
+                var label = new Label()
+                {
+                    Text = "listboxitem",
+                    Size = new Squid.Point(100, 35),
+                    Margin = new Margin(0, 0, 0, 4),
+                    Style = "item",
+                };
+                item.Container.Controls.Add(label);
                 combo.Items.Add(item);
                 if (i == 3)
                     item.Selected = true;
@@ -96,7 +100,7 @@ namespace Localizer.UIs.Views
             box.Parent = this;
             box.Button.Style = "checkBox";
             box.Button.Size = new Squid.Point(26, 26);
-            box.Button.Cursor = Cursors.Link;
+            box.Button.Cursor = CursorNames.Link;
         }
     }
 }
