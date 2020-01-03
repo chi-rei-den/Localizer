@@ -55,7 +55,7 @@ namespace ModBrowserMirror
         private static IEnumerable<CodeInstruction> PopulateModBrowserTranspiler(IEnumerable<CodeInstruction> instructions)
         {
             var result = instructions.ToList();
-            ReplaceLdstr("http://javid.ddns.net/tModLoader/listmods.php", "https://trbbs.cc/trmod/listmods.php", result);
+            ReplaceLdstr("http://javid.ddns.net/tModLoader/listmods.php", "https://k.sgkoi.dev/tModLoader/listmods.php", result);
 
             return result;
         }
@@ -63,8 +63,7 @@ namespace ModBrowserMirror
         private static IEnumerable<CodeInstruction> FromJSONTranspiler(IEnumerable<CodeInstruction> instructions)
         {
             var result = instructions.ToList();
-            ReplaceLdstr("http://javid.ddns.net/tModLoader/download.php?Down=mods/", "https://trbbs.cc/trmod/", result);
-            ReplaceLdstr("&tls12=y", "", result);
+            ReplaceLdstr("http://javid.ddns.net/tModLoader/download.php?Down=mods/", "https://k.sgkoi.dev/tModLoader/download.php?Down=mods/", result);
 
             return result;
         }
@@ -72,24 +71,8 @@ namespace ModBrowserMirror
         private static IEnumerable<CodeInstruction> OnActivateTranspiler(IEnumerable<CodeInstruction> instructions)
         {
             var result = instructions.ToList();
-            ReplaceLdstr("http://javid.ddns.net/tModLoader/download.php?Down=mods/", "https://trbbs.cc/trmod/", result);
-            var ins = result.FirstOrDefault(i => i?.operand?.ToString() == "http://javid.ddns.net/tModLoader/moddescription.php");
-            if (ins != null)
-            {
-                var concat = typeof(string).Module.FindMethod(
-                    "System.String System.String::Concat(System.String,System.String,System.String)");
-                var thisModName = typeof(Mod)
-                                  .Module.GetTypes()
-                                  .FirstOrDefault(t => t.FullName == "Terraria.ModLoader.UI.UIModInfo")
-                                  .GetField("_modName", bindingFlags);
-
-                ins.operand = "https://trbbs.cc/trmod/";
-                var index = result.IndexOf(ins) + 1;
-                result.Insert(index, new CodeInstruction(OpCodes.Call, concat));
-                result.Insert(index, new CodeInstruction(OpCodes.Ldstr, ".desc"));
-                result.Insert(index, new CodeInstruction(OpCodes.Ldfld, thisModName));
-                result.Insert(index, new CodeInstruction(OpCodes.Ldarg_0));
-            }
+            ReplaceLdstr("http://javid.ddns.net/tModLoader/download.php?Down=mods/", "https://k.sgkoi.dev/tModLoader/download.php?Down=mods/", result);
+            ReplaceLdstr("http://javid.ddns.net/tModLoader/moddescription.php", "https://k.sgkoi.dev/tModLoader/moddescription.php", result);
 
             return result;
         }
@@ -97,13 +80,7 @@ namespace ModBrowserMirror
         private static IEnumerable<CodeInstruction> RemoveIconTranspiler(IEnumerable<CodeInstruction> instructions)
         {
             var result = instructions.ToList();
-            ReplaceLdstr("http://javid.ddns.net/tModLoader/download.php?Down=mods/", "https://trbbs.cc/trmod/", result);
-            var ins = result.FirstOrDefault(i => i?.operand?.ToString()?.Contains("_modIconUrl") ?? false);
-            if (ins != null)
-            {
-                var index = result.IndexOf(ins) - 1;
-                result[index] = new CodeInstruction(OpCodes.Ldnull);
-            }
+            ReplaceLdstr("http://javid.ddns.net/tModLoader/download.php?Down=mods/", "https://k.sgkoi.dev/tModLoader/download.php?Down=mods/", result);
 
             return result;
         }
