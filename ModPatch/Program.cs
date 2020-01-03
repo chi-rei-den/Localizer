@@ -40,7 +40,7 @@ namespace ModPatch
             modName = "!" + modName;
             files = files.Select(f => (f.fileName.EndsWith(".XNA.dll") || f.fileName.EndsWith(".FNA.dll")) ? ("!" + f.fileName, f.length, f.compressedLength) : f).ToList();
 
-            using (var fileStream = File.OpenWrite(FILE_PATH))
+            using (var fileStream = new FileStream(FILE_PATH, FileMode.Create, FileAccess.ReadWrite))
             {
                 using (var bw = new BinaryWriter(fileStream))
                 {
