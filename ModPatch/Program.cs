@@ -45,7 +45,9 @@ namespace ModPatch
                 {
                     bw.Write(Encoding.UTF8.GetBytes("TMOD"));
                     bw.Write(tModLoaderVersion);
-                    bw.Write(new byte[280]);
+                    var hashPos = bw.BaseStream.Position;
+                    bw.Seek(280, SeekOrigin.Current);
+                    var contentPos = bw.BaseStream.Position;
                     bw.Write(modName);
                     bw.Write(modVersion);
                     bw.Write(files.Count);
@@ -56,6 +58,10 @@ namespace ModPatch
                         bw.Write(file.compressedLength);
                     }
                     bw.Write(content);
+                    bw.Seek((int)contentPos, SeekOrigin.Begin);
+                    var hash = SHA1.Create().ComputeHash(bw.BaseStream);
+                    bw.Seek((int)hashPos, SeekOrigin.Begin);
+                    bw.Write(hash);
                 }
             }
         }
