@@ -46,9 +46,9 @@
     <Reference Include="Microsoft.Xna.Framework.Game, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=x86" />
     <Reference Include="Microsoft.Xna.Framework.Graphics, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=x86" />
     <Reference Include="Microsoft.Xna.Framework.Xact, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=x86" />
-    <Reference Include="Mono.Cecil, Version=0.10.4.0, Culture=neutral, PublicKeyToken=50cebf1cceb9d05e" />
-    <Reference Include="MonoMod.RuntimeDetour, Version=19.10.5.2, Culture=neutral, PublicKeyToken=null" />
-    <Reference Include="MonoMod.Utils, Version=19.10.5.2, Culture=neutral, PublicKeyToken=null" />
+    <Reference Include="Mono.Cecil" />
+    <Reference Include="MonoMod.RuntimeDetour" />
+    <Reference Include="MonoMod.Utils" />
     <Reference Include="TerrariaHooks, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null" />
     <Reference Include="mscorlib" />
     <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed" />
