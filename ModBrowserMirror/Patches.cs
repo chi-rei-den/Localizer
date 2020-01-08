@@ -43,12 +43,6 @@ namespace ModBrowserMirror
             var onActivateTranspiler = typeof(ReplaceURLs).GetMethod(nameof(OnActivateTranspiler), bindingFlags);
             LocalizerPlugin.HarmonyInstance.Patch(onActivate, null, null, new HarmonyMethod(onActivateTranspiler));
 
-            var uiModDownloadItemCtor = typeof(Mod).Module
-                                        .GetType("Terraria.ModLoader.UI.ModBrowser.UIModDownloadItem")
-                                        .GetConstructors(bindingFlags)[0];
-            var removeIconTranspiler = typeof(ReplaceURLs).GetMethod(nameof(RemoveIconTranspiler), bindingFlags);
-            LocalizerPlugin.HarmonyInstance.Patch(uiModDownloadItemCtor, null, null, new HarmonyMethod(removeIconTranspiler));
-
             Utils.LogInfo("ModBrowser Patched");
         }
 
@@ -73,14 +67,6 @@ namespace ModBrowserMirror
             var result = instructions.ToList();
             ReplaceLdstr("http://javid.ddns.net/tModLoader/download.php?Down=mods/", "https://k.sgkoi.dev/tModLoader/download.php?Down=mods/", result);
             ReplaceLdstr("http://javid.ddns.net/tModLoader/moddescription.php", "https://k.sgkoi.dev/tModLoader/moddescription.php", result);
-
-            return result;
-        }
-
-        private static IEnumerable<CodeInstruction> RemoveIconTranspiler(IEnumerable<CodeInstruction> instructions)
-        {
-            var result = instructions.ToList();
-            ReplaceLdstr("http://javid.ddns.net/tModLoader/download.php?Down=mods/", "https://k.sgkoi.dev/tModLoader/download.php?Down=mods/", result);
 
             return result;
         }
