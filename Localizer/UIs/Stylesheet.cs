@@ -274,11 +274,7 @@ namespace Localizer.UIs
                     TextPadding = new Margin(8, 0, 8, 0),
                     TextAlign = Alignment.MiddleLeft,
                     TextColor = ColorInt.ARGB(1, .8f, .8f, .8f),
-                    BackColor = ColorInt.ARGB(.125f, 1, 1, 1),
-                    Default = 
-                    {
-                        BackColor = 0,
-                    }
+                    BackColor = 0,
                 }},
             };
         }

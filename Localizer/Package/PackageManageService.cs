@@ -12,7 +12,7 @@ namespace Localizer.Package
 
         public ICollection<IPackageGroup> PackageGroups { get; set; }
 
-        private List<PackageGroupState> oldPackageGroupStates;
+        private List<PackageGroupState> oldPackageGroupStates = new List<PackageGroupState>();
 
         /// <summary>
         ///     Add a package into PackageGroups.
