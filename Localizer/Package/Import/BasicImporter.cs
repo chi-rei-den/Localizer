@@ -1,12 +1,13 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Reflection;
 using Localizer.Attributes;
 using Localizer.DataModel;
 using Localizer.DataModel.Default;
 using Localizer.Helpers;
-using Noro.Access;
 using Terraria.ModLoader;
 
 namespace Localizer.Package.Import
@@ -25,7 +26,7 @@ namespace Localizer.Package.Import
             {
                 var fieldName = prop.ModTranslationOwnerFieldName();
 
-                var field = (IDictionary)Utils.GetModByName(mod.Name).F(fieldName);
+                var field = Utils.GetModByName(mod.Name).ValueOf<IDictionary>(fieldName);
 
                 var entryType = prop.PropertyType.GenericTypeArguments
                                     .FirstOrDefault(g => g.GetInterfaces().Contains(typeof(IEntry)));
@@ -47,21 +48,21 @@ namespace Localizer.Package.Import
 
             foreach (var prop in typeof(T).ModTranslationOwnerField())
             {
-                dynamic entries = Activator.CreateInstance(prop.PropertyType);
+                var entries = (IDictionary)Activator.CreateInstance(prop.PropertyType);
 
-                dynamic mainEntryDict = prop.GetValue(main);
-                dynamic additionEntryDict = prop.GetValue(addition);
+                var mainEntryDict = (IDictionary)prop.GetValue(main);
+                var additionEntryDict = (IDictionary)prop.GetValue(addition);
 
-                foreach (var t in mainEntryDict)
+                foreach (KeyValuePair<string, IEntry> t in mainEntryDict)
                 {
                     entries.Add(t.Key, t.Value.Clone());
                 }
 
-                foreach (var pair in additionEntryDict)
+                foreach (KeyValuePair<string, IEntry> pair in additionEntryDict)
                 {
-                    if (entries.ContainsKey(pair.Key))
+                    if (entries.Contains(pair.Key))
                     {
-                        entries[pair.Key] = Merge(mainEntryDict[pair.Key], pair.Value);
+                        entries[pair.Key] = Merge((IEntry)mainEntryDict[pair.Key], pair.Value);
                     }
                     else
                     {
