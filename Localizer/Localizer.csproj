@@ -79,6 +79,7 @@
     <Compile Include="Enums\OperationTiming.cs" />
     <Compile Include="Enums\PackageType.cs" />
     <Compile Include="Helpers\Extensions.cs" />
+    <Compile Include="Helpers\Reflection.cs" />
     <Compile Include="Helpers\UI.cs" />
     <Compile Include="Hooks.cs" />
     <Compile Include="Disposable.cs" />
@@ -145,14 +146,6 @@
     <Compile Include="UIs\Views\TestView.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Noro\Noro.Harmony\Noro.Harmony.csproj">
-      <Project>{54c55a4c-b261-4c3c-abf6-7c7423e1898d}</Project>
-      <Name>Noro.Harmony</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Noro\Noro\Noro.csproj">
-      <Project>{d09d98ce-bee8-4226-bc48-31a926c74762}</Project>
-      <Name>Noro</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Squid\Squid.csproj">
       <Project>{205c6e4a-4f9c-44fe-bb81-48f9914f048f}</Project>
       <Name>Squid</Name>
@@ -163,9 +156,7 @@
     <Exec Command="mkdir $(ProjectDir)lib" Condition="!Exists('$(ProjectDir)lib')" />
     <Exec Command="copy $(OutDir)0Harmony.dll $(ProjectDir)lib\0Harmony.dll" />
     <Exec Command="copy $(OutDir)Ninject.dll $(ProjectDir)lib\Ninject.dll" />
-    <Exec Command="copy $(OutDir)Noro.dll $(ProjectDir)lib\Noro.dll" />
-    <Exec Command="copy $(OutDir)Noro.Harmony.dll $(ProjectDir)lib\Noro.Harmony.dll" />
-      <Exec Command="copy $(OutDir)Squid.dll $(ProjectDir)lib\Squid.dll" />
+    <Exec Command="copy $(OutDir)Squid.dll $(ProjectDir)lib\Squid.dll" />
     <Exec Command="$(tMLBuildServerPath) -build $(ProjectDir) -eac $(TargetPath) -define $(DefineConstants) -unsafe $(AllowUnsafeBlocks)" />
     <Exec Command="$(SolutionDir)ModPatch\bin\Debug\ModPatch.exe" Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' " />
     <Exec Command="$(SolutionDir)ModPatch\bin\Release\ModPatch.exe" Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' " />

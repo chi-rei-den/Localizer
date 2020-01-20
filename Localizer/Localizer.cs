@@ -9,25 +9,17 @@ using Localizer.Attributes;
 using Localizer.DataModel;
 using Localizer.DataModel.Default;
 using Localizer.Helpers;
-using Localizer.Modules;
 using Localizer.Network;
 using Localizer.Package.Import;
 using Localizer.UIs;
-using Localizer.UIs.Views;
 using log4net;
 using Microsoft.Xna.Framework;
-using MonoMod.Cil;
 using MonoMod.RuntimeDetour.HookGen;
-using MonoMod.Utils;
 using Ninject;
-using Ninject.Modules;
-using Noro;
-using Noro.Access;
 using Terraria;
 using Terraria.Localization;
 using Terraria.ModLoader;
 using Terraria.ModLoader.Core;
-using Terraria.UI;
 using static Localizer.Lang;
 using File = System.IO.File;
 
@@ -54,19 +46,16 @@ namespace Localizer
         public Localizer()
         {
             Instance = this;
-            var mod = new LoadedModWrapper(ReflUtils.FindType("Terraria.ModLoader.Core.AssemblyManager")
-                                               .F("loadedMods")
-                                               .M("get_Item", "!Localizer"));
-            this.A()["<File>k__BackingField"] = mod.File;
-            this.A()["<Code>k__BackingField"] = mod.Code;
+            var mod = new LoadedModWrapper("Terraria.ModLoader.Core.AssemblyManager".Type().ValueOf("loadedMods").Invoke("get_Item", "!Localizer"));
+            this.SetField("<File>k__BackingField", mod.File);
+            this.SetField("<Code>k__BackingField", mod.Code);
             Log = LogManager.GetLogger(nameof(Localizer));
 
             Harmony = HarmonyInstance.Create(nameof(Localizer));
-            Harmony.Prefix<Localizer>(nameof(AfterLocalizerCtorHook))
-                   .Detour("Terraria.ModLoader.Core.AssemblyManager", "Instantiate");
+            Harmony.Patch("Terraria.ModLoader.Core.AssemblyManager".Type().Method("Instantiate"), new HarmonyMethod(NoroHelper.MethodInfo(() => AfterLocalizerCtorHook(null))));
 
             State = OperationTiming.BeforeModCtor;
-            TmodFile = Instance.P("File") as TmodFile;
+            TmodFile = Instance.ValueOf<TmodFile>("File");
             Init();
             _initiated = true;
         }
@@ -78,7 +67,7 @@ namespace Localizer
 
         private static void Init()
         {
-            _gameCultures = typeof(GameCulture).F("_legacyCultures") as Dictionary<int, GameCulture>;
+            _gameCultures = typeof(GameCulture).ValueOf<Dictionary<int, GameCulture>>("_legacyCultures");
 
             ServicePointManager.ServerCertificateValidationCallback += (s, cert, chain, sslPolicyErrors) => true;
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls;
@@ -102,12 +91,15 @@ namespace Localizer
 
         public override void Load()
         {
-            if(!_initiated)
+            if (!_initiated)
+            {
                 throw new Exception("Localizer not initialized.");
+            }
+
             State = OperationTiming.BeforeModLoad;
             Hooks.InvokeBeforeLoad();
             Kernel.Get<RefreshLanguageService>();
-            
+
             if (LanguageManager.Instance.ActiveCulture == GameCulture.Chinese)
             {
                 ModBrowser.Patches.Patch();
@@ -126,15 +118,17 @@ namespace Localizer
         private void AddPostDrawHook()
         {
             UIHost = new UIHost();
-            
+
             Main.OnPostDraw += OnPostDraw;
         }
 
         private void OnPostDraw(GameTime time)
         {
             if (Main.dedServ)
+            {
                 return;
-                
+            }
+
             Main.spriteBatch.SafeBegin();
             Hooks.InvokeOnPostDraw(time);
             UIHost.Update(time);
@@ -158,7 +152,7 @@ namespace Localizer
         {
             Task.Run(() =>
             {
-                var curVersion = this.Version;
+                var curVersion = Version;
                 if (Kernel.Get<IUpdateService>().CheckUpdate(curVersion, out var updateInfo))
                 {
                     var msg = _("NewVersion", updateInfo.Version);
@@ -182,7 +176,7 @@ namespace Localizer
 
                 UIHost.Dispose();
                 Main.OnPostDraw -= OnPostDraw;
-                
+
                 HookEndpointManager.RemoveAllOwnedBy(this);
                 Harmony.UnpatchAll(nameof(Localizer));
                 Kernel.Dispose();
@@ -256,19 +250,18 @@ namespace Localizer
         {
             if (State < OperationTiming.PostContentLoad)
             {
-                var loadedMods = Utils.TR().F("Terraria.ModLoader.Core.AssemblyManager")
-                                     .F("loadedMods");
-                if ((bool)loadedMods.M("ContainsKey", name))
-                {
-                    return new LoadedModWrapper(loadedMods.M("get_Item", name));
-                }
-
-                return null;
+                var loadedMods = "Terraria.ModLoader.Core.AssemblyManager".Type().ValueOf("loadedMods");
+                return (bool)loadedMods.Invoke("ContainsKey", name)
+                    ? new LoadedModWrapper(loadedMods.Invoke("get_Item", name))
+                    : null;
             }
 
             var mod = Utils.GetModByName(name);
             if (mod is null)
+            {
                 return null;
+            }
+
             return new ModWrapper(mod);
         }
 

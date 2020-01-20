@@ -3,10 +3,10 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Reflection;
 using Localizer.DataModel;
 using Localizer.DataModel.Default;
 using Localizer.Helpers;
-using Noro.Access;
 using Terraria.ModLoader;
 
 namespace Localizer.Package.Export
@@ -29,7 +29,7 @@ namespace Localizer.Package.Export
             {
                 var fieldName = prop.ModTranslationOwnerFieldName();
 
-                var field = (IDictionary)mod.F(fieldName);
+                var field = mod.ValueOf<IDictionary>(fieldName);
 
                 var entryType = prop.PropertyType.GenericTypeArguments
                                     .FirstOrDefault(g => g.GetInterfaces().Contains(typeof(IEntry)));

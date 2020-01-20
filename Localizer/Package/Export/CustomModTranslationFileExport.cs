@@ -1,8 +1,8 @@
 using System.Collections.Generic;
+using System.Reflection;
 using Localizer.DataModel;
 using Localizer.DataModel.Default;
 using Localizer.Helpers;
-using Noro.Access;
 using Terraria.ModLoader;
 
 namespace Localizer.Package.Export
@@ -16,8 +16,7 @@ namespace Localizer.Package.Export
                 return;
             }
 
-            var translations = Utils.GetModByName(package.ModName).F("translations") 
-                as Dictionary<string, ModTranslation>;
+            var translations = Utils.GetModByName(package.ModName).ValueOf<Dictionary<string, ModTranslation>>("translations");
 
             if (translations == null)
             {

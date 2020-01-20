@@ -22,7 +22,7 @@ namespace Localizer.Package.Import
         private readonly IFileLoadService _fileLoad;
 
         private bool _imported = false;
-        
+
         [Inject]
         public AutoImportService(IPackageManageService packageManage,
                                  SourcePackageLoad<PackageModel> sourcePackageLoad,
@@ -36,7 +36,7 @@ namespace Localizer.Package.Import
             _packageImportPackageImport = packageImportPackageImport ?? throw new ArgumentNullException(nameof(packageImportPackageImport));
             _fileLoad = fileLoad ?? throw new ArgumentNullException(nameof(fileLoad));
             LoadPackages();
-            
+
             Hooks.BeforeModCtor += OnBeforeModCtor;
             Hooks.PostSetupContent += OnPostSetupContent;
         }
@@ -55,12 +55,12 @@ namespace Localizer.Package.Import
                 }
             });
         }
-        
+
         private void OnPostSetupContent()
         {
             if(_imported)
                 return;
-            
+
             try
             {
                 if (Localizer.Config.AutoImport)
@@ -84,7 +84,7 @@ namespace Localizer.Package.Import
             void LoadPackedPackages()
             {
                 foreach (var file in new DirectoryInfo(Localizer.DownloadPackageDirPath).GetFiles())
-                {                
+                {
                     Utils.SafeWrap(() =>
                     {
                         var pack = _packedPackageLoad.Load(file.FullName, _fileLoad);
@@ -101,7 +101,7 @@ namespace Localizer.Package.Import
             void LoadSourcePackages()
             {
                 foreach (var dir in new DirectoryInfo(Localizer.SourcePackageDirPath).GetDirectories())
-                {                
+                {
                     Utils.SafeWrap(() =>
                     {
                         var pack = _sourcePackageLoad.Load(dir.FullName, _fileLoad);
@@ -118,7 +118,7 @@ namespace Localizer.Package.Import
             try
             {
                 _packageManage.PackageGroups = new List<IPackageGroup>();
-                
+
                 var type = Localizer.Config.AutoImportType;
                 if(type != AutoImportType.DownloadedOnly)
                     LoadSourcePackages();
@@ -139,7 +139,7 @@ namespace Localizer.Package.Import
             {
                 if(packageGroup is null || !packageGroup.Mod.Enabled)
                     return;
-                
+
                 foreach (var p in packageGroup.Packages)
                 {
                     if (p.Enabled)

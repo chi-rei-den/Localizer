@@ -1,10 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Reflection;
 using System.Threading.Tasks;
 using Harmony;
 using Localizer.Helpers;
-using Noro;
+using MonoMod.Utils;
 using Terraria;
 using Terraria.Localization;
 using Terraria.ModLoader;
@@ -14,7 +15,7 @@ namespace Localizer.Package.Import
     public sealed class RefreshLanguageService : Disposable
     {
         private static RefreshLanguageService _instance;
-        
+
         private List<WeakReference> items;
 
         private bool _rebuilding = false;
@@ -25,25 +26,24 @@ namespace Localizer.Package.Import
         private int _cleanUpCounter = 0;
 
         private bool _firstRun = true;
-        
+
         public RefreshLanguageService()
         {
             _instance = this;
             items = new List<WeakReference>();
-            
+
             _harmony = HarmonyInstance.Create(nameof(RefreshLanguageService));
-            _harmony.Postfix<RefreshLanguageService>(nameof(OnModItemCtor))
-                    .Detour(typeof(ModItem).GetConstructors()[0]);
+            _harmony.Patch(typeof(ModItem).GetConstructors()[0], null, new HarmonyMethod(NoroHelper.MethodInfo(() => OnModItemCtor(null))));
         }
 
         private static void OnModItemCtor(ModItem __instance)
         {
             if (!Localizer.Config.RebuildTooltips)
                 return;
-            
+
             if(Localizer.Config.RebuildTooltipsOnce && !_instance._firstRun)
                 return;
-            
+
             if (!_instance._rebuilding && !_instance._cleaning)
             {
                 _instance.items.Add(new WeakReference(__instance));
@@ -60,14 +60,14 @@ namespace Localizer.Package.Import
                 }
             }
         }
-        
+
         public void Refresh()
         {
             Utils.SafeWrap(() =>
             {
                 if (Localizer.State != OperationTiming.BeforeModCtor)
                 {
-                    ModContent.RefreshModLanguage(LanguageManager.Instance.ActiveCulture); 
+                    ModContent.RefreshModLanguage(LanguageManager.Instance.ActiveCulture);
                 }
 
                 if (Localizer.Config.RebuildTooltips && Localizer.State == OperationTiming.PostContentLoad)
@@ -118,7 +118,7 @@ namespace Localizer.Package.Import
                 _firstRun = false;
             _cleaning = false;
         }
-        
+
         protected override void DisposeUnmanaged()
         {
             _instance = null;

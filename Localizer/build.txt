@@ -7,5 +7,5 @@ includeSource = false
 homepage = https://github.com/chi-rei-den/Localizer/
 buildIgnore = *.user, obj\*, bin\*, .vs\*, .git*, referenceImages*.png, .gitattributes, *.csproj
 includePDB = false
-dllReferences = Ninject,0Harmony,Noro,Noro.Harmony,Squid
+dllReferences = Ninject,0Harmony,Squid
 side = NoSync

@@ -1,8 +1,8 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Reflection.Emit;
 using Harmony;
-using Noro;
 using Terraria.ModLoader;
 
 namespace Localizer.ModBrowser
@@ -12,54 +12,23 @@ namespace Localizer.ModBrowser
         public static void Patch()
         {
             Utils.LogInfo($"Patching ModBrowser, tML version: {ModLoader.version}");
-            
-            Patch_PopulateModBrowser();
-            Patch_FromJson();
-            Patch_OnActivate();
-            Patch_UIModDownloadItemCtor();
-            
+
+            var populateModBrowser = "Terraria.ModLoader.UI.ModBrowser.UIModBrowser".Type()
+                                      .GetMethods(NoroHelper.Any)
+                                      .FirstOrDefault(m => m.Name.Contains("<PopulateModBrowser>"));
+            Localizer.Harmony.Patch(populateModBrowser, null, null, new HarmonyMethod(NoroHelper.MethodInfo(() => PopulateModBrowserTranspiler(null))));
+
+            var fromJson = "Terraria.ModLoader.UI.ModBrowser.UIModDownloadItem".Type().Method("FromJson");
+            Localizer.Harmony.Patch(fromJson, null, null, new HarmonyMethod(NoroHelper.MethodInfo(() => FromJSONTranspiler(null))));
+
+            var onActivate = "Terraria.ModLoader.UI.UIModInfo".Type()
+                                      .GetMethods(NoroHelper.Any)
+                                      .FirstOrDefault(m => m.Name.Contains("<OnActivate>"));
+            Localizer.Harmony.Patch(onActivate, null, null, new HarmonyMethod(NoroHelper.MethodInfo(() => OnActivateTranspiler(null))));
+
             Utils.LogInfo("ModBrowser Patched");
         }
 
-        private static void Patch_PopulateModBrowser()
-        {
-            var populateModBrowser = Utils.TR().GetType("Terraria.ModLoader.UI.ModBrowser.UIModBrowser")
-                                          .AllMethods()
-                                          .FirstOrDefault(m => m.Name.Contains("<PopulateModBrowser>"));
-            
-            Localizer.Harmony.Transpile<Patches>(nameof(PopulateModBrowserTranspiler))
-                     .Detour(populateModBrowser);
-        }
-
-        private static void Patch_FromJson()
-        {            
-            var fromJson = Utils.TR().GetType("Terraria.ModLoader.UI.ModBrowser.UIModDownloadItem")
-                                .FindMethod("FromJson");
-            
-            Localizer.Harmony.Transpile<Patches>(nameof(FromJSONTranspiler))
-                     .Detour(fromJson);
-        }
-
-        private static void Patch_OnActivate()
-        {
-            var onActivate = Utils.TR().GetType("Terraria.ModLoader.UI.UIModInfo")
-                                  .AllMethods()
-                                  .FirstOrDefault(m => m.Name.Contains("<OnActivate>"));
-            
-            Localizer.Harmony.Transpile<Patches>(nameof(OnActivateTranspiler))
-                     .Detour(onActivate);
-
-        }
-
-        private static void Patch_UIModDownloadItemCtor()
-        {
-            var uiModDownloadItemCtor = Utils.TR().GetType("Terraria.ModLoader.UI.ModBrowser.UIModDownloadItem")
-                                             .AllDeclaredConstructors()[0];
-            
-            Localizer.Harmony.Transpile<Patches>(nameof(ModIconTranspiler))
-                     .Detour(uiModDownloadItemCtor);
-        }
-        
         private static IEnumerable<CodeInstruction> PopulateModBrowserTranspiler(IEnumerable<CodeInstruction> instructions)
         {
             var result = instructions.ToList();
@@ -84,9 +53,8 @@ namespace Localizer.ModBrowser
             var ins = result.FirstOrDefault(i => i?.operand?.ToString() == "http://javid.ddns.net/tModLoader/moddescription.php");
             if (ins != null)
             {
-                var concat = typeof(string).FindMethod("Concat", typeof(string), typeof(string), typeof(string));
-                var thisModName = Utils.TR().GetType("Terraria.ModLoader.UI.UIModInfo")
-                                  .FindField("_modName");
+                var concat = NoroHelper.MethodInfo(() => string.Concat("", "", ""));
+                var thisModName = "Terraria.ModLoader.UI.UIModInfo".Type().Field("_modName");
 
                 ins.operand = "https://trbbs.cc/trmod/";
                 var index = result.IndexOf(ins) + 1;

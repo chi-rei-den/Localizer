@@ -1,7 +1,6 @@
 using System;
 using System.Reflection;
 using Localizer.Helpers;
-using Noro.Access;
 using Terraria;
 using Terraria.ModLoader;
 using Terraria.ModLoader.Core;
@@ -15,19 +14,12 @@ namespace Localizer.DataModel.Default
         public LoadedModWrapper(object mod)
         {
             wrapped = new WeakReference<object>(mod);
-            name = mod.P("Name") as string;
-            if (name == "ModLoader")
-            {
-                code = Assembly.GetAssembly(typeof(Main));
-            }
-            else
-            {
-                code = mod.F("assembly") as Assembly;
-            }
-            var buildProp = mod.F("properties").A();
-            displayName = buildProp["displayName"] as string;
-            version = buildProp["version"] as Version;
-            file = mod.F("modFile") as TmodFile;
+            name = mod.ValueOf<string>("Name");
+            code = name == "ModLoader" ? Assembly.GetAssembly(typeof(Main)) : mod.ValueOf<Assembly>("assembly");
+            var buildProp = mod.ValueOf("properties");
+            displayName = buildProp.ValueOf<string>("displayName");
+            version = buildProp.ValueOf<Version>("version");
+            file = mod.ValueOf<TmodFile>("modFile");
         }
 
         public string Name => name ?? "";
@@ -35,7 +27,7 @@ namespace Localizer.DataModel.Default
 
         public Assembly Code => code;
         private Assembly code;
-        
+
         public string DisplayName => displayName ?? "";
         private string displayName;
 
@@ -44,7 +36,7 @@ namespace Localizer.DataModel.Default
 
         public TmodFile File => file;
         private TmodFile file;
-        
-        public bool Enabled => (bool)typeof(ModLoader).M("IsEnabled", Name);
+
+        public bool Enabled => (bool)typeof(ModLoader).Invoke("IsEnabled", Name);
     }
 }

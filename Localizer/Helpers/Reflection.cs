@@ -51,7 +51,7 @@ namespace System.Reflection
             var prop = type?.Property(name);
             if (prop != null)
             {
-                return field.GetValue(value);
+                return prop.GetValue(value);
             }
 
             throw new MemberAccessException($"{name} not found ({type})");

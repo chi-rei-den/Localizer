@@ -1,7 +1,6 @@
 using System;
 using System.Reflection;
 using Localizer.Helpers;
-using Noro.Access;
 using Terraria;
 using Terraria.ModLoader;
 using Terraria.ModLoader.Core;
@@ -35,7 +34,7 @@ namespace Localizer.DataModel.Default
         {
             get
             {
-                
+
                 if (Name == "ModLoader")
                 {
                     return Assembly.GetAssembly(typeof(Main));
@@ -49,7 +48,7 @@ namespace Localizer.DataModel.Default
 
         public string DisplayName => Mod.DisplayName ?? "";
         public Version Version => Mod?.Version;
-        public TmodFile File => Mod?.P("File") as TmodFile;
-        public bool Enabled => (bool)typeof(ModLoader).M("IsEnabled", Name);
+        public TmodFile File => Mod?.ValueOf<TmodFile>("File");
+        public bool Enabled => (bool)typeof(ModLoader).Invoke("IsEnabled", Name);
     }
 }

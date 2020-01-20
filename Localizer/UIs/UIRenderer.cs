@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 using Localizer.Helpers;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Noro.Access;
 using ReLogic.Graphics;
 using Squid;
 using Terraria;
@@ -21,7 +21,7 @@ namespace Localizer.UIs
         private Dictionary<int, Texture2D> textures;
         private Dictionary<string, int> fontIDs;
         private Dictionary<int, DynamicSpriteFont> fonts;
-        
+
         private Texture2D _blankTexture;
         private RasterizerState _rasterizer;
         private SamplerState _sampler;
@@ -29,7 +29,7 @@ namespace Localizer.UIs
         public UIRenderer()
         {
             _spriteBatch = new SpriteBatch(Main.graphics.GraphicsDevice);
-            
+
             _blankTexture = new Texture2D(_spriteBatch.GraphicsDevice, 1, 1);
             _blankTexture.SetData(new [] { new Color(255, 255, 255, 255) });
 
@@ -38,12 +38,12 @@ namespace Localizer.UIs
             fontIDs = new Dictionary<string, int>();
             fonts = new Dictionary<int, DynamicSpriteFont>();
 
-            var modTextures = Localizer.Instance.F("textures") as IDictionary<string, Texture2D>;
+            var modTextures = Localizer.Instance.ValueOf<IDictionary<string, Texture2D>>("textures");
             foreach (var t in modTextures)
             {
                 AddTexture(t.Key, t.Value);
             }
-            
+
             AddFont("default", Main.fontMouseText);
             AddFont("mouse", Main.fontMouseText);
             AddFont("item", Main.fontItemStack);
@@ -62,7 +62,7 @@ namespace Localizer.UIs
             fontIDs.Add(key, index);
             fonts.Add(index, font);
         }
-        
+
         public void AddTexture(string key, Texture2D tex)
         {
             var index = textureIDs.Count;
@@ -100,7 +100,7 @@ namespace Localizer.UIs
                 x = 0;
             if (y < 0)
                 y = 0;
-            Main.graphics.GraphicsDevice.ScissorRectangle 
+            Main.graphics.GraphicsDevice.ScissorRectangle
                 = new Rectangle(x, y, w, h);
         }
 
@@ -109,7 +109,7 @@ namespace Localizer.UIs
             var rect = new Rectangle(x, y, w, h);
             _spriteBatch.Draw(_blankTexture, rect, rect, ColorFromtInt32(color));
         }
-        
+
         private Color ColorFromtInt32(int color)
         {
             var bytes = BitConverter.GetBytes(color);
@@ -118,9 +118,9 @@ namespace Localizer.UIs
         public void DrawText(string text, int x, int y, int font, int color)
         {
             var snippets = ChatManager.ParseMessage(text, ColorFromtInt32(color)).ToArray();
-            Terraria.Utils.DrawBorderStringFourWay(_spriteBatch, 
-                                                   fonts[font], text, x, y + 3, 
-                                                   ColorFromtInt32(color), 
+            Terraria.Utils.DrawBorderStringFourWay(_spriteBatch,
+                                                   fonts[font], text, x, y + 3,
+                                                   ColorFromtInt32(color),
                                                    Color.Black, Vector2.Zero, 1f);
 //            ChatManager.DrawColorCodedString(
 //                _spriteBatch, fonts[font], snippets, new Vector2(x, y + 3),

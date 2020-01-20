@@ -1,16 +1,16 @@
 using System.Collections.Generic;
 using System.Globalization;
+using System.Reflection;
 using Localizer.Attributes;
 using Localizer.DataModel;
 using Localizer.DataModel.Default;
 using Localizer.Helpers;
-using Noro.Access;
 using Terraria.ModLoader;
 
 namespace Localizer.Package.Import
 {
     [OperationTiming(OperationTiming.PostContentLoad)]
-    public class CustomModTranslationImporter: FileImporter
+    public class CustomModTranslationImporter : FileImporter
     {
         public override void Import(IFile file, IMod mod, CultureInfo culture)
         {
@@ -21,14 +21,14 @@ namespace Localizer.Package.Import
         {
             var entryDict = file.Translations;
 
-            var translations = Utils.GetModByName(mod.Name).F("translations") as
-                IDictionary<string, ModTranslation>;
+            var translations = Utils.GetModByName(mod.Name).ValueOf<IDictionary<string, ModTranslation>>("translations");
+
 
             if (translations == null)
             {
                 return;
             }
-            
+
             foreach (var pair in entryDict)
             {
                 if (!translations.ContainsKey(pair.Key))
@@ -58,7 +58,7 @@ namespace Localizer.Package.Import
             {
                 result.Translations.Add(t.Key, t.Value.Clone() as BaseEntry);
             }
-            
+
             foreach (var pair in addition.Translations)
             {
                 if (result.Translations.ContainsKey(pair.Key))
@@ -73,7 +73,7 @@ namespace Localizer.Package.Import
 
             return result;
         }
-        
+
         public BaseEntry Merge(BaseEntry main, BaseEntry addition)
         {
             var e = main.Clone() as BaseEntry;

@@ -8,7 +8,6 @@ using Localizer.DataModel.Default;
 using MonoMod.Utils;
 using Terraria;
 using Terraria.ModLoader;
-using Noro;
 using static Localizer.Utils;
 
 namespace Localizer.Package.Export
@@ -143,8 +142,8 @@ namespace Localizer.Package.Export
                 }
 
                 var methodBases = new List<MethodBase>();
-                methodBases.AddRange(type.AllDeclaredMethods());
-                methodBases.AddRange(type.AllDeclaredConstructors());
+                methodBases.AddRange(type.GetMethods(NoroHelper.Any | BindingFlags.DeclaredOnly));
+                methodBases.AddRange(type.GetConstructors(NoroHelper.Any | BindingFlags.DeclaredOnly));
                 foreach (var method in methodBases)
                 {
                     if (method.DeclaringType?.Namespace == null || method.IsAbstract)
