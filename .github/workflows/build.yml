@@ -18,19 +18,18 @@ jobs:
         with:
           command: setup
 
-      - name: Restore NuGet Packages
-        run: nuget restore Localizer.sln
-
-      - name: MSBuild Squid ModPatch
-        run: |
-          & "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current\Bin\MSBuild.exe" Squid\Squid.csproj /p:Configuration=Release /p:Platform=x86
-          & "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current\Bin\MSBuild.exe" ModPatch\ModPatch.csproj /p:Configuration=Release /p:Platform=x86
-
       - name: Build Mod
         uses: chi-rei-den/ModLoaderTools@v1
         with:
           command: build
           path: Localizer
+
+      - name: Restore NuGet Packages
+        run: nuget restore Localizer.sln
+
+      - name: MSBuild Squid ModPatch
+        run: |
+          & "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current\Bin\MSBuild.exe" Localizer.sln /p:Configuration=Release /p:Platform=x86
 
       - name: Patch Mod
         run: '& "$ENV:GITHUB_WORKSPACE\ModPatch\bin\Release\ModPatch.exe"'
