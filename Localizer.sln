@@ -4,12 +4,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 16.0.29324.140
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Localizer", "Localizer\Localizer.csproj", "{95D54B28-B67B-4248-B83A-B5E5426C3806}"
+	ProjectSection(ProjectDependencies) = postProject
+		{D05E5CFB-866F-43D1-BBFE-7CA84249CF36} = {D05E5CFB-866F-43D1-BBFE-7CA84249CF36}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LocalizerTest", "LocalizerTest\LocalizerTest.csproj", "{019C1A68-7B2C-400C-BCAE-FC9EF658A3BC}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ModPatch", "ModPatch\ModPatch.csproj", "{D05E5CFB-866F-43D1-BBFE-7CA84249CF36}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Squid", "Squid\Squid.csproj", "{205C6E4A-4F9C-44FE-BB81-48F9914F048F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Squid", "Squid\Squid.csproj", "{205C6E4A-4F9C-44FE-BB81-48F9914F048F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

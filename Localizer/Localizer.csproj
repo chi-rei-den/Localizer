@@ -157,7 +157,7 @@
     <Exec Command="copy $(OutDir)0Harmony.dll $(ProjectDir)lib\0Harmony.dll" />
     <Exec Command="copy $(OutDir)Ninject.dll $(ProjectDir)lib\Ninject.dll" />
     <Exec Command="copy $(OutDir)Squid.dll $(ProjectDir)lib\Squid.dll" />
-    <Exec Command="$(tMLBuildServerPath) -build $(ProjectDir) -eac $(TargetPath) -define $(DefineConstants) -unsafe $(AllowUnsafeBlocks)" />
+    <Exec Command="&quot;$(tMLBuildServerPath)&quot; -build $(ProjectDir) -eac $(TargetPath) -define $(DefineConstants) -unsafe $(AllowUnsafeBlocks)" />
     <Exec Command="$(SolutionDir)ModPatch\bin\Debug\ModPatch.exe" Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' " />
     <Exec Command="$(SolutionDir)ModPatch\bin\Release\ModPatch.exe" Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' " />
   </Target>
