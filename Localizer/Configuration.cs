@@ -11,7 +11,7 @@ namespace Localizer
         public LogLevel LogLevel { get; set; } = LogLevel.Info;
 
         public bool RebuildTooltips { get; set; } = true;
-        
+
         public bool RebuildTooltipsOnce { get; set; } = true;
     }
 }

@@ -12,7 +12,6 @@ using Localizer.Attributes;
 using Localizer.DataModel;
 using Localizer.DataModel.Default;
 using Localizer.Helpers;
-using Mono.Cecil;
 using MonoMod.Utils;
 using Newtonsoft.Json;
 using Terraria.ModLoader;
@@ -49,7 +48,7 @@ namespace Localizer
         {
             return typeof(Terraria.Main).Module;
         }
-        
+
         /// <summary>
         ///     Return the method matched with the findableName in the given type.
         ///     Return null if fail.
@@ -164,29 +163,37 @@ namespace Localizer
         {
             Localizer.Log.Fatal(o);
         }
-        
+
         public static void LogError(object o)
         {
-            if(Localizer.Config.LogLevel >= LogLevel.Error)
+            if (Localizer.Config.LogLevel >= LogLevel.Error)
+            {
                 Localizer.Log.Error(o);
+            }
         }
 
         public static void LogWarn(object o)
         {
-            if(Localizer.Config.LogLevel >= LogLevel.Warn)
+            if (Localizer.Config.LogLevel >= LogLevel.Warn)
+            {
                 Localizer.Log.Warn(o);
+            }
         }
 
         public static void LogInfo(object o)
         {
-            if(Localizer.Config.LogLevel >= LogLevel.Info)
+            if (Localizer.Config.LogLevel >= LogLevel.Info)
+            {
                 Localizer.Log.Info(o);
+            }
         }
 
         public static void LogDebug(object o)
         {
-            if(Localizer.Config.LogLevel >= LogLevel.Debug)
+            if (Localizer.Config.LogLevel >= LogLevel.Debug)
+            {
                 Localizer.Log.Debug(o);
+            }
         }
         #endregion
 
@@ -207,10 +214,12 @@ namespace Localizer
         public static string GetResponseBody(HttpWebResponse response)
         {
             if (response == null)
+            {
                 return null;
-            
-            Encoding encoding = Encoding.UTF8;
-            
+            }
+
+            var encoding = Encoding.UTF8;
+
             using (var myResponseStream = response.GetResponseStream())
             {
                 using (var myStreamReader = new StreamReader(myResponseStream, encoding))
@@ -323,12 +332,12 @@ namespace Localizer
                 LogError(e);
             }
         }
-        
+
         public static T SafeWrap<T>(Func<T> func)
         {
             return SafeWrap(func, out var ex);
         }
-        
+
         public static T SafeWrap<T>(Func<T> func, out Exception ex)
         {
             try
@@ -341,7 +350,7 @@ namespace Localizer
                 ex = e;
                 LogError(e);
             }
-            
+
             return default;
         }
         #endregion

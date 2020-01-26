@@ -4,9 +4,6 @@ using System.Diagnostics;
 using System.Reflection;
 using System.Threading.Tasks;
 using Harmony;
-using Localizer.Helpers;
-using MonoMod.Utils;
-using Terraria;
 using Terraria.Localization;
 using Terraria.ModLoader;
 
@@ -39,17 +36,21 @@ namespace Localizer.Package.Import
         private static void OnModItemCtor(ModItem __instance)
         {
             if (!Localizer.Config.RebuildTooltips)
+            {
                 return;
+            }
 
-            if(Localizer.Config.RebuildTooltipsOnce && !_instance._firstRun)
+            if (Localizer.Config.RebuildTooltipsOnce && !_instance._firstRun)
+            {
                 return;
+            }
 
             if (!_instance._rebuilding && !_instance._cleaning)
             {
                 _instance.items.Add(new WeakReference(__instance));
                 _instance._cleanUpCounter++;
 
-                if(_instance._cleanUpCounter > 20000 && !_instance._firstRun)
+                if (_instance._cleanUpCounter > 20000 && !_instance._firstRun)
                 {
                     Task.Run(() =>
                     {
@@ -115,7 +116,10 @@ namespace Localizer.Package.Import
             stopWatch.Stop();
             Utils.LogInfo($"Item caches cleaned. count: {items.Count}, take {stopWatch.Elapsed.TotalSeconds} seconds");
             if (_firstRun)
+            {
                 _firstRun = false;
+            }
+
             _cleaning = false;
         }
 

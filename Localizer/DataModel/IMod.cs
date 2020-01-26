@@ -25,12 +25,12 @@ namespace Localizer.DataModel
         ///     Version of the mod.
         /// </summary>
         Version Version { get; }
-        
+
         /// <summary>
         /// File of the mod.
         /// </summary>
         TmodFile File { get; }
-        
+
         bool Enabled { get; }
     }
 }

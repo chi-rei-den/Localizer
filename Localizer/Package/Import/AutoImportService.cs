@@ -43,8 +43,11 @@ namespace Localizer.Package.Import
 
         private void OnBeforeModCtor(object mod)
         {
-            if(_imported)
+            if (_imported)
+            {
                 return;
+            }
+
             Utils.SafeWrap(() =>
             {
                 if (Localizer.Config.AutoImport)
@@ -58,8 +61,10 @@ namespace Localizer.Package.Import
 
         private void OnPostSetupContent()
         {
-            if(_imported)
+            if (_imported)
+            {
                 return;
+            }
 
             try
             {
@@ -120,10 +125,15 @@ namespace Localizer.Package.Import
                 _packageManage.PackageGroups = new List<IPackageGroup>();
 
                 var type = Localizer.Config.AutoImportType;
-                if(type != AutoImportType.DownloadedOnly)
+                if (type != AutoImportType.DownloadedOnly)
+                {
                     LoadSourcePackages();
-                if(type != AutoImportType.SourceOnly)
+                }
+
+                if (type != AutoImportType.SourceOnly)
+                {
                     LoadPackedPackages();
+                }
 
                 _packageManage.LoadState();
             }
@@ -137,8 +147,10 @@ namespace Localizer.Package.Import
         {
             void QueuePackageGroup(IPackageGroup packageGroup)
             {
-                if(packageGroup is null || !packageGroup.Mod.Enabled)
+                if (packageGroup is null || !packageGroup.Mod.Enabled)
+                {
                     return;
+                }
 
                 foreach (var p in packageGroup.Packages)
                 {

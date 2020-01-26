@@ -5,7 +5,6 @@ using System.Reflection;
 using Localizer.Attributes;
 using Localizer.DataModel;
 using Localizer.DataModel.Default;
-using Localizer.Helpers;
 using Ninject;
 
 namespace Localizer.Package.Import
@@ -20,12 +19,14 @@ namespace Localizer.Package.Import
         {
             _importers = new Dictionary<Type, FileImporter>();
         }
-        
+
         public void RegisterImporter<T>(Type importerType) where T : IFile
         {
-            if(importerType is null)
+            if (importerType is null)
+            {
                 throw new ArgumentNullException(nameof(importerType));
-            
+            }
+
             Localizer.Kernel.Bind(typeof(FileImporter), importerType)
                      .To(importerType).InSingletonScope();
 
@@ -35,7 +36,7 @@ namespace Localizer.Package.Import
                 Utils.LogError("Importer binding failed.");
                 return;
             }
-            
+
             if (_importers.ContainsKey(typeof(T)))
             {
                 _importers[typeof(T)] = importer;
@@ -44,7 +45,7 @@ namespace Localizer.Package.Import
             {
                 _importers.Add(typeof(T), importer);
             }
-            
+
             Utils.LogInfo($"Importer: [{importer.GetType().FullName}] registered for file type: [{typeof(T).FullName}].");
         }
 
@@ -85,14 +86,16 @@ namespace Localizer.Package.Import
                 Utils.SafeWrap(() =>
                 {
                     var merged = Merge(group);
-                    foreach (IFile f in merged.Files)
+                    foreach (var f in merged.Files)
                     {
                         Utils.SafeWrap(() =>
                         {
                             var importer = GetImporter(f);
-                            if(importer is null)
+                            if (importer is null)
+                            {
                                 return;
-                        
+                            }
+
                             Import(f, group, importer, preferEarly);
                         });
                     }
@@ -109,8 +112,8 @@ namespace Localizer.Package.Import
                            $"\n    State: [{Localizer.State}]" +
                            $"\n    PreferEarly: [{preferEarly}]");
             if (!Localizer.CanDoOperationNow(importer.GetType())
-                || (preferEarly && importerTiming > Localizer.State 
-                                && importerTiming == OperationTiming.Any 
+                || (preferEarly && importerTiming > Localizer.State
+                                && importerTiming == OperationTiming.Any
                                 && Localizer.State != OperationTiming.BeforeModCtor))
             {
                 return;
@@ -172,8 +175,11 @@ namespace Localizer.Package.Import
                         {
                             var main = package.Files.FirstOrDefault(f => f.GetType() == file.GetType());
                             var importer = GetImporter(file);
-                            if(importer is null)
+                            if (importer is null)
+                            {
                                 continue;
+                            }
+
                             var merged = importer.Merge(main, file);
                             result.Files.Remove(main);
                             result.Files.Add(merged);

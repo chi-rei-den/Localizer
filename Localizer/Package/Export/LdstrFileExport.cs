@@ -6,7 +6,6 @@ using System.Reflection.Emit;
 using Localizer.DataModel;
 using Localizer.DataModel.Default;
 using MonoMod.Utils;
-using Terraria;
 using Terraria.ModLoader;
 using static Localizer.Utils;
 

@@ -37,4 +37,4 @@ using System.Runtime.InteropServices;
 
 [assembly: AssemblyInformationalVersion("1.0.7")]
 
-[assembly:InternalsVisibleTo("LocalizerTest")]
+[assembly: InternalsVisibleTo("LocalizerTest")]

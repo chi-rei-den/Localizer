@@ -60,14 +60,9 @@
       <Project>{95d54b28-b67b-4248-b83a-b5e5426c3806}</Project>
       <Name>Localizer</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Noro\Noro\Noro.csproj">
-      <Project>{d09d98ce-bee8-4226-bc48-31a926c74762}</Project>
-      <Name>Noro</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="DataModel\" />
-    <Folder Include="Package\Export" />
+    <Folder Include="Package\Export\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="FluentAssertions">

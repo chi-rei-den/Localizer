@@ -6,9 +6,9 @@ namespace Localizer.Package.Import
     public interface IPackageImportService
     {
         void RegisterImporter<T>(Type importerType) where T : IFile;
-        
+
         void UnregisterImporter<T>() where T : IFile;
-        
+
         /// <summary>
         ///     Add a package into the internal queue,
         ///     earlier packages have more priorities.

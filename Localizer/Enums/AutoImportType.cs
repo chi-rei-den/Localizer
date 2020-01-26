@@ -3,7 +3,7 @@ using Newtonsoft.Json.Converters;
 
 namespace Localizer
 {
-     [JsonConverter(typeof(StringEnumConverter))]
+    [JsonConverter(typeof(StringEnumConverter))]
     public enum AutoImportType
     {
         All,

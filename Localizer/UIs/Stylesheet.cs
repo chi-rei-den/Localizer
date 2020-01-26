@@ -13,14 +13,14 @@ namespace Localizer.UIs
             {
                 skin.Add(s.Key, s.Value);
             }
-            
+
             return skin;
         }
 
         public static CursorCollection GetCursorSet()
         {
-            Point cursorSize = new Point(32, 32);
-            Point halfSize = cursorSize / 2;
+            var cursorSize = new Point(32, 32);
+            var halfSize = cursorSize / 2;
             return new CursorCollection()
             {
                 {CursorNames.Default, new Cursor { Texture = GetTexturePath("Cursors/Arrow"), Size = cursorSize, HotSpot = Point.Zero }},
@@ -67,7 +67,7 @@ namespace Localizer.UIs
                     Texture = GetTexturePath("button_down"),
                 },
             };
-            
+
             return new Dictionary<string, ControlStyle>()
             {
                 {"item", new ControlStyle(baseStyle)
@@ -278,7 +278,7 @@ namespace Localizer.UIs
                 }},
             };
         }
-        
+
         private static string GetTexturePath(string name)
         {
             return $"UIs/Assets/{name}";

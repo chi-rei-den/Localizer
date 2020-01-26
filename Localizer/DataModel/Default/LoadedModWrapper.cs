@@ -1,6 +1,5 @@
 using System;
 using System.Reflection;
-using Localizer.Helpers;
 using Terraria;
 using Terraria.ModLoader;
 using Terraria.ModLoader.Core;

@@ -13,7 +13,7 @@ namespace Localizer.DataModel
     public interface IUpdateInfo
     {
         UpdateType Type { get; }
-        
+
         Version Version { get; }
     }
 }

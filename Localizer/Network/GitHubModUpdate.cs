@@ -9,7 +9,7 @@ namespace Localizer.Network
     public sealed class GitHubModUpdate : IUpdateService
     {
         private JObject lastCheckResult;
-        
+
         public bool CheckUpdate(Version curVersion, out IUpdateInfo updateInfo)
         {
             var url = "https://api.github.com/repos/chi-rei-den/Localizer/releases/latest";
@@ -20,7 +20,9 @@ namespace Localizer.Network
             updateInfo = GetUpdateInfo(lastCheckResult);
 
             if (updateInfo.Type == UpdateType.None)
+            {
                 return false;
+            }
 
             return updateInfo.Version > curVersion;
         }
@@ -43,13 +45,15 @@ namespace Localizer.Network
         internal string GetDownloadURLInternal(JObject jObject)
         {
             var assets = jObject["assets"] as JArray;
-            
-            if(assets == null || assets.Count == 0)
+
+            if (assets == null || assets.Count == 0)
+            {
                 throw new Exception("Release has no assets!");
+            }
 
             return assets[0]["browser_download_url"].ToObject<string>();
         }
-        
+
         public void Dispose()
         {
         }

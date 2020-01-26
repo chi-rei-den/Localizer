@@ -7,6 +7,8 @@ jobs:
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v1
+        with:
+          submodules: recursive
 
       - name: Install NuGet client
         uses: warrenbuckley/Setup-Nuget@v1
@@ -16,33 +18,13 @@ jobs:
         with:
           command: setup
 
-      - name: Add reference search path
-        run: Get-ChildItem -Directory | ForEach-Object { Copy reference.xml "$($_.FullName)\$($_.Name).csproj.user" }
-
       - name: Restore NuGet Packages
         run: nuget restore Localizer.sln
 
-      - name: Release build
-        run: '& "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current\Bin\MSBuild.exe" Localizer.sln /p:Configuration=Release /p:Platform=x86'
-
-      - name: Clean binary
+      - name: MSBuild Squid ModPatch
         run: |
-          del ".\Localizer\Plugins\*.pdb"
-          del ".\Localizer\Plugins\*.dll.config"
-          del ".\Localizer\Plugins\*.xml"
-          del ".\Localizer\Plugins\Terraria.exe"
-          del ".\Localizer\Plugins\TerrariaHooks.dll"
-          del ".\Localizer\Plugins\Steamworks.NET.dll"
-          del ".\Localizer\Plugins\ReLogic.dll"
-          del ".\Localizer\Plugins\Ninject.dll"
-          del ".\Localizer\Plugins\Newtonsoft.Json.dll"
-          del ".\Localizer\Plugins\MonoMod.*.dll"
-          del ".\Localizer\Plugins\Mono.Cecil.dll"
-          del ".\Localizer\Plugins\log4net.dll"
-          del ".\Localizer\Plugins\Localizer.dll"
-          del ".\Localizer\Plugins\0Harmony.dll"
-          del ".\Localizer\Plugins\System.*.dll"
-          del ".\Localizer\Plugins\Microsoft.Xna.*.dll"
+          & "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current\Bin\MSBuild.exe" Squid\Squid.csproj /p:Configuration=Release /p:Platform=x86
+          & "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current\Bin\MSBuild.exe" ModPatch\ModPatch.csproj /p:Configuration=Release /p:Platform=x86
 
       - name: Build Mod
         uses: chi-rei-den/ModLoaderTools@v1

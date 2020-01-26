@@ -12,12 +12,12 @@ namespace LocalizerTest.Package.Import
         public void MergeFile_Correct()
         {
             var importer = new BasicImporter<BasicItemFile>();
-            
+
             var main = new BasicItemFile()
             {
                 Items = new Dictionary<string, ItemEntry>()
                 {
-                    { 
+                    {
                         "Key1", new ItemEntry()
                         {
                             Name = new BaseEntry()
@@ -32,7 +32,7 @@ namespace LocalizerTest.Package.Import
                             },
                         }
                     },
-                    { 
+                    {
                         "Key2", new ItemEntry()
                         {
                             Name = new BaseEntry()
@@ -47,7 +47,7 @@ namespace LocalizerTest.Package.Import
                             },
                         }
                     },
-                    { 
+                    {
                         "Key3", new ItemEntry()
                         {
                             Name = new BaseEntry()
@@ -135,18 +135,18 @@ namespace LocalizerTest.Package.Import
             var result = importer.MergeInternal(main, addition);
 
             result.Items.Count.Should().Be(4);
-            
+
             result.Items["Key1"].Name.Translation.Should().Be("NameTranslation1");
             result.Items["Key1"].Tooltip.Translation.Should().Be("TooltipTranslation1");
-            
+
             result.Items["Key4"].Name.Origin.Should().Be("NameOrigin4");
             result.Items["Key4"].Name.Translation.Should().Be("NameTranslation4");
             result.Items["Key4"].Tooltip.Origin.Should().Be("TooltipOrigin4");
             result.Items["Key4"].Tooltip.Translation.Should().Be("TooltipTranslation4");
-            
+
             result.Items["Key2"].Name.Translation.Should().Be("NameTranslation2");
             result.Items["Key2"].Tooltip.Translation.Should().Be("AnotherTooltipTranslation2");
-            
+
             result.Items["Key3"].Name.Translation.Should().Be("AnotherNameTranslation3");
             result.Items["Key3"].Tooltip.Translation.Should().Be("AnotherTooltipTranslation3");
         }
@@ -186,7 +186,7 @@ namespace LocalizerTest.Package.Import
             var result1 = service.Merge(main1, addition1) as ItemEntry;
             result1.Name.Translation.Should().Be("NameTranslation");
             result1.Tooltip.Translation.Should().Be("TooltipTranslation");
-            
+
             var main2 = new ItemEntry()
             {
                 Name = new BaseEntry()
@@ -213,12 +213,12 @@ namespace LocalizerTest.Package.Import
                     Translation = "AnotherTooltipTranslation"
                 },
             };
-            
+
             var result2 = service.Merge(main2, addition2) as ItemEntry;
             result2.Name.Translation.Should().Be("AnotherNameTranslation");
             result2.Tooltip.Translation.Should().Be("AnotherTooltipTranslation");
-            
-            
+
+
             var main3 = new ItemEntry()
             {
                 Name = new BaseEntry()
@@ -245,7 +245,7 @@ namespace LocalizerTest.Package.Import
                     Translation = "AnotherTooltipTranslation"
                 },
             };
-            
+
             var result3 = service.Merge(main3, addition3) as ItemEntry;
             result3.Name.Translation.Should().Be("NameTranslation");
             result3.Tooltip.Translation.Should().Be("AnotherTooltipTranslation");

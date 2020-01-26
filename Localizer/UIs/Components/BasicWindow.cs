@@ -10,9 +10,11 @@ namespace Localizer.UIs.Components
         {
             AllowDragOut = true;
             Padding = new Margin(4);
-            Titlebar = new TitleBar();
-            Titlebar.Dock = DockStyle.Top;
-            Titlebar.Size = new Squid.Point(122, 35);
+            Titlebar = new TitleBar
+            {
+                Dock = DockStyle.Top,
+                Size = new Point(122, 35)
+            };
             Titlebar.MouseDown += (sender, args) => { StartDrag(); };
             Titlebar.MouseUp += (sender, args) => { StopDrag(); };
             Titlebar.Cursor = CursorNames.Move;
@@ -26,7 +28,7 @@ namespace Localizer.UIs.Components
             Controls.Add(Titlebar);
         }
 
-        void Button_OnMouseClick(Control sender, MouseEventArgs args)
+        private void Button_OnMouseClick(Control sender, MouseEventArgs args)
         {
         }
     }

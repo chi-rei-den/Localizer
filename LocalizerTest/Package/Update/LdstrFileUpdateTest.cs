@@ -15,7 +15,7 @@ namespace LocalizerTest.Package.Update
             var service = new LdstrFileUpdater();
 
             var logger = new UpdateLogger();
-            
+
             var oldFile = new LdstrFile()
             {
                 LdstrEntries = new Dictionary<string, LdstrEntry>()
@@ -40,7 +40,7 @@ namespace LocalizerTest.Package.Update
                     },
                 }
             };
-            
+
             var newFile = new LdstrFile()
             {
                 LdstrEntries = new Dictionary<string, LdstrEntry>()
@@ -79,11 +79,11 @@ namespace LocalizerTest.Package.Update
             oldFile.LdstrEntries["Key1"].Instructions.Should().ContainSingle(i => i.Origin == "Origin2" && i.Translation == "Translation2");
             oldFile.LdstrEntries["Key1"].Instructions.Should().ContainSingle(i => i.Origin == "AnotherOrigin1" && i.Translation == "");
             oldFile.LdstrEntries["Key1"].Instructions.Should().ContainSingle(i => i.Origin == "Origin5" && i.Translation == "");
-            
+
             oldFile.LdstrEntries["Key2"].Instructions.Count.Should().Be(2);
             oldFile.LdstrEntries["Key2"].Instructions.Should().ContainSingle(i => i.Origin == "Origin3" && i.Translation == "Translation3");
             oldFile.LdstrEntries["Key2"].Instructions.Should().ContainSingle(i => i.Origin == "Origin4" && i.Translation == "Translation4");
-            
+
             oldFile.LdstrEntries["Key3"].Instructions.Count.Should().Be(1);
             oldFile.LdstrEntries["Key3"].Instructions.Should().ContainSingle(i => i.Origin == "Origin6" && i.Translation == "");
         }

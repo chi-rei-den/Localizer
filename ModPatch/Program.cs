@@ -4,21 +4,19 @@ using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
-using System.Threading.Tasks;
-using Localizer;
 
 namespace ModPatch
 {
-    class Program
+    internal class Program
     {
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
             var FILE_PATH = Environment.ExpandEnvironmentVariables(@"%USERPROFILE%\Documents\My Games\Terraria\ModLoader\Mods\Localizer.tmod");
             var tModLoaderVersion = "";
             var modName = "";
             var modVersion = "";
             var files = new List<(string fileName, int length, int compressedLength, byte[] content)>();
-            
+
             using (var fileStream = File.OpenRead(FILE_PATH))
             {
                 using (var br = new BinaryReader(fileStream))
@@ -31,9 +29,9 @@ namespace ModPatch
                     var fileCount = br.ReadInt32();
                     for (var i = 0; i < fileCount; i++)
                     {
-                        var entry = (filename: br.ReadString(), length: br.ReadInt32(), 
-                                     compressedLength: br.ReadInt32(), 
-                                     content: new byte[] {});
+                        var entry = (filename: br.ReadString(), length: br.ReadInt32(),
+                                     compressedLength: br.ReadInt32(),
+                                     content: new byte[] { });
                         files.Add(entry);
                     }
 
@@ -41,17 +39,18 @@ namespace ModPatch
                     {
                         var file = files[i];
                         var content = br.ReadBytes(file.compressedLength);
-                        files[i] = (filename: file.fileName, length: file.length, 
-                        compressedLength: file.compressedLength, 
-                        content: content);
+                        files[i] = (file.fileName, file.length, file.compressedLength, content);
                     }
                 }
             }
 
-            if(!modName.StartsWith("!"))
+            if (!modName.StartsWith("!"))
+            {
                 modName = "!" + modName;
-            files = files.Select(f => (f.fileName.EndsWith("NA.dll") && !f.fileName.StartsWith("!")) 
-                                     ? ("!" + f.fileName, f.length, f.compressedLength, f.content) 
+            }
+
+            files = files.Select(f => (f.fileName.EndsWith("NA.dll") && !f.fileName.StartsWith("!"))
+                                     ? ("!" + f.fileName, f.length, f.compressedLength, f.content)
                                      : f).ToList();
 
             using (var fileStream = new FileStream(FILE_PATH, FileMode.Create, FileAccess.ReadWrite))
@@ -82,18 +81,15 @@ namespace ModPatch
                     bw.Write(hash);
                 }
             }
-            
+
             var enabledFilePath =
                 Environment.ExpandEnvironmentVariables(
                     @"%USERPROFILE%\Documents\My Games\Terraria\ModLoader\Mods\enabled.json");
 
             if (!File.Exists(enabledFilePath))
+            {
                 return;
-
-            var enabled = Utils.ReadFileAndDeserializeJson<List<string>>(enabledFilePath);
-            enabled.Add(modName);
-            
-            Utils.SerializeJsonAndCreateFile(enabled, enabledFilePath);
+            }
         }
     }
 }

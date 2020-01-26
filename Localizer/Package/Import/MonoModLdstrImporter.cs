@@ -4,7 +4,6 @@ using System.Linq;
 using System.Reflection;
 using Localizer.DataModel;
 using Localizer.DataModel.Default;
-using Localizer.Helpers;
 using MonoMod.Cil;
 using MonoMod.RuntimeDetour.HookGen;
 using Terraria.ModLoader;
@@ -22,7 +21,7 @@ namespace Localizer.Package.Import
 
         protected override void ImportInternal(LdstrFile file, IMod mod, CultureInfo culture)
         {
-            ContentInstance.Register(Utils.GetModByName(mod.Name));
+            Terraria.ModLoader.ContentInstance.Register(Utils.GetModByName(mod.Name));
             var module = mod.Code.ManifestModule;
 
             var entryDict = file.LdstrEntries;
@@ -34,7 +33,7 @@ namespace Localizer.Package.Import
                 {
                     continue;
                 }
-                
+
                 var e = entryPair.Value;
 
                 if (!HaveTranslation(e))

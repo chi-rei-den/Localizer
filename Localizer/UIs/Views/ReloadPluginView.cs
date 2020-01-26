@@ -7,9 +7,9 @@ namespace Localizer.UIs.Views
     {
         public ReloadPluginView()
         {
-            this.Size = new Point(40, 40);
-            this.Position = new Point(0, 0);
-            this.Resizable = false;
+            Size = new Point(40, 40);
+            Position = new Point(0, 0);
+            Resizable = false;
 
             var reloadPlugins = new Button()
             {
@@ -21,7 +21,7 @@ namespace Localizer.UIs.Views
                 Localizer.Kernel.UnloadAllPlugins();
                 Localizer.Kernel.LoadPlugins();
             };
-            this.Controls.Add(reloadPlugins);
+            Controls.Add(reloadPlugins);
         }
     }
 }

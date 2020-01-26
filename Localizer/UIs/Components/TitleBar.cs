@@ -8,14 +8,16 @@ namespace Localizer.UIs.Components
 
         public TitleBar()
         {
-            Button = new Button();
-            Button.Size = new Point(30, 30);
-            Button.Style = "button";
-            Button.Text = "X";
-            Button.TextAlign = Alignment.MiddleCenter;
-            Button.Tooltip = "Close Window";
-            Button.Dock = DockStyle.Right;
-            Button.Margin = new Margin(0, 8, 8, 8);
+            Button = new Button
+            {
+                Size = new Point(30, 30),
+                Style = "button",
+                Text = "X",
+                TextAlign = Alignment.MiddleCenter,
+                Tooltip = "Close Window",
+                Dock = DockStyle.Right,
+                Margin = new Margin(0, 8, 8, 8)
+            };
             Elements.Add(Button);
         }
     }

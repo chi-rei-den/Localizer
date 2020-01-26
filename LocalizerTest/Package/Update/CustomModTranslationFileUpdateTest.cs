@@ -14,7 +14,7 @@ namespace LocalizerTest.Package.Update
         {
             var service = new CustomModTranslationUpdater();
             var logger = new UpdateLogger();
-            
+
             var oldFile = new CustomModTranslationFile()
             {
                 Translations = new Dictionary<string, BaseEntry>()
@@ -24,7 +24,7 @@ namespace LocalizerTest.Package.Update
                     { "Key3", new BaseEntry(){ Origin = "Origin3", Translation = "Translation3" } },
                 }
             };
-            
+
             var newFile = new CustomModTranslationFile()
             {
                 Translations = new Dictionary<string, BaseEntry>()

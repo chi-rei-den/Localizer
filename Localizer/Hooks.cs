@@ -17,7 +17,7 @@ namespace Localizer
         {
             BeforeLoad?.Invoke();
         }
-        
+
         public delegate void BeforeSetupContentHandler();
         public static event BeforeSetupContentHandler BeforeSetupContent;
         internal static void InvokeBeforeSetupContent()
@@ -25,7 +25,7 @@ namespace Localizer
             BeforeSetupContent?.Invoke();
         }
 
-        
+
         public delegate void PostSetupContentHandler();
         public static event PostSetupContentHandler PostSetupContent;
         internal static void InvokePostSetupContent()
@@ -39,7 +39,7 @@ namespace Localizer
         {
             GameUpdate?.Invoke(gameTime);
         }
-        
+
         public delegate void PostDrawHandler(GameTime gameTime);
         public static event PostDrawHandler PostDraw;
         internal static void InvokeOnPostDraw(GameTime gameTime)

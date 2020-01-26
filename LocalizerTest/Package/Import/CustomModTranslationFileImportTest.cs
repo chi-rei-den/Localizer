@@ -12,7 +12,7 @@ namespace LocalizerTest.Package.Import
         public void Merge_Correct()
         {
             var importer = new CustomModTranslationImporter();
-            
+
             var main = new CustomModTranslationFile()
             {
                 Translations = new Dictionary<string, BaseEntry>()
@@ -22,7 +22,7 @@ namespace LocalizerTest.Package.Import
                     { "Key3", new BaseEntry(){ Origin = "Origin3", Translation = "Translation3" } },
                 }
             };
-            
+
             var addition = new CustomModTranslationFile()
             {
                 Translations = new Dictionary<string, BaseEntry>()

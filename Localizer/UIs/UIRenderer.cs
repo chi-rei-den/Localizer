@@ -31,7 +31,7 @@ namespace Localizer.UIs
             _spriteBatch = new SpriteBatch(Main.graphics.GraphicsDevice);
 
             _blankTexture = new Texture2D(_spriteBatch.GraphicsDevice, 1, 1);
-            _blankTexture.SetData(new [] { new Color(255, 255, 255, 255) });
+            _blankTexture.SetData(new[] { new Color(255, 255, 255, 255) });
 
             textureIDs = new Dictionary<string, int>();
             textures = new Dictionary<int, Texture2D>();
@@ -49,11 +49,15 @@ namespace Localizer.UIs
             AddFont("item", Main.fontItemStack);
             AddFont("death", Main.fontDeathText);
 
-            _rasterizer = new RasterizerState();
-            _rasterizer.ScissorTestEnable = true;
+            _rasterizer = new RasterizerState
+            {
+                ScissorTestEnable = true
+            };
 
-            _sampler = new SamplerState();
-            _sampler.Filter = TextureFilter.Anisotropic;
+            _sampler = new SamplerState
+            {
+                Filter = TextureFilter.Anisotropic
+            };
         }
 
         public void AddFont(string key, DynamicSpriteFont font)
@@ -81,25 +85,33 @@ namespace Localizer.UIs
         public Point GetTextSize(string text, int font)
         {
             if (string.IsNullOrEmpty(text))
-                return new Squid.Point();
+            {
+                return new Point();
+            }
 
             var f = fonts[font];
             var size = f.MeasureString(text);
-            return new Squid.Point((int)size.X, (int)size.Y);
+            return new Point((int)size.X, (int)size.Y);
         }
 
         public Point GetTextureSize(int texture)
         {
-            Texture2D tex = textures[texture];
-            return new Squid.Point(tex.Width, tex.Height);
+            var tex = textures[texture];
+            return new Point(tex.Width, tex.Height);
         }
 
         public void Scissor(int x, int y, int w, int h)
         {
             if (x < 0)
+            {
                 x = 0;
+            }
+
             if (y < 0)
+            {
                 y = 0;
+            }
+
             Main.graphics.GraphicsDevice.ScissorRectangle
                 = new Rectangle(x, y, w, h);
         }
@@ -122,9 +134,9 @@ namespace Localizer.UIs
                                                    fonts[font], text, x, y + 3,
                                                    ColorFromtInt32(color),
                                                    Color.Black, Vector2.Zero, 1f);
-//            ChatManager.DrawColorCodedString(
-//                _spriteBatch, fonts[font], snippets, new Vector2(x, y + 3),
-//                ColorFromtInt32(color), 0, Vector2.Zero, Vector2.One, out int i, 99999);
+            //            ChatManager.DrawColorCodedString(
+            //                _spriteBatch, fonts[font], snippets, new Vector2(x, y + 3),
+            //                ColorFromtInt32(color), 0, Vector2.Zero, Vector2.One, out int i, 99999);
         }
         public void DrawTexture(int texture, int x, int y, int w, int h, Squid.Rectangle rect, int color)
         {

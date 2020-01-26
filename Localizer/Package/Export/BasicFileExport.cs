@@ -59,7 +59,7 @@ namespace Localizer.Package.Export
 
                 foreach (var mapping in mappings)
                 {
-                    object owner = localizeOwners[key];
+                    var owner = localizeOwners[key];
                     var localizeTrans = owner?.GetType().GetProperty(mapping.Key)?.GetValue(owner) as ModTranslation;
 
                     mapping.Value.SetValue(entry, new BaseEntry

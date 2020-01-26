@@ -80,7 +80,10 @@ namespace Localizer.Package
             {
                 var state = oldPackageGroupStates.FirstOrDefault(s => s.ModName == pg.Mod.Name);
                 if (state != null)
+                {
                     oldPackageGroupStates.Remove(state);
+                }
+
                 oldPackageGroupStates.Add(new PackageGroupState(pg));
             }
 

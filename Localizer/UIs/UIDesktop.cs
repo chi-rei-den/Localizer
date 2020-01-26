@@ -1,4 +1,3 @@
-using Localizer.UIs.Components;
 using Localizer.UIs.Views;
 using Squid;
 
@@ -10,11 +9,13 @@ namespace Localizer.UIs
         public ReloadPluginView ReloadPluginView;
         public UIDesktop()
         {
-//            TestView = new TestView();
-//            TestView.Parent = this;
-            
-            ReloadPluginView = new ReloadPluginView();
-            ReloadPluginView.Parent = this;
+            //            TestView = new TestView();
+            //            TestView.Parent = this;
+
+            ReloadPluginView = new ReloadPluginView
+            {
+                Parent = this
+            };
         }
 
         public void AddWindow(Window window)

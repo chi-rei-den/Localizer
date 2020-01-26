@@ -1,6 +1,5 @@
 using System;
 using System.Reflection;
-using Localizer.Helpers;
 using Terraria;
 using Terraria.ModLoader;
 using Terraria.ModLoader.Core;
@@ -13,8 +12,11 @@ namespace Localizer.DataModel.Default
 
         public ModWrapper(Mod mod)
         {
-            if(mod is null)
+            if (mod is null)
+            {
                 throw new ArgumentNullException(nameof(mod));
+            }
+
             wrapped = new WeakReference<Mod>(mod);
         }
 

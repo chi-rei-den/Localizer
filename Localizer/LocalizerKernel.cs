@@ -12,15 +12,15 @@ namespace Localizer
     public sealed class LocalizerKernel : StandardKernel
     {
         public List<LocalizerPlugin> Plugins { get; private set; }
-        
+
         public Dictionary<string, bool> PluginEnableStatus { get; private set; }
 
         private static readonly string ExternalPluginDirPath = "./Localizer/Plugins/";
-        
+
         public LocalizerKernel()
         {
             AppDomain.CurrentDomain.AssemblyResolve += AssemblyResolveHandler;
-            
+
             Plugins = new List<LocalizerPlugin>();
             PluginEnableStatus = new Dictionary<string, bool>();
         }
@@ -32,7 +32,7 @@ namespace Localizer
                 new DefaultPackageModule(),
                 new DefaultNetworkModule(),
             });
-            
+
             LoadPlugins();
         }
 
@@ -60,11 +60,11 @@ namespace Localizer
 
             Plugins.Clear();
         }
-        
+
         internal void LoadPlugins()
         {
             Utils.EnsureDir(ExternalPluginDirPath);
-            
+
             var dirInfo = new DirectoryInfo(ExternalPluginDirPath);
             foreach (var file in dirInfo.GetFiles("*.dll"))
             {
@@ -72,7 +72,7 @@ namespace Localizer
                 LoadPlugin(a);
             }
         }
-        
+
         internal void LoadPlugin(Assembly asm)
         {
             try
@@ -96,17 +96,17 @@ namespace Localizer
 
         internal void UnloadPlugin(string pluginName)
         {
-            if(string.IsNullOrWhiteSpace(pluginName))
+            if (string.IsNullOrWhiteSpace(pluginName))
             {
                 throw new ArgumentException(nameof(pluginName));
             }
-            
-            var plugin = Plugins.SingleOrDefault(p => p.Name == pluginName) 
+
+            var plugin = Plugins.SingleOrDefault(p => p.Name == pluginName)
                 ?? throw new Exception($"Cannot find plugin [{pluginName}]");
-            
+
             UnloadPlugin(plugin);
         }
-        
+
         internal void UnloadPlugin(LocalizerPlugin plugin)
         {
             if (plugin is null)
@@ -120,14 +120,14 @@ namespace Localizer
                 Utils.LogWarn($"Plugin [{plugin.Name}] doesn't exist");
                 return;
             }
-            
+
             plugin.Dispose();
 
             Plugins.Remove(plugin);
-            
+
             Utils.LogInfo($"Plugin [{plugin.Name}] successfully unloaded.");
         }
-        
+
         private static Assembly AssemblyResolveHandler(object sender, ResolveEventArgs args)
         {
             try
@@ -154,7 +154,7 @@ namespace Localizer
                 {
                     return Assembly.Load(asmFile);
                 }
-                    
+
                 return null;
             }
             catch (Exception)
@@ -164,12 +164,14 @@ namespace Localizer
         }
 
         private static byte[] GetExternalPluginFileBytes(string fileName)
-        {            
+        {
             var path = Path.Combine(ExternalPluginDirPath, fileName);
 
             if (!File.Exists(path))
+            {
                 return null;
-            
+            }
+
             return File.ReadAllBytes(path);
         }
     }
