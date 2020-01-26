@@ -1,6 +1,6 @@
 name: Mod Build
 
-on: [push, pull_request]
+on: [push]
 
 jobs:
   build:
@@ -25,7 +25,7 @@ jobs:
           path: Localizer
 
       - name: Restore NuGet Packages
-        run: nuget restore Localizer.sln
+        run: nuget restore Localizer.sln -Verbosity detailed
 
       - name: MSBuild Squid ModPatch
         run: |
@@ -53,3 +53,6 @@ jobs:
         with:
           name: Build Artifact
           path: Artifact
+
+      - name: Run Tests
+        run: '& "$ENV:UserProfile\.nuget\packages\xunit.runner.console\2.4.1\tools\net472\xunit.console.x86.exe" ".\LocalizerTest\bin\Release\LocalizerTest.dll"'
