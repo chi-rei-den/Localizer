@@ -53,20 +53,20 @@ namespace Localizer.Package.Import
                 var mainEntryDict = (IDictionary)prop.GetValue(main);
                 var additionEntryDict = (IDictionary)prop.GetValue(addition);
 
-                foreach (KeyValuePair<string, IEntry> t in mainEntryDict)
+                foreach (string key in mainEntryDict.Keys)
                 {
-                    entries.Add(t.Key, t.Value.Clone());
+                    entries.Add(key, (mainEntryDict[key] as IEntry)?.Clone());
                 }
 
-                foreach (KeyValuePair<string, IEntry> pair in additionEntryDict)
+                foreach (string key in additionEntryDict.Keys)
                 {
-                    if (entries.Contains(pair.Key))
+                    if (entries.Contains(key))
                     {
-                        entries[pair.Key] = Merge((IEntry)mainEntryDict[pair.Key], pair.Value);
+                        entries[key] = Merge((IEntry)mainEntryDict[key], (IEntry)additionEntryDict[key]);
                     }
                     else
                     {
-                        entries.Add(pair.Key, pair.Value);
+                        entries.Add(key, additionEntryDict[key]);
                     }
                 }
 
