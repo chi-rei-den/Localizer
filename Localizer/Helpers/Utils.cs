@@ -44,11 +44,6 @@ namespace Localizer
 
         #region Reflection
 
-        public static Module TR()
-        {
-            return typeof(Terraria.Main).Module;
-        }
-
         /// <summary>
         ///     Return the method matched with the findableName in the given type.
         ///     Return null if fail.
@@ -62,18 +57,28 @@ namespace Localizer
             return method != null ? MethodBase.GetMethodFromHandle(method.MethodHandle) : null;
         }
 
+        private static Dictionary<Module, Dictionary<string, MethodBase>> _cachedMethod = new Dictionary<Module, Dictionary<string, MethodBase>>();
         public static MethodBase FindMethodByID(Module m, string findableName)
         {
-            foreach (var t in m.GetTypes())
+            if (!_cachedMethod.ContainsKey(m))
             {
-                if (t.FindMethod(findableName) != null)
+                _cachedMethod.Add(m, new Dictionary<string, MethodBase>());
+                foreach (var t in m.GetTypes())
                 {
-                    return t.FindMethod(findableName);
+                    foreach (var method in t.GetMethods(NoroHelper.Any))
+                    {
+                        var key = method.GetID();
+                        if (!_cachedMethod[m].ContainsKey(key))
+                        {
+                            _cachedMethod[m].Add(key, method);
+                        }
+                    }
                 }
             }
 
-            return null;
+            return _cachedMethod[m].ContainsKey(findableName) ? _cachedMethod[m][findableName] : null;
         }
+
         #endregion
 
         #region Json

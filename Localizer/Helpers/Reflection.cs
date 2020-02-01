@@ -72,8 +72,10 @@ namespace System.Reflection
                 throw new ArgumentNullException(nameof(name));
             }
 
-            var method = o.GetType().Method(name, args.Select(a => a.GetType()))
-                         ?? throw new MissingMethodException($"{o.GetType().FullName}.{name}");
+            var method = (o is Type t
+                ? t
+                : o.GetType()).Method(name, args.Select(a => a.GetType()))
+                     ?? throw new MissingMethodException($"{o.GetType().FullName}.{name}");
             return method.Invoke(o, args);
         }
     }

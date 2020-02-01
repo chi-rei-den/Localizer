@@ -15,8 +15,8 @@ namespace Localizer.UIs.Components
                 Dock = DockStyle.Top,
                 Size = new Point(122, 35)
             };
-            Titlebar.MouseDown += (sender, args) => { StartDrag(); };
-            Titlebar.MouseUp += (sender, args) => { StopDrag(); };
+            Titlebar.MouseDown += (sender, args) => StartDrag();
+            Titlebar.MouseUp += (sender, args) => StopDrag();
             Titlebar.Cursor = CursorNames.Move;
             Titlebar.Style = "frame";
             Titlebar.Margin = new Margin(-4, -4, -4, -1);

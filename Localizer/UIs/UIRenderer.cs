@@ -102,18 +102,8 @@ namespace Localizer.UIs
 
         public void Scissor(int x, int y, int w, int h)
         {
-            if (x < 0)
-            {
-                x = 0;
-            }
-
-            if (y < 0)
-            {
-                y = 0;
-            }
-
             Main.graphics.GraphicsDevice.ScissorRectangle
-                = new Rectangle(x, y, w, h);
+                = new Rectangle(Math.Max(x, 0), Math.Max(y, 0), Math.Min(w, Main.screenWidth), Math.Min(h, Main.screenHeight));
         }
 
         public void DrawBox(int x, int y, int w, int h, int color)

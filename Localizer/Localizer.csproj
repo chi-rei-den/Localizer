@@ -135,8 +135,11 @@
     <Compile Include="Package\Update\PlainUpdateLogger.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Helpers\Utils.cs" />
+    <Compile Include="UIs\Components\BasicListBox.cs" />
+    <Compile Include="UIs\Components\LabelListBoxItem.cs" />
     <Compile Include="UIs\Components\TitleBar.cs" />
     <Compile Include="UIs\Components\BasicWindow.cs" />
+    <Compile Include="UIs\MainWindow.cs" />
     <Compile Include="UIs\UIHost.cs" />
     <Compile Include="UIs\Stylesheet.cs" />
     <Compile Include="UIs\UIRenderer.cs" />

@@ -38,6 +38,7 @@ namespace Localizer
         public static OperationTiming State { get; internal set; }
         internal static LocalizerKernel Kernel { get; private set; }
         internal static HarmonyInstance Harmony { get; set; }
+        internal static MainWindow PackageUI { get; private set; }
 
         private static Dictionary<int, GameCulture> _gameCultures;
 
@@ -118,6 +119,9 @@ namespace Localizer
         private void AddPostDrawHook()
         {
             UIHost = new UIHost();
+
+            PackageUI = new MainWindow();
+            UIHost.Desktop.AddWindow(PackageUI);
 
             Main.OnPostDraw += OnPostDraw;
         }
