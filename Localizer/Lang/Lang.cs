@@ -63,7 +63,7 @@ namespace Localizer
         public static string _(string key, params object[] args)
         {
             var value = Language.GetTextValue($"Mods.Localizer.{key}");
-            if (value == key)
+            if (value == $"Mods.Localizer.{key}")
             {
                 value = Language.GetTextValue($"Mods.!Localizer.{key}");
             }

@@ -178,6 +178,7 @@ namespace Localizer
             {
                 SaveConfig();
 
+                PackageUI?.Close();
                 UIHost.Dispose();
                 Main.OnPostDraw -= OnPostDraw;
 

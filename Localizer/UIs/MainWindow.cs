@@ -47,6 +47,7 @@ namespace Localizer.UIs
             Size = new Point(800, 340);
             Position = new Point(40, 200);
             Titlebar.Text = _("PackageManage");
+            Titlebar.Button.MouseClick += (sender, args) => Visible = false;
             Resizable = true;
             _menuBar = new Panel
             {

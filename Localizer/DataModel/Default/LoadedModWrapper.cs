@@ -14,18 +14,17 @@ namespace Localizer.DataModel.Default
         {
             wrapped = new WeakReference<object>(mod);
             name = mod.ValueOf<string>("Name");
-            code = name == "ModLoader" ? Assembly.GetAssembly(typeof(Main)) : mod.ValueOf<Assembly>("assembly");
+            Code = name == "ModLoader" ? Assembly.GetAssembly(typeof(Main)) : mod.ValueOf<Assembly>("assembly");
             var buildProp = mod.ValueOf("properties");
             displayName = buildProp.ValueOf<string>("displayName");
             version = buildProp.ValueOf<Version>("version");
-            file = mod.ValueOf<TmodFile>("modFile");
+            File = mod.ValueOf<TmodFile>("modFile");
         }
 
         public string Name => name ?? "";
         private string name;
 
-        public Assembly Code => code;
-        private Assembly code;
+        public Assembly Code { get; }
 
         public string DisplayName => displayName ?? "";
         private string displayName;
@@ -33,8 +32,7 @@ namespace Localizer.DataModel.Default
         public Version Version => version ?? new Version();
         private Version version;
 
-        public TmodFile File => file;
-        private TmodFile file;
+        public TmodFile File { get; }
 
         public bool Enabled => (bool)typeof(ModLoader).Invoke("IsEnabled", Name);
     }
