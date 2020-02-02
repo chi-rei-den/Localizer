@@ -19,6 +19,9 @@ namespace Localizer
             "PackageEnabled",
             "PackageDisabled",
             "PackageDisplay",
+            "RefreshOnline",
+            "RefreshOnlineDesc",
+            "PackageOnline"
         };
 
         private static Dictionary<string, string> _en = new Dictionary<string, string>()
@@ -33,6 +36,9 @@ namespace Localizer
             { _keys[7], "Enabled" },
             { _keys[8], "Disabled" },
             { _keys[9], "({0}) {1} v{2} by {3}" },
+            { _keys[10], "Refresh" },
+            { _keys[11], "Refresh online package list" },
+            { _keys[12], "Online" },
         };
 
         private static Dictionary<string, string> _zh = new Dictionary<string, string>()
@@ -46,7 +52,10 @@ namespace Localizer
             { _keys[6], "你没有这个Mod的汉化包，\n请下载或自己制作" },
             { _keys[7], "已启用" },
             { _keys[8], "未启用" },
-            { _keys[9], "({0}) {1} 版本:{2} 作者:{3}" },
+            { _keys[9], "({0}) {1} v{2} 作者:{3}" },
+            { _keys[10], "刷新" },
+            { _keys[11], "刷新在线汉化包列表" },
+            { _keys[12], "未下载" },
         };
 
         public static void AddModTranslations(Mod mod)

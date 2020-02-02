@@ -31,6 +31,11 @@ namespace Localizer.UIs
         {
             Gui.TimeElapsed = (float)time.ElapsedGameTime.TotalMilliseconds;
 
+            if (Main.graphics.GraphicsDevice.Viewport.Width != Desktop.Size.x || Main.graphics.GraphicsDevice.Viewport.Height != Desktop.Size.y)
+            {
+                Desktop.Size = new Squid.Point(gd.Viewport.Width, gd.Viewport.Height);
+            }
+
             // Mouse
             var mouseState = Mouse.GetState();
 

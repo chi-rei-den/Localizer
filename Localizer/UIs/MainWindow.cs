@@ -4,13 +4,14 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using Localizer.DataModel;
+using Localizer.Network;
 using Localizer.Package;
 using Localizer.Package.Import;
 using Localizer.Package.Load;
 using Localizer.UIs.Components;
 using Ninject;
-using Ninject.Parameters;
 using Squid;
 using static Localizer.Lang;
 
@@ -36,13 +37,21 @@ namespace Localizer.UIs
 
         private IPackageLoadService<DataModel.Default.Package> sourcePackageLoadServiceService;
 
+        private IPackageBrowserService packageBrowserService;
+
+        private IDownloadManagerService downloadManagerService;
+
+        private List<IPackage> onlinePackages = new List<IPackage>();
+
         public MainWindow()
         {
-            pkgManager = Localizer.Kernel.Get<IPackageManageService>(new IParameter[0]);
-            sourcePackageLoadServiceService = Localizer.Kernel.Get<SourcePackageLoad<DataModel.Default.Package>>(new IParameter[0]);
-            packedPackageLoadServiceService = Localizer.Kernel.Get<PackedPackageLoad<DataModel.Default.Package>>(new IParameter[0]);
-            packageImportService = Localizer.Kernel.Get<IPackageImportService>(new IParameter[0]);
-            fileLoadService = Localizer.Kernel.Get<IFileLoadService>(new IParameter[0]);
+            pkgManager = Localizer.Kernel.Get<IPackageManageService>();
+            sourcePackageLoadServiceService = Localizer.Kernel.Get<SourcePackageLoad<DataModel.Default.Package>>();
+            packedPackageLoadServiceService = Localizer.Kernel.Get<PackedPackageLoad<DataModel.Default.Package>>();
+            packageImportService = Localizer.Kernel.Get<IPackageImportService>();
+            fileLoadService = Localizer.Kernel.Get<IFileLoadService>();
+            packageBrowserService = Localizer.Kernel.Get<IPackageBrowserService>();
+            downloadManagerService = Localizer.Kernel.Get<IDownloadManagerService>();
             pkgManager.PackageGroups = new ObservableCollection<IPackageGroup>();
             Size = new Point(800, 340);
             Position = new Point(40, 200);
@@ -70,6 +79,21 @@ namespace Localizer.UIs
                 }
             };
             _menuBar.Content.Controls.Add(button);
+            var button2 = new Button
+            {
+                Text = _("RefreshOnline"),
+                Tooltip = _("RefreshOnlineDesc"),
+                Dock = DockStyle.Left
+            };
+            button2.MouseClick += (sender, args) =>
+            {
+                if (args.Button == 0)
+                {
+                    RefreshOnlinePackages(sender);
+                }
+            };
+            _menuBar.Content.Controls.Add(button2);
+            RefreshOnlinePackages(button2);
             var button3 = new Button
             {
                 Text = _("OpenFolder"),
@@ -104,6 +128,18 @@ namespace Localizer.UIs
             };
             _split.SplitFrame2.Controls.Add(_pkgList);
             LoadPackages();
+        }
+
+        private void RefreshOnlinePackages(Control sender)
+        {
+            new Thread(() =>
+            {
+                sender.Enabled = false;
+                onlinePackages?.Clear();
+                Utils.SafeWrap(() => onlinePackages = packageBrowserService.GetList().ToList());
+                RefreshPkgList(_modList.SelectedItem.Text);
+                sender.Enabled = true;
+            }).Start();
         }
 
         private void LoadPackages()
@@ -143,13 +179,22 @@ namespace Localizer.UIs
 
         private void RefreshPkgList(string modName)
         {
+            string TrimEndingZero(string input)
+            {
+                while (input.EndsWith(".0"))
+                {
+                    input = input.Substring(0, input.Length - 2);
+                }
+                return input;
+            }
             try
             {
                 _split.SplitFrame2.Controls.Clear();
                 _pkgList.Items.Clear();
                 _split.SplitFrame2.Controls.Add(_pkgList);
-                var packageGroup = pkgManager.PackageGroups.FirstOrDefault((IPackageGroup g) => g.Mod.Name == modName);
-                if (packageGroup == null)
+                var packageGroup = pkgManager.PackageGroups.FirstOrDefault(g => g.Mod.Name == modName);
+                var onlineGroup = onlinePackages.Where(g => g.ModName == modName);
+                if (packageGroup == null && onlineGroup == null)
                 {
                     _split.SplitFrame2.Controls.Add(new Label
                     {
@@ -162,32 +207,77 @@ namespace Localizer.UIs
                 }
                 else
                 {
-                    foreach (var p in packageGroup.Packages)
+                    var locals = new HashSet<string>();
+                    if (packageGroup != null)
                     {
-                        var item = new ListBoxItem
+                        foreach (var p in packageGroup.Packages)
                         {
-                            Text = GetPkgLabelText(p),
-                            Tooltip = p.Description,
-                            TextWrap = true,
-                            Dock = DockStyle.Top,
-                            AutoSize = AutoSize.Vertical
-                        };
-                        item.MouseClick += (sender, args) =>
-                        {
-                            if (args.Button == 0)
+                            // TODO: Use better key for HashSet
+                            locals.Add(TrimEndingZero(p.ModName + p.Author + p.Version));
+                            var item = new ListBoxItem
                             {
-                                p.Enabled = !p.Enabled;
-                                item.Text = GetPkgLabelText(p);
-                                pkgManager.SaveState();
+                                Text = GetPkgLabelText(p),
+                                Tooltip = (Gui.Renderer as UIRenderer).WordWrap(p.Description, 400),
+                                TextWrap = true,
+                                Dock = DockStyle.Top,
+                                AutoSize = AutoSize.Vertical
+                            };
+                            item.MouseClick += (sender, args) =>
+                            {
+                                if (args.Button == 0)
+                                {
+                                    p.Enabled = !p.Enabled;
+                                    item.Text = GetPkgLabelText(p);
+                                    pkgManager.SaveState();
+                                }
+                            };
+                            _pkgList.Items.Add(item);
+                        }
+                    }
+                    if (onlineGroup != null)
+                    {
+                        foreach (var p in onlineGroup)
+                        {
+                            if (locals.Contains(TrimEndingZero(p.ModName + p.Author + p.Version)))
+                            {
+                                continue;
                             }
-                        };
-                        _pkgList.Items.Add(item);
+                            var item = new ListBoxItem
+                            {
+                                Text = _("PackageDisplay", _("PackageOnline"), p.Name, p.Version, p.Author),
+                                Tooltip = (Gui.Renderer as UIRenderer).WordWrap(p.Description, 400),
+                                TextWrap = true,
+                                Dock = DockStyle.Top,
+                                AutoSize = AutoSize.Vertical
+                            };
+                            item.MouseClick += (sender, args) => DownloadPackage(modName, args, p);
+                            _pkgList.Items.Add(item);
+                        }
                     }
                 }
             }
             catch (Exception o)
             {
                 Utils.LogError(o);
+            }
+        }
+
+        private void DownloadPackage(string modName, MouseEventArgs args, IPackage p)
+        {
+            if (args.Button == 0)
+            {
+                new Thread(() =>
+                {
+                    Utils.SafeWrap(() =>
+                    {
+                        Utils.LogDebug($"Requesting {p.Name} download");
+                        var url = packageBrowserService.GetDownloadLinkOf(p);
+                        var path = Utils.EscapePath(Path.Combine(Localizer.DownloadPackageDirPath, $"{p.Name}_{p.Author}.locpack"));
+                        downloadManagerService.Download(url, path);
+                        Utils.LogDebug($"{p.Name} is downloaded");
+                        RefreshPkgList(modName);
+                    });
+                }).Start();
             }
         }
 

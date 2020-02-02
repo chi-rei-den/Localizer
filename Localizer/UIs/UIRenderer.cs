@@ -78,9 +78,15 @@ namespace Localizer.UIs
         {
         }
 
-        public int GetTexture(string name) => textureIDs[name];
+        public int GetTexture(string name)
+        {
+            return textureIDs[name];
+        }
 
-        public int GetFont(string name) => fontIDs[name];
+        public int GetFont(string name)
+        {
+            return fontIDs[name];
+        }
 
         public Point GetTextSize(string text, int font)
         {
@@ -92,6 +98,27 @@ namespace Localizer.UIs
             var f = fonts[font];
             var size = f.MeasureString(text);
             return new Point((int)size.X, (int)size.Y);
+        }
+
+        public string WordWrap(string text, int width)
+        {
+            var result = "";
+            var line = "";
+            var index = 0;
+            while (index < text.Length)
+            {
+                line += text[index];
+                if (GetTextSize(line, fontIDs["default"]).x > width)
+                {
+                    result += Environment.NewLine + line.Substring(0, line.Length - 1);
+                    line = "";
+                }
+                else
+                {
+                    index++;
+                }
+            }
+            return result.Trim();
         }
 
         public Point GetTextureSize(int texture)

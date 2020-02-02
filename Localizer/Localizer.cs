@@ -120,9 +120,6 @@ namespace Localizer
         {
             UIHost = new UIHost();
 
-            PackageUI = new MainWindow();
-            UIHost.Desktop.AddWindow(PackageUI);
-
             Main.OnPostDraw += OnPostDraw;
         }
 
@@ -143,7 +140,11 @@ namespace Localizer
 
         public override void PostAddRecipes()
         {
+            PackageUI = new MainWindow();
+            UIHost.Desktop.AddWindow(PackageUI);
+
             State = OperationTiming.PostContentLoad;
+
             Hooks.InvokePostSetupContent();
         }
 
