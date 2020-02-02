@@ -144,17 +144,19 @@ namespace Localizer.UIs
             var bytes = BitConverter.GetBytes(color);
             return new Color(bytes[2], bytes[1], bytes[0], bytes[3]);
         }
+
         public void DrawText(string text, int x, int y, int font, int color)
         {
             var snippets = ChatManager.ParseMessage(text, ColorFromtInt32(color)).ToArray();
-            Terraria.Utils.DrawBorderStringFourWay(_spriteBatch,
-                                                   fonts[font], text, x, y + 3,
-                                                   ColorFromtInt32(color),
-                                                   Color.Black, Vector2.Zero, 1f);
-            //            ChatManager.DrawColorCodedString(
-            //                _spriteBatch, fonts[font], snippets, new Vector2(x, y + 3),
-            //                ColorFromtInt32(color), 0, Vector2.Zero, Vector2.One, out int i, 99999);
+            // Terraria.Utils.DrawBorderStringFourWay(_spriteBatch,
+            //                                        fonts[font], text, x, y + 3,
+            //                                        ColorFromtInt32(color),
+            //                                        Color.Black, Vector2.Zero, 1f);
+            ChatManager.DrawColorCodedString(
+                _spriteBatch, fonts[font], snippets, new Vector2(x, y + 3),
+                ColorFromtInt32(color), 0, Vector2.Zero, Vector2.One, out int i, 99999);
         }
+
         public void DrawTexture(int texture, int x, int y, int w, int h, Squid.Rectangle rect, int color)
         {
             var destination = new Rectangle(x, y, w, h);
