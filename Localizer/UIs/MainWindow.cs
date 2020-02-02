@@ -75,7 +75,7 @@ namespace Localizer.UIs
                 if (args.Button == 0)
                 {
                     LoadPackages();
-                    RefreshPkgList(_modList.SelectedItem.Text);
+                    RefreshPkgList(_modList.SelectedItem?.Text ?? "");
                 }
             };
             _menuBar.Content.Controls.Add(button);
@@ -137,7 +137,7 @@ namespace Localizer.UIs
                 sender.Enabled = false;
                 onlinePackages?.Clear();
                 Utils.SafeWrap(() => onlinePackages = packageBrowserService.GetList().ToList());
-                RefreshPkgList(_modList.SelectedItem.Text);
+                RefreshPkgList(_modList.SelectedItem?.Text ?? "");
                 sender.Enabled = true;
             }).Start();
         }
@@ -275,6 +275,7 @@ namespace Localizer.UIs
                         var path = Utils.EscapePath(Path.Combine(Localizer.DownloadPackageDirPath, $"{p.Name}_{p.Author}.locpack"));
                         downloadManagerService.Download(url, path);
                         Utils.LogDebug($"{p.Name} is downloaded");
+                        LoadPackages();
                         RefreshPkgList(modName);
                     });
                 }).Start();
