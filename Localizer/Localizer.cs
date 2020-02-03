@@ -39,6 +39,7 @@ namespace Localizer
         internal static LocalizerKernel Kernel { get; private set; }
         internal static HarmonyInstance Harmony { get; set; }
         internal static MainWindow PackageUI { get; private set; }
+        internal static LoadedModWrapper LoadedLocalizer;
 
         private static Dictionary<int, GameCulture> _gameCultures;
 
@@ -47,9 +48,9 @@ namespace Localizer
         public Localizer()
         {
             Instance = this;
-            var mod = new LoadedModWrapper("Terraria.ModLoader.Core.AssemblyManager".Type().ValueOf("loadedMods").Invoke("get_Item", "!Localizer"));
-            this.SetField("<File>k__BackingField", mod.File);
-            this.SetField("<Code>k__BackingField", mod.Code);
+            LoadedLocalizer = new LoadedModWrapper("Terraria.ModLoader.Core.AssemblyManager".Type().ValueOf("loadedMods").Invoke("get_Item", "!Localizer"));
+            this.SetField("<File>k__BackingField", LoadedLocalizer.File);
+            this.SetField("<Code>k__BackingField", LoadedLocalizer.Code);
             Log = LogManager.GetLogger(nameof(Localizer));
 
             Harmony = HarmonyInstance.Create(nameof(Localizer));

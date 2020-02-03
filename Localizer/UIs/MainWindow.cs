@@ -369,12 +369,12 @@ namespace Localizer.UIs
             _modList.Items.Clear();
             foreach (var loadedMod in Utils.GetLoadedMods())
             {
-                if (loadedMod != null)
+                if (loadedMod != null && loadedMod.Name != Localizer.LoadedLocalizer.Name)
                 {
                     _modList.Items.Add(new ListBoxItem
                     {
-                        Text = loadedMod.DisplayName,
-                        Tooltip = $"{loadedMod.Name} (v{loadedMod.Version})"
+                        Text = loadedMod.Name,
+                        Tooltip = $"{loadedMod.DisplayName} (v{loadedMod.Version})"
                     });
                 }
             }
