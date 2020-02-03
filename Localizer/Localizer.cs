@@ -130,6 +130,11 @@ namespace Localizer
                 return;
             }
 
+            if (Main.menuMode == 10000 && PackageUI != null)
+            {
+                PackageUI.Visible = true;
+            }
+
             Main.spriteBatch.SafeBegin();
             Hooks.InvokeOnPostDraw(time);
             UIHost.Update(time);
@@ -142,6 +147,7 @@ namespace Localizer
         {
             PackageUI = new MainWindow();
             UIHost.Desktop.AddWindow(PackageUI);
+            PackageUI.Visible = false;
 
             State = OperationTiming.PostContentLoad;
 

@@ -16,11 +16,13 @@ namespace Localizer.UIs.Views
                 Size = new Point(40, 40),
                 Style = "button",
             };
+
             reloadPlugins.MouseClick += (sender, args) =>
             {
                 Localizer.Kernel.UnloadAllPlugins();
                 Localizer.Kernel.LoadPlugins();
             };
+
             Controls.Add(reloadPlugins);
         }
     }

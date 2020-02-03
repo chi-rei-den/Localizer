@@ -21,7 +21,11 @@ namespace Localizer
             "PackageDisplay",
             "RefreshOnline",
             "RefreshOnlineDesc",
-            "PackageOnline"
+            "PackageOnline",
+            "Export",
+            "ExportDesc",
+            "ExportWithTranslation",
+            "ExportWithTranslationDesc",
         };
 
         private static Dictionary<string, string> _en = new Dictionary<string, string>()
@@ -39,6 +43,10 @@ namespace Localizer
             { _keys[10], "Refresh" },
             { _keys[11], "Refresh online package list" },
             { _keys[12], "Online" },
+            { _keys[13], "Export" },
+            { _keys[14], "Export without current translation" },
+            { _keys[15], "Export T" },
+            { _keys[16], "Export with translation" },
         };
 
         private static Dictionary<string, string> _zh = new Dictionary<string, string>()
@@ -56,6 +64,10 @@ namespace Localizer
             { _keys[10], "刷新" },
             { _keys[11], "刷新在线汉化包列表" },
             { _keys[12], "未下载" },
+            { _keys[13], "导出" },
+            { _keys[14], "导出不包含当前翻译的汉化包" },
+            { _keys[15], "导出翻译" },
+            { _keys[16], "导出包含翻译的汉化包" },
         };
 
         public static void AddModTranslations(Mod mod)

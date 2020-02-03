@@ -12,10 +12,10 @@ namespace Localizer.UIs
             //            TestView = new TestView();
             //            TestView.Parent = this;
 
-            ReloadPluginView = new ReloadPluginView
-            {
-                Parent = this
-            };
+            //ReloadPluginView = new ReloadPluginView
+            //{
+            //Parent = this
+            //};
         }
 
         public void AddWindow(Window window)

@@ -57,6 +57,7 @@
     <Compile Include="DataModel\Default\BasicNPCFile.cs" />
     <Compile Include="DataModel\Default\BasicPrefixFile.cs" />
     <Compile Include="DataModel\Default\BasicProjectileFile.cs" />
+    <Compile Include="DataModel\Default\ExportConfig.cs" />
     <Compile Include="DataModel\Default\File.cs" />
     <Compile Include="DataModel\Default\LoadedModWrapper.cs" />
     <Compile Include="DataModel\Default\ModWrapper.cs" />

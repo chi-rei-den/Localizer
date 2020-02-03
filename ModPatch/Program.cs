@@ -90,6 +90,8 @@ namespace ModPatch
             {
                 return;
             }
+
+            File.WriteAllText(enabledFilePath, File.ReadAllText(enabledFilePath).Replace("\"Localizer\"", "\"!Localizer\""));
         }
     }
 }

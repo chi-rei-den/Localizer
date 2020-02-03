@@ -2,14 +2,18 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading;
 using Localizer.DataModel;
 using Localizer.Network;
 using Localizer.Package;
+using Localizer.Package.Export;
 using Localizer.Package.Import;
 using Localizer.Package.Load;
+using Localizer.Package.Save;
+using Localizer.Package.Update;
 using Localizer.UIs.Components;
 using Ninject;
 using Squid;
@@ -31,7 +35,15 @@ namespace Localizer.UIs
 
         private IFileLoadService fileLoadService;
 
+        private IFileSaveService fileSaveService;
+
         private IPackageImportService packageImportService;
+
+        private IPackageExportService packageExportService;
+
+        private IPackageSaveService packageSaveService;
+
+        private IPackageUpdateService packageUpdateService;
 
         private IPackageLoadService<DataModel.Default.Package> packedPackageLoadServiceService;
 
@@ -45,11 +57,27 @@ namespace Localizer.UIs
 
         public MainWindow()
         {
+            Button AddButton(string text, string tooltip, MouseEvent action)
+            {
+                var button = new Button
+                {
+                    Text = text,
+                    Tooltip = tooltip,
+                    Dock = DockStyle.Left
+                };
+                button.MouseClick += action;
+                _menuBar.Content.Controls.Add(button);
+                return button;
+            }
             pkgManager = Localizer.Kernel.Get<IPackageManageService>();
             sourcePackageLoadServiceService = Localizer.Kernel.Get<SourcePackageLoad<DataModel.Default.Package>>();
             packedPackageLoadServiceService = Localizer.Kernel.Get<PackedPackageLoad<DataModel.Default.Package>>();
             packageImportService = Localizer.Kernel.Get<IPackageImportService>();
+            packageExportService = Localizer.Kernel.Get<IPackageExportService>();
+            packageSaveService = Localizer.Kernel.Get<IPackageSaveService>();
+            packageUpdateService = Localizer.Kernel.Get<IPackageUpdateService>();
             fileLoadService = Localizer.Kernel.Get<IFileLoadService>();
+            fileSaveService = Localizer.Kernel.Get<IFileSaveService>();
             packageBrowserService = Localizer.Kernel.Get<IPackageBrowserService>();
             downloadManagerService = Localizer.Kernel.Get<IDownloadManagerService>();
             pkgManager.PackageGroups = new ObservableCollection<IPackageGroup>();
@@ -64,50 +92,43 @@ namespace Localizer.UIs
                 Size = new Point(0, 30)
             };
             Controls.Add(_menuBar);
-            var button = new Button
-            {
-                Text = _("Reload"),
-                Tooltip = _("ReloadDesc"),
-                Dock = DockStyle.Left
-            };
-            button.MouseClick += (sender, args) =>
+            AddButton(_("Reload"), _("ReloadDesc"), (sender, args) =>
             {
                 if (args.Button == 0)
                 {
                     LoadPackages();
                     RefreshPkgList(_modList.SelectedItem?.Text ?? "");
                 }
-            };
-            _menuBar.Content.Controls.Add(button);
-            var button2 = new Button
-            {
-                Text = _("RefreshOnline"),
-                Tooltip = _("RefreshOnlineDesc"),
-                Dock = DockStyle.Left
-            };
-            button2.MouseClick += (sender, args) =>
+            });
+            var refreshBtn = AddButton(_("RefreshOnline"), _("RefreshOnlineDesc"), (sender, args) =>
             {
                 if (args.Button == 0)
                 {
                     RefreshOnlinePackages(sender);
                 }
-            };
-            _menuBar.Content.Controls.Add(button2);
-            RefreshOnlinePackages(button2);
-            var button3 = new Button
-            {
-                Text = _("OpenFolder"),
-                Tooltip = _("OpenFolderDesc"),
-                Dock = DockStyle.Left
-            };
-            button3.MouseClick += (sender, args) =>
+            });
+            RefreshOnlinePackages(refreshBtn);
+            AddButton(_("OpenFolder"), _("OpenFolderDesc"), (sender, args) =>
             {
                 if (args.Button == 0)
                 {
                     Process.Start($"file://{Path.Combine(Environment.CurrentDirectory, "Localizer")}");
                 }
-            };
-            _menuBar.Content.Controls.Add(button3);
+            });
+            AddButton(_("Export"), _("ExportDesc"), (sender, args) =>
+            {
+                if (args.Button == 0)
+                {
+                    Export(false);
+                }
+            });
+            AddButton(_("ExportWithTranslation"), _("ExportWithTranslationDesc"), (sender, args) =>
+            {
+                if (args.Button == 0)
+                {
+                    Export(true);
+                }
+            });
             _split = new SplitContainer
             {
                 Margin = new Margin(0, 10, 0, 0),
@@ -128,6 +149,61 @@ namespace Localizer.UIs
             };
             _split.SplitFrame2.Controls.Add(_pkgList);
             LoadPackages();
+        }
+
+        private void Export(bool withTranslation)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(_modList.SelectedItem?.Text ?? ""))
+                {
+                    return;
+                }
+
+                var name = _modList.SelectedItem.Text;
+                var package = new DataModel.Default.Package
+                {
+                    Name = name,
+                    Language = CultureInfo.CurrentCulture,
+                    ModName = name,
+                    Files = new ObservableCollection<IFile>()
+                };
+
+                var dirPath = Utils.EscapePath(Path.Combine(Localizer.SourcePackageDirPath, name));
+
+                packageExportService.Export(package, new DataModel.Default.ExportConfig
+                {
+                    WithTranslation = withTranslation
+                });
+
+                IPackage oldPack = null;
+                if (Directory.Exists(dirPath))
+                {
+                    oldPack = sourcePackageLoadServiceService.Load(dirPath, fileLoadService);
+                }
+                else
+                {
+                    Directory.CreateDirectory(dirPath);
+                }
+
+                if (oldPack != null)
+                {
+                    var updateLogger = Localizer.Kernel.Get<IUpdateLogger>();
+                    updateLogger.Init($"{package.Name}-{Utils.DateTimeToFileName(DateTime.Now)}");
+
+                    packageUpdateService.Update(oldPack, package, updateLogger);
+
+                    packageSaveService.Save(oldPack, dirPath, fileSaveService);
+                }
+                else
+                {
+                    packageSaveService.Save(package, dirPath, fileSaveService);
+                }
+            }
+            catch (Exception e)
+            {
+                Localizer.Log.Error(e);
+            }
         }
 
         private void RefreshOnlinePackages(Control sender)
@@ -194,7 +270,58 @@ namespace Localizer.UIs
                 _split.SplitFrame2.Controls.Add(_pkgList);
                 var packageGroup = pkgManager.PackageGroups.FirstOrDefault(g => g.Mod.Name == modName);
                 var onlineGroup = onlinePackages.Where(g => g.ModName == modName);
-                if (packageGroup == null && onlineGroup == null)
+                var displayedPackages = new Dictionary<string, ListBoxItem>();
+                if (packageGroup != null)
+                {
+                    foreach (var p in packageGroup.Packages)
+                    {
+                        // TODO: Use better key for HashSet
+                        var item = new ListBoxItem
+                        {
+                            Text = GetPkgLabelText(p),
+                            Tooltip = (Gui.Renderer as UIRenderer).WordWrap(p.Description, 400),
+                            TextWrap = true,
+                            Dock = DockStyle.Top,
+                            AutoSize = AutoSize.Vertical
+                        };
+                        item.MouseClick += (sender, args) =>
+                        {
+                            if (args.Button == 0)
+                            {
+                                p.Enabled = !p.Enabled;
+                                item.Text = GetPkgLabelText(p);
+                                pkgManager.SaveState();
+                            }
+                        };
+                        displayedPackages.Add(TrimEndingZero($"{p.ModName}_{p.Author}_{p.Version}"), item);
+                        _pkgList.Items.Add(item);
+                    }
+                }
+
+                if (onlineGroup != null)
+                {
+                    foreach (var p in onlineGroup)
+                    {
+                        if (displayedPackages.ContainsKey(TrimEndingZero($"{p.ModName}_{p.Author}_{p.Version}")))
+                        {
+                            continue;
+                        }
+                        var update = displayedPackages.Any(kvp => kvp.Key.StartsWith($"{p.ModName}_{p.Author}"));
+                        var item = new ListBoxItem
+                        {
+                            Text = _("PackageDisplay", _(update ? "PackageUpdate" : "PackageOnline"), p.Name, p.Version, p.Author),
+                            Tooltip = (Gui.Renderer as UIRenderer).WordWrap(p.Description, 400),
+                            TextWrap = true,
+                            Dock = DockStyle.Top,
+                            AutoSize = AutoSize.Vertical
+                        };
+                        item.MouseClick += (sender, args) => DownloadPackage(modName, args, p);
+                        displayedPackages.Add(TrimEndingZero($"{p.ModName}_{p.Author}_{p.Version}"), item);
+                        _pkgList.Items.Add(item);
+                    }
+                }
+
+                if (displayedPackages.Count == 0)
                 {
                     _split.SplitFrame2.Controls.Add(new Label
                     {
@@ -204,56 +331,6 @@ namespace Localizer.UIs
                         Dock = DockStyle.Fill,
                         AllowFocus = false
                     });
-                }
-                else
-                {
-                    var locals = new HashSet<string>();
-                    if (packageGroup != null)
-                    {
-                        foreach (var p in packageGroup.Packages)
-                        {
-                            // TODO: Use better key for HashSet
-                            locals.Add(TrimEndingZero(p.ModName + p.Author + p.Version));
-                            var item = new ListBoxItem
-                            {
-                                Text = GetPkgLabelText(p),
-                                Tooltip = (Gui.Renderer as UIRenderer).WordWrap(p.Description, 400),
-                                TextWrap = true,
-                                Dock = DockStyle.Top,
-                                AutoSize = AutoSize.Vertical
-                            };
-                            item.MouseClick += (sender, args) =>
-                            {
-                                if (args.Button == 0)
-                                {
-                                    p.Enabled = !p.Enabled;
-                                    item.Text = GetPkgLabelText(p);
-                                    pkgManager.SaveState();
-                                }
-                            };
-                            _pkgList.Items.Add(item);
-                        }
-                    }
-                    if (onlineGroup != null)
-                    {
-                        foreach (var p in onlineGroup)
-                        {
-                            if (locals.Contains(TrimEndingZero(p.ModName + p.Author + p.Version)))
-                            {
-                                continue;
-                            }
-                            var item = new ListBoxItem
-                            {
-                                Text = _("PackageDisplay", _("PackageOnline"), p.Name, p.Version, p.Author),
-                                Tooltip = (Gui.Renderer as UIRenderer).WordWrap(p.Description, 400),
-                                TextWrap = true,
-                                Dock = DockStyle.Top,
-                                AutoSize = AutoSize.Vertical
-                            };
-                            item.MouseClick += (sender, args) => DownloadPackage(modName, args, p);
-                            _pkgList.Items.Add(item);
-                        }
-                    }
                 }
             }
             catch (Exception o)
