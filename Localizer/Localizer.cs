@@ -146,8 +146,8 @@ namespace Localizer
         public override void PostAddRecipes()
         {
             PackageUI = new MainWindow();
-            UIHost.Desktop.AddWindow(PackageUI);
             PackageUI.Visible = false;
+            UIHost.Desktop.AddWindow(PackageUI);
 
             State = OperationTiming.PostContentLoad;
 

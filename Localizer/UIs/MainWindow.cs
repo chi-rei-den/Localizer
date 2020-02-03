@@ -373,8 +373,8 @@ namespace Localizer.UIs
                 {
                     _modList.Items.Add(new ListBoxItem
                     {
-                        Text = loadedMod.Name,
-                        Tooltip = loadedMod.DisplayName
+                        Text = loadedMod.DisplayName,
+                        Tooltip = $"{loadedMod.Name} (v{loadedMod.Version})"
                     });
                 }
             }

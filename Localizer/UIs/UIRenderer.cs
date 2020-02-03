@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using Localizer.Helpers;
 using Microsoft.Xna.Framework;
@@ -90,35 +91,14 @@ namespace Localizer.UIs
 
         public Point GetTextSize(string text, int font)
         {
-            if (string.IsNullOrEmpty(text))
-            {
-                return new Point();
-            }
-
-            var f = fonts[font];
-            var size = f.MeasureString(text);
+            var size = ChatManager.GetStringSize(fonts[fontIDs["default"]], text, new Vector2(1));
             return new Point((int)size.X, (int)size.Y);
         }
 
         public string WordWrap(string text, int width)
         {
-            var result = "";
-            var line = "";
-            var index = 0;
-            while (index < text.Length)
-            {
-                line += text[index];
-                if (GetTextSize(line, fontIDs["default"]).x > width)
-                {
-                    result += Environment.NewLine + line.Substring(0, line.Length - 1);
-                    line = "";
-                }
-                else
-                {
-                    index++;
-                }
-            }
-            return result.Trim();
+            var result = Terraria.Utils.WordwrapStringSmart(text, Color.White, fonts[fontIDs["default"]], width, -1);
+            return string.Join(Environment.NewLine, result.Select(line => string.Join("", line.Select(ts => ts.TextOriginal))));
         }
 
         public Point GetTextureSize(int texture)
@@ -154,7 +134,7 @@ namespace Localizer.UIs
             //                                        Color.Black, Vector2.Zero, 1f);
             ChatManager.DrawColorCodedString(
                 _spriteBatch, fonts[font], snippets, new Vector2(x, y + 3),
-                ColorFromtInt32(color), 0, Vector2.Zero, Vector2.One, out int i, 99999);
+                ColorFromtInt32(color), 0, Vector2.Zero, Vector2.One, out var i, 99999);
         }
 
         public void DrawTexture(int texture, int x, int y, int w, int h, Squid.Rectangle rect, int color)
