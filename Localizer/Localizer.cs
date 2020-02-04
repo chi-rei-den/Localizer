@@ -135,6 +135,10 @@ namespace Localizer
             {
                 PackageUI.Visible = true;
             }
+            else if (Main.menuMode == 1)
+            {
+                PackageUI.Visible = false;
+            }
 
             Main.spriteBatch.SafeBegin();
             Hooks.InvokeOnPostDraw(time);
@@ -147,7 +151,6 @@ namespace Localizer
         public override void PostAddRecipes()
         {
             PackageUI = new MainWindow();
-            PackageUI.Visible = false;
             UIHost.Desktop.AddWindow(PackageUI);
 
             State = OperationTiming.PostContentLoad;

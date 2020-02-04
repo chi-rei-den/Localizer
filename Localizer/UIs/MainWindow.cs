@@ -234,7 +234,10 @@ namespace Localizer.UIs
                         }
                     });
                 }
-                foreach (var file in new DirectoryInfo(Localizer.DownloadPackageDirPath).GetFiles())
+
+                var list = new DirectoryInfo(Localizer.DownloadPackageDirPath).GetFiles().ToList();
+                list.AddRange(new DirectoryInfo(Environment.ExpandEnvironmentVariables(@"%USERPROFILE%\Documents\My Games\Terraria\ModLoader\Mods")).GetFiles());
+                foreach (var file in list)
                 {
                     Utils.SafeWrap(() =>
                     {

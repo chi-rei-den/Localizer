@@ -5,6 +5,7 @@ using System.Linq;
 using Localizer.DataModel;
 using Localizer.DataModel.Default;
 using Localizer.Package.Load;
+using Localizer.Package.Pack;
 using Ninject;
 
 using PackageModel = Localizer.DataModel.Default.Package;
@@ -18,7 +19,8 @@ namespace Localizer.Package.Import
         private readonly IPackageManageService _packageManage;
         private readonly SourcePackageLoad<PackageModel> _sourcePackageLoad;
         private readonly PackedPackageLoad<PackageModel> _packedPackageLoad;
-        private readonly IPackageImportService _packageImportPackageImport;
+        private readonly IPackageImportService _packageImport;
+        private readonly IPackagePackService _packagePack;
         private readonly IFileLoadService _fileLoad;
 
         private bool _imported = false;
@@ -27,13 +29,15 @@ namespace Localizer.Package.Import
         public AutoImportService(IPackageManageService packageManage,
                                  SourcePackageLoad<PackageModel> sourcePackageLoad,
                                  PackedPackageLoad<PackageModel> packedPackageLoad,
-                                 IPackageImportService packageImportPackageImport,
+                                 IPackageImportService packageImport,
+                                 IPackagePackService packagePack,
                                  IFileLoadService fileLoad)
         {
             _packageManage = packageManage ?? throw new ArgumentNullException(nameof(packageManage));
             _sourcePackageLoad = sourcePackageLoad ?? throw new ArgumentNullException(nameof(sourcePackageLoad));
             _packedPackageLoad = packedPackageLoad ?? throw new ArgumentNullException(nameof(packedPackageLoad));
-            _packageImportPackageImport = packageImportPackageImport ?? throw new ArgumentNullException(nameof(packageImportPackageImport));
+            _packageImport = packageImport ?? throw new ArgumentNullException(nameof(packageImport));
+            _packagePack = packagePack ?? throw new ArgumentNullException(nameof(packagePack));
             _fileLoad = fileLoad ?? throw new ArgumentNullException(nameof(fileLoad));
             LoadPackages();
 
@@ -88,7 +92,9 @@ namespace Localizer.Package.Import
         {
             void LoadPackedPackages()
             {
-                foreach (var file in new DirectoryInfo(Localizer.DownloadPackageDirPath).GetFiles())
+                var list = new DirectoryInfo(Localizer.DownloadPackageDirPath).GetFiles().ToList();
+                list.AddRange(new DirectoryInfo(Environment.ExpandEnvironmentVariables(@"%USERPROFILE%\Documents\My Games\Terraria\ModLoader\Mods")).GetFiles());
+                foreach (var file in list)
                 {
                     Utils.SafeWrap(() =>
                     {
@@ -116,6 +122,7 @@ namespace Localizer.Package.Import
                         }
 
                         _packageManage.AddPackage(pack);
+                        _packagePack.Pack(Path.Combine(dir.FullName, "Package.json"));
                     });
                 }
             }
@@ -125,14 +132,15 @@ namespace Localizer.Package.Import
                 _packageManage.PackageGroups = new List<IPackageGroup>();
 
                 var type = Localizer.Config.AutoImportType;
-                if (type != AutoImportType.DownloadedOnly)
-                {
-                    LoadSourcePackages();
-                }
 
                 if (type != AutoImportType.SourceOnly)
                 {
                     LoadPackedPackages();
+                }
+
+                if (type != AutoImportType.DownloadedOnly)
+                {
+                    LoadSourcePackages();
                 }
 
                 _packageManage.LoadState();
@@ -156,14 +164,14 @@ namespace Localizer.Package.Import
                 {
                     if (p.Enabled)
                     {
-                        _packageImportPackageImport.Queue(p);
+                        _packageImport.Queue(p);
                     }
                 }
             }
 
             Utils.SafeWrap(() =>
             {
-                _packageImportPackageImport.Clear();
+                _packageImport.Clear();
 
                 if (mod is null)
                 {
@@ -177,7 +185,7 @@ namespace Localizer.Package.Import
                     QueuePackageGroup(_packageManage.PackageGroups.FirstOrDefault(pg => pg.Mod.Name == mod.Name));
                 }
 
-                _packageImportPackageImport.Import(true);
+                _packageImport.Import(true);
 
                 Localizer.RefreshLanguages();
 
