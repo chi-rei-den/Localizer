@@ -18,14 +18,8 @@ jobs:
         with:
           command: setup
 
-      - name: Build Mod
-        uses: chi-rei-den/ModLoaderTools@v1
-        with:
-          command: build
-          path: Localizer
-
       - name: Restore NuGet Packages
-        run: nuget restore Localizer.sln -Verbosity detailed
+        run: nuget restore Localizer.sln
 
       - name: MSBuild Squid ModPatch
         run: |
