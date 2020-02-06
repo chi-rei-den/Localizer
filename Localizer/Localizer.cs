@@ -131,13 +131,17 @@ namespace Localizer
                 return;
             }
 
-            if (Main.menuMode == 10000 && PackageUI != null)
+            if (Main.menuMode == 10000)
             {
-                PackageUI.Visible = true;
-            }
-            else if (Main.menuMode == 1)
-            {
-                PackageUI.Visible = false;
+                if (PackageUI != null)
+                {
+                    PackageUI.Visible = true;
+                }
+                else
+                {
+                    PackageUI = new MainWindow();
+                    UIHost.Desktop.AddWindow(PackageUI);
+                }
             }
 
             Main.spriteBatch.SafeBegin();
@@ -150,9 +154,6 @@ namespace Localizer
 
         public override void PostAddRecipes()
         {
-            PackageUI = new MainWindow();
-            UIHost.Desktop.AddWindow(PackageUI);
-
             State = OperationTiming.PostContentLoad;
 
             Hooks.InvokePostSetupContent();

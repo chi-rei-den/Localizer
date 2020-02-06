@@ -92,13 +92,13 @@ namespace Localizer.Package.Import
         {
             void LoadPackedPackages()
             {
-                var list = new DirectoryInfo(Localizer.DownloadPackageDirPath).GetFiles().ToList();
-                list.AddRange(new DirectoryInfo(Environment.ExpandEnvironmentVariables(@"%USERPROFILE%\Documents\My Games\Terraria\ModLoader\Mods")).GetFiles());
+                var list = Directory.GetFiles(Localizer.DownloadPackageDirPath).ToList();
+                list.AddRange(Directory.GetFiles(Environment.ExpandEnvironmentVariables(@"%USERPROFILE%\Documents\My Games\Terraria\ModLoader\Mods")));
                 foreach (var file in list)
                 {
                     Utils.SafeWrap(() =>
                     {
-                        var pack = _packedPackageLoad.Load(file.FullName, _fileLoad);
+                        var pack = _packedPackageLoad.Load(file, _fileLoad);
                         if (pack == null)
                         {
                             return;
@@ -133,14 +133,14 @@ namespace Localizer.Package.Import
 
                 var type = Localizer.Config.AutoImportType;
 
-                if (type != AutoImportType.SourceOnly)
-                {
-                    LoadPackedPackages();
-                }
-
                 if (type != AutoImportType.DownloadedOnly)
                 {
                     LoadSourcePackages();
+                }
+
+                if (type != AutoImportType.SourceOnly)
+                {
+                    LoadPackedPackages();
                 }
 
                 _packageManage.LoadState();

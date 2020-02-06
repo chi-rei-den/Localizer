@@ -27,9 +27,13 @@ namespace Localizer.UIs
 
         private SplitContainer _split;
 
-        private BasicListBox _modList;
+        private BasicListBox _modList= new BasicListBox();
 
-        private BasicListBox _pkgList;
+        private BasicListBox _pkgList = new BasicListBox
+        {
+            MaxSelected = 0,
+            AllowDrop = true
+        };
 
         private IPackageManageService pkgManager;
 
@@ -69,6 +73,7 @@ namespace Localizer.UIs
                 _menuBar.Content.Controls.Add(button);
                 return button;
             }
+
             pkgManager = Localizer.Kernel.Get<IPackageManageService>();
             sourcePackageLoadServiceService = Localizer.Kernel.Get<SourcePackageLoad<DataModel.Default.Package>>();
             packedPackageLoadServiceService = Localizer.Kernel.Get<PackedPackageLoad<DataModel.Default.Package>>();
@@ -86,12 +91,14 @@ namespace Localizer.UIs
             Titlebar.Text = _("PackageManage");
             Titlebar.Button.MouseClick += (sender, args) => Visible = false;
             Resizable = true;
+
             _menuBar = new Panel
             {
                 Dock = DockStyle.Top,
                 Size = new Point(0, 30)
             };
             Controls.Add(_menuBar);
+
             AddButton(_("Reload"), _("ReloadDesc"), (sender, args) =>
             {
                 if (args.Button == 0)
@@ -100,6 +107,7 @@ namespace Localizer.UIs
                     RefreshPkgList(_modList.SelectedItem?.Text ?? "");
                 }
             });
+
             var refreshBtn = AddButton(_("RefreshOnline"), _("RefreshOnlineDesc"), (sender, args) =>
             {
                 if (args.Button == 0)
@@ -107,7 +115,7 @@ namespace Localizer.UIs
                     RefreshOnlinePackages(sender);
                 }
             });
-            RefreshOnlinePackages(refreshBtn);
+
             AddButton(_("OpenFolder"), _("OpenFolderDesc"), (sender, args) =>
             {
                 if (args.Button == 0)
@@ -115,6 +123,7 @@ namespace Localizer.UIs
                     Process.Start($"file://{Path.Combine(Environment.CurrentDirectory, "Localizer")}");
                 }
             });
+
             AddButton(_("Export"), _("ExportDesc"), (sender, args) =>
             {
                 if (args.Button == 0)
@@ -122,6 +131,7 @@ namespace Localizer.UIs
                     Export(false);
                 }
             });
+
             AddButton(_("ExportWithTranslation"), _("ExportWithTranslationDesc"), (sender, args) =>
             {
                 if (args.Button == 0)
@@ -129,6 +139,7 @@ namespace Localizer.UIs
                     Export(true);
                 }
             });
+
             _split = new SplitContainer
             {
                 Margin = new Margin(0, 10, 0, 0),
@@ -138,17 +149,12 @@ namespace Localizer.UIs
             _split.SplitFrame1.AutoSize = AutoSize.Horizontal;
             _split.SplitFrame2.AutoSize = AutoSize.Horizontal;
             Controls.Add(_split);
-            _modList = new BasicListBox();
             _split.SplitFrame1.Controls.Add(_modList);
             _modList.SelectedItemChanged += (sender, value) => RefreshPkgList(value.Text);
-            RefreshModList();
-            _pkgList = new BasicListBox
-            {
-                MaxSelected = 0,
-                AllowDrop = true
-            };
             _split.SplitFrame2.Controls.Add(_pkgList);
+            RefreshModList();
             LoadPackages();
+            RefreshOnlinePackages(refreshBtn);
         }
 
         private void Export(bool withTranslation)
@@ -166,7 +172,8 @@ namespace Localizer.UIs
                     Name = name,
                     Language = CultureInfo.CurrentCulture,
                     ModName = name,
-                    Files = new ObservableCollection<IFile>()
+                    Files = new ObservableCollection<IFile>(),
+                    Version = new Version("1.0.0.0")
                 };
 
                 var dirPath = Utils.EscapePath(Path.Combine(Localizer.SourcePackageDirPath, name));
@@ -235,13 +242,13 @@ namespace Localizer.UIs
                     });
                 }
 
-                var list = new DirectoryInfo(Localizer.DownloadPackageDirPath).GetFiles().ToList();
-                list.AddRange(new DirectoryInfo(Environment.ExpandEnvironmentVariables(@"%USERPROFILE%\Documents\My Games\Terraria\ModLoader\Mods")).GetFiles());
+                var list = Directory.GetFiles(Localizer.DownloadPackageDirPath).ToList();
+                list.AddRange(Directory.GetFiles(Environment.ExpandEnvironmentVariables(@"%USERPROFILE%\Documents\My Games\Terraria\ModLoader\Mods")));
                 foreach (var file in list)
                 {
                     Utils.SafeWrap(() =>
                     {
-                        var package = packedPackageLoadServiceService.Load(file.FullName, fileLoadService);
+                        var package = packedPackageLoadServiceService.Load(file, fileLoadService);
                         if (package != null)
                         {
                             pkgManager.AddPackage(package);
@@ -309,7 +316,7 @@ namespace Localizer.UIs
                         {
                             continue;
                         }
-                        var update = displayedPackages.Any(kvp => kvp.Key.StartsWith($"{p.ModName}_{p.Author}"));
+                        var update = displayedPackages.Any(kvp => kvp.Key.StartsWith($"{p.ModName}_{p.Author}_"));
                         var item = new ListBoxItem
                         {
                             Text = _("PackageDisplay", _(update ? "PackageUpdate" : "PackageOnline"), p.Name, p.Version, p.Author),
