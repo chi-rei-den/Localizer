@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Reflection.Emit;
 using Harmony;
 using Terraria.ModLoader;
 
@@ -31,7 +30,9 @@ namespace Localizer.ModBrowser
 
         private static string GetModListURL()
         {
-            var mirror = Localizer.Config.ModListMirror[0];
+            var mirror = Localizer.Config.ModListMirror.Length > 0
+                ? Localizer.Config.ModListMirror[0]
+                : "http://javid.ddns.net/tModLoader/listmods.php";
             switch (mirror)
             {
                 case "mirror.sgkoi.dev":
@@ -47,7 +48,9 @@ namespace Localizer.ModBrowser
 
         private static string GetModDownloadURL()
         {
-            var mirror = Localizer.Config.ModDownloadMirror[0];
+            var mirror = Localizer.Config.ModDownloadMirror.Length > 0
+                ? Localizer.Config.ModDownloadMirror[0]
+                : "http://javid.ddns.net/tModLoader/download.php?Down=mods/";
             switch (mirror)
             {
                 case "mirror.sgkoi.dev":
@@ -63,7 +66,9 @@ namespace Localizer.ModBrowser
 
         private static string GetModDescURL()
         {
-            var mirror = Localizer.Config.ModDescMirror[0];
+            var mirror = Localizer.Config.ModDescMirror.Length > 0
+                ? Localizer.Config.ModDescMirror[0]
+                : "http://javid.ddns.net/tModLoader/moddescription.php";
             switch (mirror)
             {
                 case "mirror.sgkoi.dev":
