@@ -26,7 +26,8 @@ namespace Localizer
             "ExportDesc",
             "ExportWithTranslation",
             "ExportWithTranslationDesc",
-            "PackageUpdate"
+            "PackageUpdate",
+            "PackageLoading"
         };
 
         private static Dictionary<string, string> _en = new Dictionary<string, string>()
@@ -49,6 +50,7 @@ namespace Localizer
             { _keys[15], "Export T" },
             { _keys[16], "Export with translation" },
             { _keys[17], "New Version" },
+            { _keys[18], "Packages loading" },
         };
 
         private static Dictionary<string, string> _zh = new Dictionary<string, string>()
@@ -71,6 +73,7 @@ namespace Localizer
             { _keys[15], "导出翻译" },
             { _keys[16], "导出包含翻译的汉化包" },
             { _keys[17], "可更新" },
+            { _keys[18], "正在加载汉化包，请稍候" },
         };
 
         public static void AddModTranslations(Mod mod)

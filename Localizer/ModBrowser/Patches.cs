@@ -36,11 +36,13 @@ namespace Localizer.ModBrowser
             switch (mirror)
             {
                 case "mirror.sgkoi.dev":
-                    return "https://k.sgkoi.dev/tModLoader/listmods.php";
+                    return "https://mirror.sgkoi.dev/tModLoader/listmods.php";
                 case "mirror2.sgkoi.dev":
                     return "http://www.mb.axeel.moe/tModLoader/listmods.php";
                 case "mirror3.sgkoi.dev":
                     return "https://trbbs.cc/trmod/listmods.php";
+                case "mirror4.sgkoi.dev":
+                    return "http://www.mb2.axeel.moe:25555/tModLoader/listmods.php";
                 default:
                     return mirror;
             }
@@ -54,11 +56,13 @@ namespace Localizer.ModBrowser
             switch (mirror)
             {
                 case "mirror.sgkoi.dev":
-                    return "https://k.sgkoi.dev/tModLoader/download.php?Down=mods/";
+                    return "https://mirror.sgkoi.dev/tModLoader/download.php?Down=mods/";
                 case "mirror2.sgkoi.dev":
                     return "http://www.mb.axeel.moe/tModLoader/download.php?Down=mods/";
                 case "mirror3.sgkoi.dev":
                     return "https://trbbs.cc/trmod/";
+                case "mirror4.sgkoi.dev":
+                    return "http://www.mb2.axeel.moe:25555/tModLoader/download.php?Down=mods/";
                 default:
                     return mirror;
             }
@@ -72,9 +76,11 @@ namespace Localizer.ModBrowser
             switch (mirror)
             {
                 case "mirror.sgkoi.dev":
-                    return "https://k.sgkoi.dev/tModLoader/moddescription.php";
+                    return "https://mirror.sgkoi.dev/tModLoader/moddescription.php";
                 case "mirror2.sgkoi.dev":
                     return "http://www.mb.axeel.moe/tModLoader/moddescription.php";
+                case "mirror4.sgkoi.dev":
+                    return "http://www.mb2.axeel.moe:25555/tModLoader/moddescription.php";
                 default:
                     return mirror;
             }

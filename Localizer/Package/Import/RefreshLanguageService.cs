@@ -52,10 +52,7 @@ namespace Localizer.Package.Import
 
                 if (_instance._cleanUpCounter > 20000 && !_instance._firstRun)
                 {
-                    Task.Run(() =>
-                    {
-                        _instance.CleanUpItems();
-                    });
+                    Task.Run(() => _instance.CleanUpItems());
 
                     _instance._cleanUpCounter = 0;
                 }

@@ -5,7 +5,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Threading;
+using System.Threading.Tasks;
 using Localizer.DataModel;
 using Localizer.Network;
 using Localizer.Package;
@@ -17,6 +17,7 @@ using Localizer.Package.Update;
 using Localizer.UIs.Components;
 using Ninject;
 using Squid;
+using Terraria.ModLoader.Config;
 using static Localizer.Lang;
 
 namespace Localizer.UIs
@@ -27,7 +28,7 @@ namespace Localizer.UIs
 
         private SplitContainer _split;
 
-        private BasicListBox _modList= new BasicListBox();
+        private BasicListBox _modList = new BasicListBox();
 
         private BasicListBox _pkgList = new BasicListBox
         {
@@ -59,6 +60,8 @@ namespace Localizer.UIs
 
         private List<IPackage> onlinePackages = new List<IPackage>();
 
+        private bool loading = false;
+
         public MainWindow()
         {
             Button AddButton(string text, string tooltip, MouseEvent action)
@@ -74,6 +77,7 @@ namespace Localizer.UIs
                 return button;
             }
 
+            loading = true;
             pkgManager = Localizer.Kernel.Get<IPackageManageService>();
             sourcePackageLoadServiceService = Localizer.Kernel.Get<SourcePackageLoad<DataModel.Default.Package>>();
             packedPackageLoadServiceService = Localizer.Kernel.Get<PackedPackageLoad<DataModel.Default.Package>>();
@@ -103,8 +107,7 @@ namespace Localizer.UIs
             {
                 if (args.Button == 0)
                 {
-                    LoadPackages();
-                    RefreshPkgList(_modList.SelectedItem?.Text ?? "");
+                    LoadPackages().ContinueWith(RefreshPkgList);
                 }
             });
 
@@ -112,7 +115,7 @@ namespace Localizer.UIs
             {
                 if (args.Button == 0)
                 {
-                    RefreshOnlinePackages(sender);
+                    RefreshOnlinePackages(sender).ContinueWith(RefreshPkgList);
                 }
             });
 
@@ -150,11 +153,10 @@ namespace Localizer.UIs
             _split.SplitFrame2.AutoSize = AutoSize.Horizontal;
             Controls.Add(_split);
             _split.SplitFrame1.Controls.Add(_modList);
-            _modList.SelectedItemChanged += (sender, value) => RefreshPkgList(value.Text);
+            _modList.SelectedItemChanged += (sender, value) => RefreshPkgList(null);
             _split.SplitFrame2.Controls.Add(_pkgList);
             RefreshModList();
-            LoadPackages();
-            RefreshOnlinePackages(refreshBtn);
+            LoadPackages().ContinueWith(_ => RefreshOnlinePackages(refreshBtn)).ContinueWith(RefreshPkgList);
         }
 
         private void Export(bool withTranslation)
@@ -213,57 +215,81 @@ namespace Localizer.UIs
             }
         }
 
-        private void RefreshOnlinePackages(Control sender)
+        private Task RefreshOnlinePackages(Control sender)
         {
-            new Thread(() =>
+            return Task.Run(() =>
             {
-                sender.Enabled = false;
-                onlinePackages?.Clear();
-                Utils.SafeWrap(() => onlinePackages = packageBrowserService.GetList().ToList());
-                RefreshPkgList(_modList.SelectedItem?.Text ?? "");
-                sender.Enabled = true;
-            }).Start();
+                try
+                {
+                    loading = true;
+                    sender.Enabled = false;
+                    onlinePackages?.Clear();
+                    onlinePackages = packageBrowserService.GetList().ToList();
+                }
+                catch
+                {
+                }
+                finally
+                {
+                    loading = false;
+                    sender.Enabled = true;
+                }
+            });
         }
 
-        private void LoadPackages()
+        private Task LoadPackages()
         {
-            try
+            return Task.Run(() =>
             {
-                pkgManager.PackageGroups = new List<IPackageGroup>();
-                foreach (var dir in new DirectoryInfo(Localizer.SourcePackageDirPath).GetDirectories())
+                try
                 {
-                    Utils.SafeWrap(() =>
+                    loading = true;
+                    pkgManager.PackageGroups = new List<IPackageGroup>();
+                    foreach (var dir in new DirectoryInfo(Localizer.SourcePackageDirPath).GetDirectories())
                     {
-                        var package2 = sourcePackageLoadServiceService.Load(dir.FullName, fileLoadService);
-                        if (package2 != null)
+                        try
                         {
-                            pkgManager.AddPackage(package2);
+                            var package2 = sourcePackageLoadServiceService.Load(dir.FullName, fileLoadService);
+                            if (package2 != null)
+                            {
+                                pkgManager.AddPackage(package2);
+                            }
                         }
-                    });
-                }
+                        catch
+                        {
+                        }
+                    }
 
-                var list = Directory.GetFiles(Localizer.DownloadPackageDirPath).ToList();
-                list.AddRange(Directory.GetFiles(Environment.ExpandEnvironmentVariables(@"%USERPROFILE%\Documents\My Games\Terraria\ModLoader\Mods")));
-                foreach (var file in list)
-                {
-                    Utils.SafeWrap(() =>
+                    var list = Directory.GetFiles(Localizer.DownloadPackageDirPath).ToList();
+                    list.AddRange(Directory.GetFiles(Environment.ExpandEnvironmentVariables(@"%USERPROFILE%\Documents\My Games\Terraria\ModLoader\Mods")));
+                    foreach (var file in list)
                     {
-                        var package = packedPackageLoadServiceService.Load(file, fileLoadService);
-                        if (package != null)
+                        try
                         {
-                            pkgManager.AddPackage(package);
+                            var package = packedPackageLoadServiceService.Load(file, fileLoadService);
+                            if (package != null)
+                            {
+                                pkgManager.AddPackage(package);
+                            }
                         }
-                    });
+                        catch
+                        {
+                        }
+                    }
+                    pkgManager.LoadState();
                 }
-                pkgManager.LoadState();
-            }
-            catch (Exception o)
-            {
-                Utils.LogError(o);
-            }
+                catch (Exception o)
+                {
+                    Utils.LogError(o);
+                }
+                finally
+                {
+                    loading = false;
+                }
+            });
         }
 
-        private void RefreshPkgList(string modName)
+        private Task RefreshPkgList(object state)
         {
             string TrimEndingZero(string input)
             {
@@ -273,99 +299,106 @@ namespace Localizer.UIs
                 }
                 return input;
             }
-            try
+
+            return Task.Run(() =>
             {
-                _split.SplitFrame2.Controls.Clear();
-                _pkgList.Items.Clear();
-                _split.SplitFrame2.Controls.Add(_pkgList);
-                var packageGroup = pkgManager.PackageGroups.FirstOrDefault(g => g.Mod.Name == modName);
-                var onlineGroup = onlinePackages.Where(g => g.ModName == modName);
-                var displayedPackages = new Dictionary<string, ListBoxItem>();
-                if (packageGroup != null)
+                var modName = _modList.SelectedItem?.Text ?? "";
+                try
                 {
-                    foreach (var p in packageGroup.Packages)
+                    _split.SplitFrame2.Controls.Clear();
+                    _pkgList.Items.Clear();
+                    _split.SplitFrame2.Controls.Add(_pkgList);
+                    var packageGroup = pkgManager.PackageGroups.FirstOrDefault(g => g.Mod.Name == modName);
+                    var onlineGroup = onlinePackages.Where(g => g.ModName == modName);
+                    var displayedPackages = new Dictionary<string, ListBoxItem>();
+                    if (packageGroup != null)
                     {
-                        // TODO: Use better key for HashSet
-                        var item = new ListBoxItem
+                        foreach (var p in packageGroup.Packages)
                         {
-                            Text = GetPkgLabelText(p),
-                            Tooltip = (Gui.Renderer as UIRenderer).WordWrap(p.Description, 400),
-                            TextWrap = true,
-                            Dock = DockStyle.Top,
-                            AutoSize = AutoSize.Vertical
-                        };
-                        item.MouseClick += (sender, args) =>
-                        {
-                            if (args.Button == 0)
+                            // TODO: Use better key for HashSet
+                            var item = new ListBoxItem
                             {
-                                p.Enabled = !p.Enabled;
-                                item.Text = GetPkgLabelText(p);
-                                pkgManager.SaveState();
-                            }
-                        };
-                        displayedPackages.Add(TrimEndingZero($"{p.ModName}_{p.Author}_{p.Version}"), item);
-                        _pkgList.Items.Add(item);
-                    }
-                }
-
-                if (onlineGroup != null)
-                {
-                    foreach (var p in onlineGroup)
-                    {
-                        if (displayedPackages.ContainsKey(TrimEndingZero($"{p.ModName}_{p.Author}_{p.Version}")))
-                        {
-                            continue;
+                                Text = GetPkgLabelText(p),
+                                Tooltip = (Gui.Renderer as UIRenderer).WordWrap(p.Description, 400),
+                                TextWrap = true,
+                                Dock = DockStyle.Top,
+                                AutoSize = AutoSize.Vertical
+                            };
+                            item.MouseClick += (sender, args) =>
+                            {
+                                if (args.Button == 0)
+                                {
+                                    p.Enabled = !p.Enabled;
+                                    item.Text = GetPkgLabelText(p);
+                                    pkgManager.SaveState();
+                                }
+                            };
+                            displayedPackages.Add(TrimEndingZero($"{p.ModName}_{p.Author}_{p.Version}"), item);
+                            _pkgList.Items.Add(item);
                         }
-                        var update = displayedPackages.Any(kvp => kvp.Key.StartsWith($"{p.ModName}_{p.Author}_"));
-                        var item = new ListBoxItem
+                    }
+
+                    if (onlineGroup != null)
+                    {
+                        foreach (var p in onlineGroup)
                         {
-                            Text = _("PackageDisplay", _(update ? "PackageUpdate" : "PackageOnline"), p.Name, p.Version, p.Author),
-                            Tooltip = (Gui.Renderer as UIRenderer).WordWrap(p.Description, 400),
+                            if (displayedPackages.ContainsKey(TrimEndingZero($"{p.ModName}_{p.Author}_{p.Version}")))
+                            {
+                                continue;
+                            }
+                            var update = displayedPackages.Any(kvp => kvp.Key.StartsWith($"{p.ModName}_{p.Author}_"));
+                            var item = new ListBoxItem
+                            {
+                                Text = _("PackageDisplay", _(update ? "PackageUpdate" : "PackageOnline"), p.Name, p.Version, p.Author),
+                                Tooltip = (Gui.Renderer as UIRenderer).WordWrap(p.Description, 400),
+                                TextWrap = true,
+                                Dock = DockStyle.Top,
+                                AutoSize = AutoSize.Vertical
+                            };
+                            item.MouseClick += (sender, args) => DownloadPackage(args, p);
+                            displayedPackages.Add(TrimEndingZero($"{p.ModName}_{p.Author}_{p.Version}"), item);
+                            _pkgList.Items.Add(item);
+                        }
+                    }
+
+                    if (displayedPackages.Count == 0)
+                    {
+                        _split.SplitFrame2.Controls.Add(new Label
+                        {
+                            Text = _(loading ? "PackageLoading" : "NoPackageFound"),
                             TextWrap = true,
-                            Dock = DockStyle.Top,
-                            AutoSize = AutoSize.Vertical
-                        };
-                        item.MouseClick += (sender, args) => DownloadPackage(modName, args, p);
-                        displayedPackages.Add(TrimEndingZero($"{p.ModName}_{p.Author}_{p.Version}"), item);
-                        _pkgList.Items.Add(item);
+                            AutoSize = AutoSize.Vertical,
+                            Dock = DockStyle.Fill,
+                            AllowFocus = false
+                        });
                     }
                 }
-
-                if (displayedPackages.Count == 0)
+                catch (Exception o)
                 {
-                    _split.SplitFrame2.Controls.Add(new Label
-                    {
-                        Text = _("NoPackageFound"),
-                        TextWrap = true,
-                        AutoSize = AutoSize.Vertical,
-                        Dock = DockStyle.Fill,
-                        AllowFocus = false
-                    });
+                    Utils.LogError(o);
                 }
-            }
-            catch (Exception o)
-            {
-                Utils.LogError(o);
-            }
+            });
         }
 
-        private void DownloadPackage(string modName, MouseEventArgs args, IPackage p)
+        private void DownloadPackage(MouseEventArgs args, IPackage p)
         {
             if (args.Button == 0)
             {
-                new Thread(() =>
+                Task.Run(() =>
                 {
-                    Utils.SafeWrap(() =>
+                    try
                     {
                         Utils.LogDebug($"Requesting {p.Name} download");
                         var url = packageBrowserService.GetDownloadLinkOf(p);
                         var path = Utils.EscapePath(Path.Combine(Localizer.DownloadPackageDirPath, $"{p.Name}_{p.Author}.locpack"));
                         downloadManagerService.Download(url, path);
                         Utils.LogDebug($"{p.Name} is downloaded");
-                        LoadPackages();
-                        RefreshPkgList(modName);
-                    });
-                }).Start();
+                        LoadPackages().ContinueWith(RefreshPkgList);
+                    }
+                    catch
+                    {
+                    }
+                });
             }
         }
 
