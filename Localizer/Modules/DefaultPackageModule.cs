@@ -62,7 +62,7 @@ namespace Localizer.Modules
             packageImportService.RegisterImporter<BasicProjectileFile>(typeof(BasicImporter<BasicProjectileFile>));
             packageImportService.RegisterImporter<BasicPrefixFile>(typeof(BasicImporter<BasicPrefixFile>));
             packageImportService.RegisterImporter<CustomModTranslationFile>(typeof(CustomModTranslationImporter));
-            packageImportService.RegisterImporter<LdstrFile>(typeof(HarmonyLdstrImporter));
+            packageImportService.RegisterImporter<LdstrFile>(typeof(CecilLdstrImporter));
 
             Bind<AutoImportService>().ToSelf().InSingletonScope();
             Bind<RefreshLanguageService>().ToSelf().InSingletonScope();

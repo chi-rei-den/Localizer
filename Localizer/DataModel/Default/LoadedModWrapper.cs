@@ -8,7 +8,7 @@ namespace Localizer.DataModel.Default
 {
     public class LoadedModWrapper : IMod
     {
-        private readonly WeakReference<object> wrapped;
+        internal readonly WeakReference<object> wrapped;
 
         public LoadedModWrapper(object mod)
         {

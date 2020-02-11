@@ -93,7 +93,7 @@ namespace Localizer.Package.Import
             void LoadPackedPackages()
             {
                 var list = Directory.GetFiles(Localizer.DownloadPackageDirPath).ToList();
-                list.AddRange(Directory.GetFiles(Environment.ExpandEnvironmentVariables(@"%USERPROFILE%\Documents\My Games\Terraria\ModLoader\Mods")));
+//                list.AddRange(Directory.GetFiles(Environment.ExpandEnvironmentVariables(@"%USERPROFILE%\Documents\My Games\Terraria\ModLoader\Mods")));
                 foreach (var file in list)
                 {
                     Utils.SafeWrap(() =>

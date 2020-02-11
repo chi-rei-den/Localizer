@@ -12,6 +12,7 @@ using Localizer.Attributes;
 using Localizer.DataModel;
 using Localizer.DataModel.Default;
 using Localizer.Helpers;
+using Mono.Cecil;
 using MonoMod.Utils;
 using Newtonsoft.Json;
 using Terraria.ModLoader;
@@ -77,6 +78,22 @@ namespace Localizer
             }
 
             return _cachedMethod[m].ContainsKey(findableName) ? _cachedMethod[m][findableName] : null;
+        }
+
+        public static MethodDefinition FindMethodByID(ModuleDefinition m, string findableName)
+        {
+            foreach (var t in m.Types)
+            {
+                foreach (var method in t.Methods)
+                {
+                    if (findableName == method.GetID())
+                    {
+                        return method;
+                    }
+                }
+            }
+
+            return null;
         }
 
         #endregion

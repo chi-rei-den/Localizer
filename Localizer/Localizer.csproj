@@ -106,6 +106,7 @@
     <Compile Include="Package\Export\PackageExport.cs" />
     <Compile Include="Package\Import\AutoImportService.cs" />
     <Compile Include="Package\Import\BasicImporter.cs" />
+    <Compile Include="Package\Import\CecilLdstrImporter.cs" />
     <Compile Include="Package\Import\CustomModTranslationImporter.cs" />
     <Compile Include="Package\Import\FileImporter.cs" />
     <Compile Include="Package\Import\HarmonyLdstrImporter.cs" />

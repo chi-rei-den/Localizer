@@ -130,21 +130,20 @@ namespace Localizer
                     current.SetField("_tooltip", "Localizer UI");
                 }
 
-                if (frameCounter % 2 == 0)
+                var name = "Localizer";
+                var rainbowText = "";
+                var hueUnit = (float)4 / name.Length;
+                var baseHue = (frameCounter % 300) / 300f;
+                for (var i = 0; i < name.Length; i++)
                 {
-                    var name = "Localizer";
-                    var rainbowText = "";
-                    for (var i = 0; i < name.Length; i++)
-                    {
-                        var colorHue = frameCounter / 300f;
-                        colorHue += i * 0.5f / name.Length;
-                        colorHue %= 1;
-                        colorHue *= (float)Math.PI / 2;
-                        var color = Main.hslToRgb(colorHue, 1, 0.5f);
-                        rainbowText += $"[c/{color.R:X2}{color.G:X2}{color.B:X2}:{name[i]}]";
-                    }
-                    current.ValueOf<UIText>("_modName").SetField("_text", $"{rainbowText} v{current.ValueOf("_mod").ValueOf("modFile").ValueOf("version")}");
+                    var colorHue = baseHue + hueUnit * i / name.Length;
+                    var color = Main.hslToRgb(1.5f - colorHue, 1, 0.7f);
+                    rainbowText += $"[c/{color.R:X2}{color.G:X2}{color.B:X2}:{name[i]}]";
                 }
+
+                current.ValueOf<UIText>("_modName")
+                       .SetField("_text",
+                                 $"{rainbowText} v{current.ValueOf("_mod").ValueOf("modFile").ValueOf("version")}");
             }
         }
 
@@ -296,7 +295,7 @@ namespace Localizer
                 Config = Utils.ReadFileAndDeserializeJson<Configuration>(ConfigPath);
                 if (Config is null)
                 {
-                    throw new Exception("Config read failed!");
+                    Config = new Configuration();
                 }
             }
             else
