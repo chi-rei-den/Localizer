@@ -308,12 +308,13 @@ namespace Localizer.UIs
                     _split.SplitFrame2.Controls.Clear();
                     _pkgList.Items.Clear();
                     _split.SplitFrame2.Controls.Add(_pkgList);
-                    var packageGroup = pkgManager.PackageGroups.FirstOrDefault(g => g.Mod.Name == modName);
-                    var onlineGroup = onlinePackages.Where(g => g.ModName == modName);
+                    var packageGroup = pkgManager.PackageGroups.FirstOrDefault(g => g.Mod.Name == modName)?.Packages.ToList();
+                    var onlineGroup = onlinePackages.Where(g => g.ModName == modName).ToList();
                     var displayedPackages = new Dictionary<string, ListBoxItem>();
+
                     if (packageGroup != null)
                     {
-                        foreach (var p in packageGroup.Packages)
+                        foreach (var p in packageGroup)
                         {
                             // TODO: Use better key for HashSet
                             var item = new ListBoxItem

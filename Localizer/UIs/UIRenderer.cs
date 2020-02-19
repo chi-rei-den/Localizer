@@ -98,7 +98,7 @@ namespace Localizer.UIs
         public string WordWrap(string text, int width)
         {
             var result = Terraria.Utils.WordwrapStringSmart(text, Color.White, fonts[fontIDs["default"]], width, -1);
-            return string.Join(Environment.NewLine, result.Select(line => string.Join("", line.Select(ts => ts.TextOriginal))));
+            return string.Join(Environment.NewLine, result.Select(line => string.Join("", line.Select(ts => ts.Text))));
         }
 
         public Point GetTextureSize(int texture)

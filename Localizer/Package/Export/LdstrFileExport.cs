@@ -110,13 +110,16 @@ namespace Localizer.Package.Export
             typeof(ModContent).FindMethod("System.Boolean Terraria.ModLoader.ModContent::SoundExists(System.String)"),
             typeof(ModContent).FindMethod("System.Boolean Terraria.ModLoader.ModContent::SoundExists(System.String)"),
             GetMethodBase<ModRecipe>(
-                "System.Void Terraria.ModLoader.ModRecipe::AddTile(Terraria.ModLoader.Mod,System.String)")
+                "System.Void Terraria.ModLoader.ModRecipe::AddTile(Terraria.ModLoader.Mod,System.String)"),
+            GetMethodBase<ModTranslation>("System.Void Terraria.ModLoader.ModTranslation::SetDefault(System.String)"),
         };
 
         private static List<MethodBase> _blackList2 = new List<MethodBase>
         {
             GetMethodBase<ModRecipe>(
-                "System.Void Terraria.ModLoader.ModRecipe::AddIngredient(Terraria.ModLoader.Mod,System.String,System.Int32)")
+                "System.Void Terraria.ModLoader.ModRecipe::AddIngredient(Terraria.ModLoader.Mod,System.String,System.Int32)"),
+            GetMethodBase<ModTranslation>(
+                "System.Void Terraria.ModLoader.ModTranslation::AddTranslation(Terraria.Localization.GameCulture,System.String)")
         };
 
         public void Export(IPackage package, IExportConfig config)

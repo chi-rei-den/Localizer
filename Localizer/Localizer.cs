@@ -215,8 +215,14 @@ namespace Localizer
 
             Main.spriteBatch.SafeBegin();
             Hooks.InvokeOnPostDraw(time);
-            UIHost.Update(time);
-            UIHost.Draw(time);
+            try
+            {
+                UIHost.Update(time);
+                UIHost.Draw(time);
+            }
+            catch
+            {
+            }
             Main.DrawCursor(Main.DrawThickCursor(false), false);
             Main.spriteBatch.SafeEnd();
         }

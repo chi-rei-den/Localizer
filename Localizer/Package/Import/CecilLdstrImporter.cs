@@ -21,13 +21,13 @@ namespace Localizer.Package.Import
         public bool Importing = false;
         public LdstrFile ImportingFile;
         public IMod ImportingMod;
-        
+
         private HarmonyInstance _harmony;
-        
+
         public CecilLdstrImporter()
         {
             _harmony = HarmonyInstance.Create(nameof(CecilLdstrImporter));
-            _harmony.Patch("Terraria.ModLoader.Core.AssemblyManager".Type().Method("GetModAssembly"), 
+            _harmony.Patch("Terraria.ModLoader.Core.AssemblyManager".Type().Method("GetModAssembly"),
                            postfix:new HarmonyMethod(typeof(CecilLdstrImporter).Method(nameof(PostGetModAssembly))));
         }
 
@@ -39,7 +39,7 @@ namespace Localizer.Package.Import
                 if (!instance.Importing)
                     return;
 
-                
+
                 using (var ms = new MemoryStream(__result))
                 {
                     var asmDef = AssemblyDefinition.ReadAssembly(ms);
@@ -86,12 +86,12 @@ namespace Localizer.Package.Import
                     {
                         ReplaceLdstr(translation.Origin, translation.Translation, result);
                     }
-                    
+
                     Utils.LogDebug($"Patched: {entryPair.Key}");
                 });
             }
         }
-        
+
         protected override void ImportInternal(LdstrFile file, IMod mod, CultureInfo culture)
         {
             Importing = true;
@@ -110,7 +110,7 @@ namespace Localizer.Package.Import
                 Importing = false;
             }
         }
-        
+
         private static void ReplaceLdstr(string o, string n, IEnumerable<Instruction> il)
         {
             if (string.IsNullOrEmpty(n))
