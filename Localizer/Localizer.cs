@@ -23,6 +23,7 @@ using Terraria.Localization;
 using Terraria.ModLoader;
 using Terraria.ModLoader.Core;
 using Terraria.ModLoader.UI;
+using Terraria.UI.Chat;
 using static Localizer.Lang;
 using File = System.IO.File;
 
@@ -114,36 +115,54 @@ namespace Localizer
             Harmony.Patch(onInit, postfix: new HarmonyMethod(NoroHelper.MethodInfo(() => UIModItemPostfix(null))));
 
             var drawSelf = "Terraria.ModLoader.UI.UIModItem".Type().Method("DrawSelf");
-            Harmony.Patch(drawSelf, postfix: new HarmonyMethod(NoroHelper.MethodInfo(() => DrawSelfPostfix(null))));
+            Harmony.Patch(drawSelf, postfix: new HarmonyMethod(NoroHelper.MethodInfo(() => DrawSelfPostfix(null, null))));
         }
 
         private static int frameCounter;
-        private static void DrawSelfPostfix(object __instance)
+        private static void DrawSelfPostfix(object __instance, SpriteBatch spriteBatch)
         {
+            var current = __instance as UIPanel;
             var modName = __instance.ValueOf("_mod")?.ValueOf("Name")?.ToString();
+            var modNameHovering = current.ValueOf<UIText>("_modName")?.IsMouseHovering ?? false;
             if (modName == "!Localizer")
             {
                 frameCounter++;
-                var current = __instance as UIPanel;
-                if (current.ValueOf<UIImage>("_configButton")?.IsMouseHovering ?? false)
-                {
-                    current.SetField("_tooltip", "Localizer UI");
-                }
-
-                var name = "Localizer";
-                var rainbowText = "";
-                var hueUnit = (float)4 / name.Length;
-                var baseHue = (frameCounter % 300) / 300f;
-                for (var i = 0; i < name.Length; i++)
-                {
-                    var colorHue = baseHue + hueUnit * i / name.Length;
-                    var color = Main.hslToRgb(1.5f - colorHue, 1, 0.7f);
-                    rainbowText += $"[c/{color.R:X2}{color.G:X2}{color.B:X2}:{name[i]}]";
-                }
 
                 current.ValueOf<UIText>("_modName")
                        .SetField("_text",
-                                 $"{rainbowText} v{current.ValueOf("_mod").ValueOf("modFile").ValueOf("version")}");
+                                 $"{Utils.AsRainbow("Localizer", frameCounter)} v{current.ValueOf("_mod").ValueOf("modFile").ValueOf("version")}");
+
+                var tooltip = "";
+                if (modNameHovering)
+                {
+                    var modAuthor = current.ValueOf("_mod")?.ValueOf("properties").ValueOf<string>("author");
+                    if (modAuthor.Length > 0)
+                    {
+                        tooltip = _("OpenUI",
+                            Language.GetTextValue("tModLoader.ModsByline", Utils.AsRainbow(modAuthor, frameCounter + 150, 9)),
+                            $"{Utils.AsRainbow("Localizer", frameCounter)}");
+                    }
+                }
+
+                if (!string.IsNullOrEmpty(tooltip))
+                {
+                    current.SetField("_tooltip", "");
+                    var snippets = ChatManager.ParseMessage(tooltip, Color.White).ToArray();
+                    var x = ChatManager.GetStringSize(Main.fontMouseText, snippets, Vector2.One).X;
+                    var pos = Main.MouseScreen + new Vector2(16f);
+                    pos.X = Math.Min(pos.X, Main.screenWidth - x - 16f);
+                    pos.Y = Math.Min(pos.Y, Main.screenHeight - 30);
+                    ChatManager.DrawColorCodedStringWithShadow(spriteBatch, Main.fontMouseText,
+                      snippets, pos, 0, Vector2.Zero, Vector2.One, out var _);
+                }
+            }
+            else
+            {
+                if (modNameHovering)
+                {
+                    // TODO: If any package loaded
+                    current.SetField("_tooltip", "");
+                }
             }
         }
 
@@ -152,28 +171,7 @@ namespace Localizer
             var modName = __instance.ValueOf("_mod")?.ValueOf("Name")?.ToString();
             if (modName == "!Localizer")
             {
-                var current = __instance as UIPanel;
-                var configButton = new UIImage(typeof(UICommon).ValueOf<Texture2D>("ButtonModConfigTexture"))
-                {
-                    Width =
-                    {
-                        Pixels = 36f
-                    },
-                    Height =
-                    {
-                        Pixels = 36f
-                    },
-                    Left =
-                    {
-                        Pixels = -108f - 10f,
-                        Precent = 1f
-                    },
-                    Top =
-                    {
-                        Pixels = 40f
-                    }
-                };
-                configButton.OnClick += (evt, element) =>
+                __instance.ValueOf<UIText>("_modName").OnClick += (evt, element) =>
                 {
                     if (PackageUI != null)
                     {
@@ -185,8 +183,6 @@ namespace Localizer
                         Instance.UIHost.Desktop.AddWindow(PackageUI);
                     }
                 };
-                current.SetField("_configButton", configButton);
-                current.Append(configButton);
             }
         }
 
@@ -201,6 +197,11 @@ namespace Localizer
         public UIHost UIHost { get; private set; }
         private void AddPostDrawHook()
         {
+            if (Main.dedServ)
+            {
+                return;
+            }
+
             UIHost = new UIHost();
 
             Main.OnPostDraw += OnPostDraw;

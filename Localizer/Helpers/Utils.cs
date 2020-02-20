@@ -255,6 +255,20 @@ namespace Localizer
 
         #region Others
 
+        public static string AsRainbow(string text, int frameCounter, int? unit = null)
+        {
+            var rainbowText = "";
+            var hueUnit = 4f / (unit ?? text.Length);
+            var baseHue = (frameCounter % 300) / 300f;
+            for (var i = 0; i < text.Length; i++)
+            {
+                var colorHue = baseHue + hueUnit * i / text.Length;
+                var color = Terraria.Main.hslToRgb(1.5f - colorHue, 1, 0.7f);
+                rainbowText += $"[c/{color.R:X2}{color.G:X2}{color.B:X2}:{text[i]}]";
+            }
+            return rainbowText;
+        }
+
         /// <summary>
         ///     Create mappings from the name of actual ModTranslation container in the mod to the property
         ///     in the translation file.

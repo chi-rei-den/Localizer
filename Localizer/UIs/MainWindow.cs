@@ -17,7 +17,6 @@ using Localizer.Package.Update;
 using Localizer.UIs.Components;
 using Ninject;
 using Squid;
-using Terraria.ModLoader.Config;
 using static Localizer.Lang;
 
 namespace Localizer.UIs
@@ -107,7 +106,7 @@ namespace Localizer.UIs
             {
                 if (args.Button == 0)
                 {
-                    LoadPackages().ContinueWith(RefreshPkgList);
+                    LoadPackages();
                 }
             });
 
@@ -115,7 +114,7 @@ namespace Localizer.UIs
             {
                 if (args.Button == 0)
                 {
-                    RefreshOnlinePackages(sender).ContinueWith(RefreshPkgList);
+                    RefreshOnlinePackages(sender);
                 }
             });
 
@@ -153,10 +152,10 @@ namespace Localizer.UIs
             _split.SplitFrame2.AutoSize = AutoSize.Horizontal;
             Controls.Add(_split);
             _split.SplitFrame1.Controls.Add(_modList);
-            _modList.SelectedItemChanged += (sender, value) => RefreshPkgList(null);
+            _modList.SelectedItemChanged += (sender, value) => RefreshPkgList();
             _split.SplitFrame2.Controls.Add(_pkgList);
             RefreshModList();
-            LoadPackages().ContinueWith(_ => RefreshOnlinePackages(refreshBtn)).ContinueWith(RefreshPkgList);
+            LoadPackages().ContinueWith(_ => RefreshOnlinePackages(refreshBtn));
         }
 
         private void Export(bool withTranslation)
@@ -233,6 +232,7 @@ namespace Localizer.UIs
                 {
                     loading = false;
                     sender.Enabled = true;
+                    RefreshPkgList();
                 }
             });
         }
@@ -285,11 +285,13 @@ namespace Localizer.UIs
                 finally
                 {
                     loading = false;
+                    RefreshPkgList();
                 }
             });
         }
 
-        private Task RefreshPkgList(object state)
+        private object refreshLock = new object();
+        private void RefreshPkgList()
         {
             string TrimEndingZero(string input)
             {
@@ -300,7 +302,7 @@ namespace Localizer.UIs
                 return input;
             }
 
-            return Task.Run(() =>
+            lock (refreshLock)
             {
                 var modName = _modList.SelectedItem?.Text ?? "";
                 try
@@ -378,7 +380,7 @@ namespace Localizer.UIs
                 {
                     Utils.LogError(o);
                 }
-            });
+            }
         }
 
         private void DownloadPackage(MouseEventArgs args, IPackage p)
@@ -394,7 +396,7 @@ namespace Localizer.UIs
                         var path = Utils.EscapePath(Path.Combine(Localizer.DownloadPackageDirPath, $"{p.Name}_{p.Author}.locpack"));
                         downloadManagerService.Download(url, path);
                         Utils.LogDebug($"{p.Name} is downloaded");
-                        LoadPackages().ContinueWith(RefreshPkgList);
+                        LoadPackages();
                     }
                     catch
                     {
