@@ -5,7 +5,6 @@ using System.Reflection;
 using Harmony;
 using Localizer.DataModel;
 using Localizer.DataModel.Default;
-using Localizer.Helpers;
 
 namespace Localizer.Package.Import
 {
@@ -19,7 +18,7 @@ namespace Localizer.Package.Import
         {
             harmony = HarmonyInstance.Create("LdstrFileImport");
         }
-        
+
         protected override void ImportInternal(LdstrFile file, IMod mod, CultureInfo culture)
         {
             entries = new Dictionary<MethodBase, LdstrEntry>();
@@ -37,7 +36,7 @@ namespace Localizer.Package.Import
                     }
 
                     Utils.LogDebug($"Finding method: [{entryPair.Key}]");
-                    var method = module.FindMethod(entryPair.Key);
+                    var method = Utils.FindMethodByID(module, entryPair.Key);
                     if (method == null)
                     {
                         Utils.LogDebug($"Cannot find.");
@@ -46,10 +45,9 @@ namespace Localizer.Package.Import
 
                     entries.Add(method, entryPair.Value);
 
-                    var transpiler = typeof(HarmonyLdstrImporter).GetMethod("Transpile", BindingFlags.NonPublic | BindingFlags.Static);
+                    harmony.Patch(method, transpiler: new HarmonyMethod(NoroHelper.MethodInfo(() => Transpile(null, null))));
 
-                    harmony.Patch(method, null, null, new HarmonyMethod(transpiler));
-                    Utils.LogDebug($"Patched: {entryPair.Key}"); 
+                    Utils.LogDebug($"Patched: {entryPair.Key}");
                 });
             }
         }
@@ -58,7 +56,7 @@ namespace Localizer.Package.Import
         {
             harmony.UnpatchAll("LdstrFileImport");
         }
-        
+
         private static IEnumerable<CodeInstruction> Transpile(IEnumerable<CodeInstruction> instructions, MethodBase original)
         {
             if (!entries.ContainsKey(original) || instructions == null || instructions.Count() == 0)

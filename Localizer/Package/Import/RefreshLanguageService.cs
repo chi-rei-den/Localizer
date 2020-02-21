@@ -1,21 +1,18 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Reflection;
 using System.Threading.Tasks;
 using Harmony;
-using Localizer.Helpers;
-using Terraria;
 using Terraria.Localization;
 using Terraria.ModLoader;
-
-using static Localizer.Helpers.ReflectionHelper;
 
 namespace Localizer.Package.Import
 {
     public sealed class RefreshLanguageService : Disposable
     {
         private static RefreshLanguageService _instance;
-        
+
         private List<WeakReference> items;
 
         private bool _rebuilding = false;
@@ -26,49 +23,49 @@ namespace Localizer.Package.Import
         private int _cleanUpCounter = 0;
 
         private bool _firstRun = true;
-        
+
         public RefreshLanguageService()
         {
             _instance = this;
             items = new List<WeakReference>();
-            
+
             _harmony = HarmonyInstance.Create(nameof(RefreshLanguageService));
-            var postfix = new HarmonyMethod(typeof(RefreshLanguageService).GetMethod(nameof(OnModItemCtor), All));
-            _harmony.Patch(typeof(ModItem).GetConstructors()[0], null, postfix);
+            _harmony.Patch(typeof(ModItem).GetConstructors()[0], null, new HarmonyMethod(NoroHelper.MethodInfo(() => OnModItemCtor(null))));
         }
 
         private static void OnModItemCtor(ModItem __instance)
         {
             if (!Localizer.Config.RebuildTooltips)
+            {
                 return;
-            
-            if(Localizer.Config.RebuildTooltipsOnce && !_instance._firstRun)
+            }
+
+            if (Localizer.Config.RebuildTooltipsOnce && !_instance._firstRun)
+            {
                 return;
-            
+            }
+
             if (!_instance._rebuilding && !_instance._cleaning)
             {
                 _instance.items.Add(new WeakReference(__instance));
                 _instance._cleanUpCounter++;
 
-                if(_instance._cleanUpCounter > 20000 && !_instance._firstRun)
+                if (_instance._cleanUpCounter > 20000 && !_instance._firstRun)
                 {
-                    Task.Run(() =>
-                    {
-                        _instance.CleanUpItems();
-                    });
+                    Task.Run(() => _instance.CleanUpItems());
 
                     _instance._cleanUpCounter = 0;
                 }
             }
         }
-        
+
         public void Refresh()
         {
             Utils.SafeWrap(() =>
             {
                 if (Localizer.State != OperationTiming.BeforeModCtor)
                 {
-                    ModContent.RefreshModLanguage(LanguageManager.Instance.ActiveCulture); 
+                    ModContent.RefreshModLanguage(LanguageManager.Instance.ActiveCulture);
                 }
 
                 if (Localizer.Config.RebuildTooltips && Localizer.State == OperationTiming.PostContentLoad)
@@ -116,10 +113,13 @@ namespace Localizer.Package.Import
             stopWatch.Stop();
             Utils.LogInfo($"Item caches cleaned. count: {items.Count}, take {stopWatch.Elapsed.TotalSeconds} seconds");
             if (_firstRun)
+            {
                 _firstRun = false;
+            }
+
             _cleaning = false;
         }
-        
+
         protected override void DisposeUnmanaged()
         {
             _instance = null;

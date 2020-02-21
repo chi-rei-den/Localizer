@@ -6,10 +6,8 @@ using System.Reflection.Emit;
 using Localizer.DataModel;
 using Localizer.DataModel.Default;
 using MonoMod.Utils;
-using Terraria;
 using Terraria.ModLoader;
 using static Localizer.Utils;
-using static Localizer.Helpers.ReflectionHelper;
 
 namespace Localizer.Package.Export
 {
@@ -112,13 +110,16 @@ namespace Localizer.Package.Export
             typeof(ModContent).FindMethod("System.Boolean Terraria.ModLoader.ModContent::SoundExists(System.String)"),
             typeof(ModContent).FindMethod("System.Boolean Terraria.ModLoader.ModContent::SoundExists(System.String)"),
             GetMethodBase<ModRecipe>(
-                "System.Void Terraria.ModLoader.ModRecipe::AddTile(Terraria.ModLoader.Mod,System.String)")
+                "System.Void Terraria.ModLoader.ModRecipe::AddTile(Terraria.ModLoader.Mod,System.String)"),
+            GetMethodBase<ModTranslation>("System.Void Terraria.ModLoader.ModTranslation::SetDefault(System.String)"),
         };
 
         private static List<MethodBase> _blackList2 = new List<MethodBase>
         {
             GetMethodBase<ModRecipe>(
-                "System.Void Terraria.ModLoader.ModRecipe::AddIngredient(Terraria.ModLoader.Mod,System.String,System.Int32)")
+                "System.Void Terraria.ModLoader.ModRecipe::AddIngredient(Terraria.ModLoader.Mod,System.String,System.Int32)"),
+            GetMethodBase<ModTranslation>(
+                "System.Void Terraria.ModLoader.ModTranslation::AddTranslation(Terraria.Localization.GameCulture,System.String)")
         };
 
         public void Export(IPackage package, IExportConfig config)
@@ -143,8 +144,8 @@ namespace Localizer.Package.Export
                 }
 
                 var methodBases = new List<MethodBase>();
-                methodBases.AddRange(type.GetMethods(All | BindingFlags.DeclaredOnly));
-                methodBases.AddRange(type.GetConstructors(All | BindingFlags.DeclaredOnly));
+                methodBases.AddRange(type.GetMethods(NoroHelper.Any | BindingFlags.DeclaredOnly));
+                methodBases.AddRange(type.GetConstructors(NoroHelper.Any | BindingFlags.DeclaredOnly));
                 foreach (var method in methodBases)
                 {
                     if (method.DeclaringType?.Namespace == null || method.IsAbstract)

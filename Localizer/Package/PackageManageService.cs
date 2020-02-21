@@ -12,7 +12,7 @@ namespace Localizer.Package
 
         public ICollection<IPackageGroup> PackageGroups { get; set; }
 
-        private List<PackageGroupState> oldPackageGroupStates;
+        private List<PackageGroupState> oldPackageGroupStates = new List<PackageGroupState>();
 
         /// <summary>
         ///     Add a package into PackageGroups.
@@ -80,7 +80,10 @@ namespace Localizer.Package
             {
                 var state = oldPackageGroupStates.FirstOrDefault(s => s.ModName == pg.Mod.Name);
                 if (state != null)
+                {
                     oldPackageGroupStates.Remove(state);
+                }
+
                 oldPackageGroupStates.Add(new PackageGroupState(pg));
             }
 

@@ -1,11 +1,11 @@
 author = Chireiden Team
-version = 1.1.1.7
-displayName = [c/FF2800:L][c/FF5000:o][c/FF7800:c][c/FFA000:a][c/FFC800:l][c/FFF000:i][c/D7FF00:z][c/AFFF00:e][c/87FF00:r]
+version = 1.5
+displayName = Localizer
 hideCode = true
 hideResources = false
 includeSource = false
 homepage = https://github.com/chi-rei-den/Localizer/
 buildIgnore = *.user, obj\*, bin\*, .vs\*, .git*, referenceImages*.png, .gitattributes, *.csproj
 includePDB = false
-dllReferences = Ninject,0Harmony
+dllReferences = Ninject,0Harmony,Squid
 side = NoSync

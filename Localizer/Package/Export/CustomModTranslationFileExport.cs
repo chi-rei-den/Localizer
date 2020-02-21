@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Reflection;
 using Localizer.DataModel;
 using Localizer.DataModel.Default;
 using Localizer.Helpers;
@@ -15,8 +16,7 @@ namespace Localizer.Package.Export
                 return;
             }
 
-            var translations = Utils.GetModByName(package.ModName).Field("translations") 
-                as Dictionary<string, ModTranslation>;
+            var translations = Utils.GetModByName(package.ModName).ValueOf<Dictionary<string, ModTranslation>>("translations");
 
             if (translations == null)
             {

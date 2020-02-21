@@ -58,6 +58,44 @@ namespace Localizer
             return method != null ? MethodBase.GetMethodFromHandle(method.MethodHandle) : null;
         }
 
+        private static Dictionary<Module, Dictionary<string, MethodBase>> _cachedMethod = new Dictionary<Module, Dictionary<string, MethodBase>>();
+        public static MethodBase FindMethodByID(Module m, string findableName)
+        {
+            if (!_cachedMethod.ContainsKey(m))
+            {
+                _cachedMethod.Add(m, new Dictionary<string, MethodBase>());
+                foreach (var t in m.GetTypes())
+                {
+                    foreach (var method in t.GetMethods(NoroHelper.Any))
+                    {
+                        var key = method.GetID();
+                        if (!_cachedMethod[m].ContainsKey(key))
+                        {
+                            _cachedMethod[m].Add(key, method);
+                        }
+                    }
+                }
+            }
+
+            return _cachedMethod[m].ContainsKey(findableName) ? _cachedMethod[m][findableName] : null;
+        }
+
+        public static MethodDefinition FindMethodByID(ModuleDefinition m, string findableName)
+        {
+            foreach (var t in m.Types)
+            {
+                foreach (var method in t.Methods)
+                {
+                    if (findableName == method.GetID())
+                    {
+                        return method;
+                    }
+                }
+            }
+
+            return null;
+        }
+
         #endregion
 
         #region Json
@@ -147,29 +185,37 @@ namespace Localizer
         {
             Localizer.Log.Fatal(o);
         }
-        
+
         public static void LogError(object o)
         {
-            if(Localizer.Config.LogLevel >= LogLevel.Error)
+            if (Localizer.Config.LogLevel >= LogLevel.Error)
+            {
                 Localizer.Log.Error(o);
+            }
         }
 
         public static void LogWarn(object o)
         {
-            if(Localizer.Config.LogLevel >= LogLevel.Warn)
+            if (Localizer.Config.LogLevel >= LogLevel.Warn)
+            {
                 Localizer.Log.Warn(o);
+            }
         }
 
         public static void LogInfo(object o)
         {
-            if(Localizer.Config.LogLevel >= LogLevel.Info)
+            if (Localizer.Config.LogLevel >= LogLevel.Info)
+            {
                 Localizer.Log.Info(o);
+            }
         }
 
         public static void LogDebug(object o)
         {
-            if(Localizer.Config.LogLevel >= LogLevel.Debug)
+            if (Localizer.Config.LogLevel >= LogLevel.Debug)
+            {
                 Localizer.Log.Debug(o);
+            }
         }
         #endregion
 
@@ -190,10 +236,12 @@ namespace Localizer
         public static string GetResponseBody(HttpWebResponse response)
         {
             if (response == null)
+            {
                 return null;
-            
-            Encoding encoding = Encoding.UTF8;
-            
+            }
+
+            var encoding = Encoding.UTF8;
+
             using (var myResponseStream = response.GetResponseStream())
             {
                 using (var myStreamReader = new StreamReader(myResponseStream, encoding))
@@ -206,6 +254,20 @@ namespace Localizer
         #endregion
 
         #region Others
+
+        public static string AsRainbow(string text, int frameCounter, int? unit = null)
+        {
+            var rainbowText = "";
+            var hueUnit = 4f / (unit ?? text.Length);
+            var baseHue = (frameCounter % 300) / 300f;
+            for (var i = 0; i < text.Length; i++)
+            {
+                var colorHue = baseHue + hueUnit * i / text.Length;
+                var color = Terraria.Main.hslToRgb(1.5f - colorHue, 1, 0.7f);
+                rainbowText += $"[c/{color.R:X2}{color.G:X2}{color.B:X2}:{text[i]}]";
+            }
+            return rainbowText;
+        }
 
         /// <summary>
         ///     Create mappings from the name of actual ModTranslation container in the mod to the property
@@ -250,7 +312,7 @@ namespace Localizer
         ///     Create directory if doesn't exist.
         /// </summary>
         /// <param name="path"></param>
-        public static void CreateDirectory(string path)
+        public static void EnsureDir(string path)
         {
             if (!Directory.Exists(path))
             {
@@ -306,12 +368,12 @@ namespace Localizer
                 LogError(e);
             }
         }
-        
+
         public static T SafeWrap<T>(Func<T> func)
         {
             return SafeWrap(func, out var ex);
         }
-        
+
         public static T SafeWrap<T>(Func<T> func, out Exception ex)
         {
             try
@@ -324,7 +386,7 @@ namespace Localizer
                 ex = e;
                 LogError(e);
             }
-            
+
             return default;
         }
         #endregion

@@ -13,14 +13,14 @@ namespace LocalizerTest.Package.Update
         public void UpdateFile_Correct()
         {
             var service = new BasicFileUpdater<BasicItemFile>();
-            
+
             var logger = new UpdateLogger();
-            
+
             var oldFile = new BasicItemFile()
             {
                 Items = new Dictionary<string, ItemEntry>()
                 {
-                    { 
+                    {
                         "Key1", new ItemEntry()
                         {
                             Name = new BaseEntry()
@@ -35,7 +35,7 @@ namespace LocalizerTest.Package.Update
                             },
                         }
                     },
-                    { 
+                    {
                         "Key2", new ItemEntry()
                         {
                             Name = new BaseEntry()
@@ -50,7 +50,7 @@ namespace LocalizerTest.Package.Update
                             },
                         }
                     },
-                    { 
+                    {
                         "Key3", new ItemEntry()
                         {
                             Name = new BaseEntry()
@@ -140,7 +140,7 @@ namespace LocalizerTest.Package.Update
             oldFile.Items["Key4"].Tooltip.Origin.Should().Be("TooltipOrigin4");
             oldFile.Items["Key4"].Tooltip.Translation.Should().Be("TooltipTranslation4");
         }
-        
+
         [Fact]
         public void UpdateEntry_Correct()
         {
@@ -160,7 +160,7 @@ namespace LocalizerTest.Package.Update
                     Translation = "TooltipTranslation"
                 },
             };
-            
+
             var newEntry1 = new ItemEntry()
             {
                 Name = new BaseEntry()
@@ -176,14 +176,14 @@ namespace LocalizerTest.Package.Update
             };
 
             service.UpdateEntry("Key", oldEntry1, newEntry1, logger1);
-            
+
             logger1.Changed.Count.Should().Be(2);
             oldEntry1.Name.Origin.Should().Be("AnotherNameOrigin");
             oldEntry1.Name.Translation.Should().Be("NameTranslation");
             oldEntry1.Tooltip.Origin.Should().Be("AnotherTooltipOrigin");
             oldEntry1.Tooltip.Translation.Should().Be("TooltipTranslation");
-            
-            
+
+
             var logger2 = new UpdateLogger();
 
             var oldEntry2 = new ItemEntry()
@@ -199,7 +199,7 @@ namespace LocalizerTest.Package.Update
                     Translation = "TooltipTranslation"
                 },
             };
-            
+
             var newEntry2 = new ItemEntry()
             {
                 Name = new BaseEntry()
@@ -213,9 +213,9 @@ namespace LocalizerTest.Package.Update
                     Translation = "AnotherTooltipTranslation"
                 },
             };
-            
+
             service.UpdateEntry("Key", oldEntry2, newEntry2, logger2);
-            
+
             logger2.Changed.Count.Should().Be(0);
             oldEntry2.Name.Origin.Should().Be("NameOrigin");
             oldEntry2.Name.Translation.Should().Be("NameTranslation");

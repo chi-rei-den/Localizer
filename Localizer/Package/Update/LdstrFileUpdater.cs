@@ -11,7 +11,7 @@ namespace Localizer.Package.Update
             CheckArgs(oldFile, newFile, logger);
             UpdateInternal(oldFile as LdstrFile, newFile as LdstrFile, logger);
         }
-        
+
         public void UpdateInternal(LdstrFile oldFile, LdstrFile newFile, IUpdateLogger logger)
         {
             var oldEntries = oldFile.LdstrEntries;

@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using Localizer;
 using Localizer.Package.Update;
 
 namespace LocalizerTest.NonTest
@@ -16,7 +15,7 @@ namespace LocalizerTest.NonTest
             Removed = new List<string>();
             Changed = new List<string>();
         }
-        
+
         public void Dispose()
         {
         }

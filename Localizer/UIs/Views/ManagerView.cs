@@ -1,0 +1,3 @@
+namespace Localizer.UIs.Views
+{
+}

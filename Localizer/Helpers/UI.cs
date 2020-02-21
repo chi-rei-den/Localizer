@@ -1,6 +1,6 @@
 using System;
 using System.Reflection;
-using Terraria.ModLoader;
+using Microsoft.Xna.Framework.Graphics;
 using Terraria.UI;
 
 namespace Localizer.Helpers
@@ -11,13 +11,44 @@ namespace Localizer.Helpers
         {
             var infoMsgUI = GetModLoaderUI("infoMessage") ?? throw new Exception("Cannot Find infoMessage field");
 
-            infoMsgUI.GetType().GetMethod("Show", BindingFlags.Instance | BindingFlags.NonPublic).Invoke(infoMsgUI, new object[] { message, gotoMenu, state, altButtonText, altButtonAction });
+            infoMsgUI.Invoke("Show", message, gotoMenu, state, altButtonText, altButtonAction);
         }
 
         public static object GetModLoaderUI(string uiName)
         {
-            var ui = typeof(Mod).Module.GetType("Terraria.ModLoader.UI.Interface");
-            return ui?.GetField(uiName, BindingFlags.Static | BindingFlags.NonPublic)?.GetValue(null);
+            return "Terraria.ModLoader.UI.Interface".Type()?.ValueOf(uiName);
+        }
+
+        public static void SafeBegin(this SpriteBatch sb)
+        {
+            try
+            {
+                sb.Begin();
+            }
+            catch (InvalidOperationException)
+            {
+            }
+        }
+        public static void SafeBegin(this SpriteBatch sb, SamplerState sampler, RasterizerState rasterizer)
+        {
+            try
+            {
+                sb.Begin(SpriteSortMode.Immediate, BlendState.NonPremultiplied, sampler, null, rasterizer);
+            }
+            catch (InvalidOperationException)
+            {
+            }
+        }
+
+        public static void SafeEnd(this SpriteBatch sb)
+        {
+            try
+            {
+                sb.End();
+            }
+            catch (InvalidOperationException)
+            {
+            }
         }
     }
 }

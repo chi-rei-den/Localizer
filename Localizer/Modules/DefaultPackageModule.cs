@@ -36,7 +36,7 @@ namespace Localizer.Modules
         private void BindLoadService()
         {
             Bind<IFileLoadService>().To<JsonFileLoad>().InSingletonScope();
-            
+
             Bind<IPackageLoadService<DataModel.Default.Package>>()
                 .To<SourcePackageLoad<DataModel.Default.Package>>().InSingletonScope();
             Bind<SourcePackageLoad<DataModel.Default.Package>>().ToSelf().InSingletonScope();
@@ -50,11 +50,11 @@ namespace Localizer.Modules
         {
             Bind<IPackageManageService>().To<PackageManageService>();
         }
-        
+
         private void BindImportService()
         {
             Bind<IPackageImportService>().To<PackageImportService>().InSingletonScope();
-            
+
             var packageImportService = Kernel.Get<IPackageImportService>();
             packageImportService.RegisterImporter<BasicItemFile>(typeof(BasicImporter<BasicItemFile>));
             packageImportService.RegisterImporter<BasicNPCFile>(typeof(BasicImporter<BasicNPCFile>));
@@ -62,7 +62,7 @@ namespace Localizer.Modules
             packageImportService.RegisterImporter<BasicProjectileFile>(typeof(BasicImporter<BasicProjectileFile>));
             packageImportService.RegisterImporter<BasicPrefixFile>(typeof(BasicImporter<BasicPrefixFile>));
             packageImportService.RegisterImporter<CustomModTranslationFile>(typeof(CustomModTranslationImporter));
-            packageImportService.RegisterImporter<LdstrFile>(typeof(HarmonyLdstrImporter));
+            packageImportService.RegisterImporter<LdstrFile>(typeof(CecilLdstrImporter));
 
             Bind<AutoImportService>().ToSelf().InSingletonScope();
             Bind<RefreshLanguageService>().ToSelf().InSingletonScope();
@@ -79,11 +79,11 @@ namespace Localizer.Modules
             Bind<IPackagePackService>().To<ZipPackagePackService<DataModel.Default.Package>>().InSingletonScope();
             Bind<ZipPackagePackService<DataModel.Default.Package>>().ToSelf().InSingletonScope();
         }
-        
+
         private void BindExportService()
         {
             Bind<IPackageExportService>().To<PackageExport>().InSingletonScope();
-            
+
             Bind<IFileExportService>().To<BasicFileExport<BasicItemFile>>().InSingletonScope();
             Bind<IFileExportService>().To<BasicFileExport<BasicNPCFile>>().InSingletonScope();
             Bind<IFileExportService>().To<BasicFileExport<BasicBuffFile>>().InSingletonScope();
@@ -98,14 +98,14 @@ namespace Localizer.Modules
             void BindUpdate<T>(Type serviceType) where T : IFile
             {
                 var updateService = Kernel.Get<IPackageUpdateService>();
-                
+
                 Bind(typeof(FileUpdater), serviceType).To(serviceType).InSingletonScope();
-                
+
                 updateService.RegisterUpdater<T>(Kernel.Get(serviceType) as FileUpdater);
             }
-            
+
             Bind<IPackageUpdateService>().To<PackageUpdateService>().InSingletonScope();
-            
+
             BindUpdate<BasicItemFile>(typeof(BasicFileUpdater<BasicItemFile>));
             BindUpdate<BasicNPCFile>(typeof(BasicFileUpdater<BasicNPCFile>));
             BindUpdate<BasicBuffFile>(typeof(BasicFileUpdater<BasicBuffFile>));

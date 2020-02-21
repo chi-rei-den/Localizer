@@ -19,7 +19,7 @@ namespace Localizer.Package.Import
 
             return false;
         }
-        
+
         public override void Import(IFile file, IMod mod, CultureInfo culture)
         {
             ImportInternal(file as LdstrFile, mod, culture);
@@ -37,12 +37,12 @@ namespace Localizer.Package.Import
             {
                 LdstrEntries = new Dictionary<string, LdstrEntry>()
             };
-            
+
             foreach (var e in main.LdstrEntries)
             {
                 result.LdstrEntries.Add(e.Key, e.Value.Clone() as LdstrEntry);
             }
-            
+
             foreach (var pair in addition.LdstrEntries)
             {
                 if (result.LdstrEntries.ContainsKey(pair.Key))
@@ -57,7 +57,7 @@ namespace Localizer.Package.Import
 
             return result;
         }
-        
+
         internal LdstrEntry Merge(LdstrEntry main, LdstrEntry addition)
         {
             var result = new LdstrEntry { Instructions = new List<BaseEntry>() };

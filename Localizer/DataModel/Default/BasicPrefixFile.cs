@@ -10,7 +10,7 @@ namespace Localizer.DataModel.Default
 
         public IEntry Clone()
         {
-            return new PrefixEntry {Name = Name.Clone() as BaseEntry};
+            return new PrefixEntry { Name = Name.Clone() as BaseEntry };
         }
     }
 

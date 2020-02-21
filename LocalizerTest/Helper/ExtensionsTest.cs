@@ -1,6 +1,5 @@
 using System;
 using FluentAssertions;
-using Localizer;
 using Localizer.DataModel.Default;
 using Localizer.Helpers;
 using Xunit;
@@ -20,14 +19,14 @@ namespace LocalizerTest.Helper
             type.ModTranslationOwnerField().Length.Should().Be(count);
             type.ModTranslationOwnerField()[0].Name.Should().Be(name);
         }
-        
+
         [Fact]
         public void ModTranslationOwnerFieldName_Correct()
         {
             var prop = typeof(BasicItemFile).ModTranslationOwnerField()[0];
             prop.ModTranslationOwnerFieldName().Should().Be("items");
         }
-        
+
         [Fact]
         public void ModTranslationProp_Correct()
         {

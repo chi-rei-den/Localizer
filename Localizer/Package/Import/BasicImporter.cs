@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Globalization;
 using System.Linq;
+using System.Reflection;
 using Localizer.Attributes;
 using Localizer.DataModel;
 using Localizer.DataModel.Default;
@@ -24,7 +25,7 @@ namespace Localizer.Package.Import
             {
                 var fieldName = prop.ModTranslationOwnerFieldName();
 
-                var field = (IDictionary)Utils.GetModByName(mod.Name).Field(fieldName);
+                var field = Utils.GetModByName(mod.Name).ValueOf<IDictionary>(fieldName);
 
                 var entryType = prop.PropertyType.GenericTypeArguments
                                     .FirstOrDefault(g => g.GetInterfaces().Contains(typeof(IEntry)));
@@ -46,25 +47,25 @@ namespace Localizer.Package.Import
 
             foreach (var prop in typeof(T).ModTranslationOwnerField())
             {
-                dynamic entries = Activator.CreateInstance(prop.PropertyType);
+                var entries = (IDictionary)Activator.CreateInstance(prop.PropertyType);
 
-                dynamic mainEntryDict = prop.GetValue(main);
-                dynamic additionEntryDict = prop.GetValue(addition);
+                var mainEntryDict = (IDictionary)prop.GetValue(main);
+                var additionEntryDict = (IDictionary)prop.GetValue(addition);
 
-                foreach (var t in mainEntryDict)
+                foreach (string key in mainEntryDict.Keys)
                 {
-                    entries.Add(t.Key, t.Value.Clone());
+                    entries.Add(key, (mainEntryDict[key] as IEntry)?.Clone());
                 }
 
-                foreach (var pair in additionEntryDict)
+                foreach (string key in additionEntryDict.Keys)
                 {
-                    if (entries.ContainsKey(pair.Key))
+                    if (entries.Contains(key))
                     {
-                        entries[pair.Key] = Merge(mainEntryDict[pair.Key], pair.Value);
+                        entries[key] = Merge((IEntry)mainEntryDict[key], (IEntry)additionEntryDict[key]);
                     }
                     else
                     {
-                        entries.Add(pair.Key, pair.Value);
+                        entries.Add(key, additionEntryDict[key]);
                     }
                 }
 

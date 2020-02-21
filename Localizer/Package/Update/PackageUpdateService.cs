@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Localizer.DataModel;
-using Ninject;
 
 namespace Localizer.Package.Update
 {
@@ -14,12 +13,14 @@ namespace Localizer.Package.Update
         {
             _updaters = new Dictionary<Type, FileUpdater>();
         }
-        
+
         public void RegisterUpdater<T>(FileUpdater updater) where T : IFile
         {
-            if(updater is null)
+            if (updater is null)
+            {
                 throw new ArgumentNullException(nameof(updater));
-            
+            }
+
             if (_updaters.ContainsKey(typeof(T)))
             {
                 _updaters[typeof(T)] = updater;
@@ -28,7 +29,7 @@ namespace Localizer.Package.Update
             {
                 _updaters.Add(typeof(T), updater);
             }
-            
+
             Utils.LogInfo($"Updater: [{updater.GetType().FullName}] registered for file type: [{typeof(T).FullName}].");
         }
 

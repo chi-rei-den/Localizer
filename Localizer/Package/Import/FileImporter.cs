@@ -21,6 +21,6 @@ namespace Localizer.Package.Import
         /// <returns></returns>
         public abstract IFile Merge(IFile main, IFile addition);
 
-        public virtual void Reset(){}
+        public virtual void Reset() { }
     }
 }

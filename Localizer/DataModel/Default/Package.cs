@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -19,6 +19,7 @@ namespace Localizer.DataModel.Default
             ModName = mod.Name;
             Description = string.Empty;
             Language = language;
+            Version = new Version(1, 0, 0, 0);
 
             FileList = new List<string>();
             Files = new List<IFile>();
@@ -29,7 +30,7 @@ namespace Localizer.DataModel.Default
         [JsonProperty] public string Author { get; set; } = "";
         [JsonProperty] public string ModName { get; set; } = "";
         [JsonProperty] public string Description { get; set; } = "";
-        [JsonProperty] public Version Version { get; set; } = new Version(1, 0, 0, 0);
+        [JsonProperty] public Version Version { get; set; }
         [JsonProperty] public CultureInfo Language { get; set; } = CultureInfo.GetCultureInfo("en-US");
         [JsonProperty] public ICollection<string> FileList { get; set; } = new List<string>();
 

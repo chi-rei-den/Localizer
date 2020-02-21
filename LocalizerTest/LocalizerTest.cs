@@ -7,15 +7,16 @@ using Xunit;
 namespace LocalizerTest
 {
     [OperationTiming(OperationTiming.BeforeModCtor)]
-    class FooA { }
+    internal class FooA { }
     [OperationTiming(OperationTiming.BeforeModLoad)]
-    class FooB { }
+    internal class FooB { }
     [OperationTiming(OperationTiming.PostContentLoad)]
-    class FooC { }
+    internal class FooC { }
     [OperationTiming(OperationTiming.Any)]
-    class FooD { }
-    class FooE { }
-    
+    internal class FooD { }
+
+    internal class FooE { }
+
     public class LocalizerTest
     {
         [Theory]
@@ -31,7 +32,7 @@ namespace LocalizerTest
             Localizer.Localizer.State = state;
             Localizer.Localizer.CanDoOperationNow(operation).Should().BeTrue();
         }
-        
+
         [Theory]
         [InlineData(OperationTiming.BeforeModCtor, typeof(FooA))]
         [InlineData(OperationTiming.BeforeModLoad, typeof(FooD))]
@@ -43,7 +44,7 @@ namespace LocalizerTest
             Localizer.Localizer.State = state;
             Localizer.Localizer.CanDoOperationNow(t).Should().BeTrue();
         }
-        
+
         [Theory]
         [InlineData(OperationTiming.BeforeModCtor, OperationTiming.BeforeModLoad)]
         [InlineData(OperationTiming.BeforeModCtor, OperationTiming.PostContentLoad)]
@@ -55,7 +56,7 @@ namespace LocalizerTest
             Localizer.Localizer.State = state;
             Localizer.Localizer.CanDoOperationNow(operation).Should().BeFalse();
         }
-        
+
         [Theory]
         [InlineData(OperationTiming.BeforeModCtor, typeof(FooB))]
         [InlineData(OperationTiming.BeforeModCtor, typeof(FooC))]

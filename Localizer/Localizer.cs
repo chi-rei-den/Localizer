@@ -9,21 +9,20 @@ using Localizer.Attributes;
 using Localizer.DataModel;
 using Localizer.DataModel.Default;
 using Localizer.Helpers;
-using Localizer.Modules;
 using Localizer.Network;
 using Localizer.Package.Import;
+using Localizer.UIs;
 using log4net;
 using Microsoft.Xna.Framework;
-using MonoMod.Cil;
+using Microsoft.Xna.Framework.Graphics;
 using MonoMod.RuntimeDetour.HookGen;
 using Ninject;
-using Ninject.Modules;
 using Terraria;
+using Terraria.GameContent.UI.Elements;
 using Terraria.Localization;
 using Terraria.ModLoader;
 using Terraria.ModLoader.Core;
-using Terraria.UI;
-using static Localizer.Helpers.ReflectionHelper;
+using Terraria.UI.Chat;
 using static Localizer.Lang;
 using File = System.IO.File;
 
@@ -41,7 +40,9 @@ namespace Localizer
         public static Configuration Config { get; set; }
         public static OperationTiming State { get; internal set; }
         internal static LocalizerKernel Kernel { get; private set; }
-        internal static HarmonyInstance HarmonyInstance { get; set; }
+        internal static HarmonyInstance Harmony { get; set; }
+        internal static MainWindow PackageUI { get; set; }
+        internal static LoadedModWrapper LoadedLocalizer;
 
         private static Dictionary<int, GameCulture> _gameCultures;
 
@@ -50,20 +51,16 @@ namespace Localizer
         public Localizer()
         {
             Instance = this;
-            var mod = new LoadedModWrapper(Tr().GetType("Terraria.ModLoader.Core.AssemblyManager")
-                                               .Field("loadedMods")
-                                               .Method("get_Item", "!Localizer"));
-            this.SetField("<File>k__BackingField", mod.File);
-            this.SetField("<Code>k__BackingField", mod.Code);
+            LoadedLocalizer = new LoadedModWrapper("Terraria.ModLoader.Core.AssemblyManager".Type().ValueOf("loadedMods").Invoke("get_Item", "!Localizer"));
+            this.SetField("<File>k__BackingField", LoadedLocalizer.File);
+            this.SetField("<Code>k__BackingField", LoadedLocalizer.Code);
             Log = LogManager.GetLogger(nameof(Localizer));
 
-            HarmonyInstance = HarmonyInstance.Create(nameof(Localizer));
-            var prefix = new HarmonyMethod(typeof(Localizer).GetMethod(nameof(AfterLocalizerCtorHook), ReflectionHelper.All));
-            HarmonyInstance.Patch(Tr().GetType("Terraria.ModLoader.Core.AssemblyManager")
-                                             .GetMethod("Instantiate", ReflectionHelper.All), prefix);
+            Harmony = HarmonyInstance.Create(nameof(Localizer));
+            Harmony.Patch("Terraria.ModLoader.Core.AssemblyManager".Type().Method("Instantiate"), new HarmonyMethod(NoroHelper.MethodInfo(() => AfterLocalizerCtorHook(null))));
 
             State = OperationTiming.BeforeModCtor;
-            TmodFile = Instance.Prop("File") as TmodFile;
+            TmodFile = Instance.ValueOf<TmodFile>("File");
             Init();
             _initiated = true;
         }
@@ -75,7 +72,7 @@ namespace Localizer
 
         private static void Init()
         {
-            _gameCultures = typeof(GameCulture).Field("_legacyCultures") as Dictionary<int, GameCulture>;
+            _gameCultures = typeof(GameCulture).ValueOf<Dictionary<int, GameCulture>>("_legacyCultures");
 
             ServicePointManager.ServerCertificateValidationCallback += (s, cert, chain, sslPolicyErrors) => true;
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls;
@@ -85,9 +82,9 @@ namespace Localizer
             DownloadPackageDirPath = SavePath + "/Download/";
             ConfigPath = SavePath + "/Config.json";
 
-            Utils.CreateDirectory(SavePath);
-            Utils.CreateDirectory(SourcePackageDirPath);
-            Utils.CreateDirectory(DownloadPackageDirPath);
+            Utils.EnsureDir(SavePath);
+            Utils.EnsureDir(SourcePackageDirPath);
+            Utils.EnsureDir(DownloadPackageDirPath);
 
             LoadConfig();
             AddModTranslations(Instance);
@@ -99,11 +96,93 @@ namespace Localizer
 
         public override void Load()
         {
-            if(!_initiated)
+            if (!_initiated)
+            {
                 throw new Exception("Localizer not initialized.");
+            }
+
             State = OperationTiming.BeforeModLoad;
             Hooks.InvokeBeforeLoad();
             Kernel.Get<RefreshLanguageService>();
+
+            if (LanguageManager.Instance.ActiveCulture == GameCulture.Chinese)
+            {
+                ModBrowser.Patches.Patch();
+            }
+
+            var onInit = "Terraria.ModLoader.UI.UIModItem".Type().Method("OnInitialize");
+            Harmony.Patch(onInit, postfix: new HarmonyMethod(NoroHelper.MethodInfo(() => UIModItemPostfix(null))));
+
+            var drawSelf = "Terraria.ModLoader.UI.UIModItem".Type().Method("DrawSelf");
+            Harmony.Patch(drawSelf, postfix: new HarmonyMethod(NoroHelper.MethodInfo(() => DrawSelfPostfix(null, null))));
+        }
+
+        private static int frameCounter;
+        private static void DrawSelfPostfix(object __instance, SpriteBatch spriteBatch)
+        {
+            var current = __instance as UIPanel;
+            var modName = __instance.ValueOf("_mod")?.ValueOf("Name")?.ToString();
+            var modNameHovering = current.ValueOf<UIText>("_modName")?.IsMouseHovering ?? false;
+            if (modName == "!Localizer")
+            {
+                frameCounter++;
+
+                current.ValueOf<UIText>("_modName")
+                       .SetField("_text",
+                                 $"{Utils.AsRainbow("Localizer", frameCounter)} v{current.ValueOf("_mod").ValueOf("modFile").ValueOf("version")}");
+
+                var tooltip = "";
+                if (modNameHovering)
+                {
+                    var modAuthor = current.ValueOf("_mod")?.ValueOf("properties").ValueOf<string>("author");
+                    if (modAuthor.Length > 0)
+                    {
+                        tooltip = _("OpenUI",
+                            Language.GetTextValue("tModLoader.ModsByline", Utils.AsRainbow(modAuthor, frameCounter + 150, 9)),
+                            $"{Utils.AsRainbow("Localizer", frameCounter)}");
+                    }
+                }
+
+                if (!string.IsNullOrEmpty(tooltip))
+                {
+                    current.SetField("_tooltip", "");
+                    var snippets = ChatManager.ParseMessage(tooltip, Color.White).ToArray();
+                    var x = ChatManager.GetStringSize(Main.fontMouseText, snippets, Vector2.One).X;
+                    var pos = Main.MouseScreen + new Vector2(16f);
+                    pos.X = Math.Min(pos.X, Main.screenWidth - x - 16f);
+                    pos.Y = Math.Min(pos.Y, Main.screenHeight - 30);
+                    ChatManager.DrawColorCodedStringWithShadow(spriteBatch, Main.fontMouseText,
+                      snippets, pos, 0, Vector2.Zero, Vector2.One, out var _);
+                }
+            }
+            else
+            {
+                if (modNameHovering)
+                {
+                    // TODO: If any package loaded
+                    current.SetField("_tooltip", "");
+                }
+            }
+        }
+
+        private static void UIModItemPostfix(object __instance)
+        {
+            var modName = __instance.ValueOf("_mod")?.ValueOf("Name")?.ToString();
+            if (modName == "!Localizer")
+            {
+                __instance.ValueOf<UIText>("_modName").OnClick += (evt, element) =>
+                {
+                    if (PackageUI != null)
+                    {
+                        PackageUI.Visible = true;
+                    }
+                    else
+                    {
+                        PackageUI = new MainWindow();
+                        Instance.UIHost.Desktop.AddWindow(PackageUI);
+                    }
+                };
+            }
         }
 
         public override void PostSetupContent()
@@ -111,11 +190,47 @@ namespace Localizer
             State = OperationTiming.BeforeContentLoad;
             Hooks.InvokeBeforeSetupContent();
             CheckUpdate();
+            AddPostDrawHook();
+        }
+
+        public UIHost UIHost { get; private set; }
+        private void AddPostDrawHook()
+        {
+            if (Main.dedServ)
+            {
+                return;
+            }
+
+            UIHost = new UIHost();
+
+            Main.OnPostDraw += OnPostDraw;
+        }
+
+        private void OnPostDraw(GameTime time)
+        {
+            if (Main.dedServ)
+            {
+                return;
+            }
+
+            Main.spriteBatch.SafeBegin();
+            Hooks.InvokeOnPostDraw(time);
+            try
+            {
+                UIHost.Update(time);
+                UIHost.Draw(time);
+            }
+            catch
+            {
+            }
+            Main.DrawCursor(Main.DrawThickCursor(false), false);
+            Main.spriteBatch.SafeEnd();
         }
 
         public override void PostAddRecipes()
         {
             State = OperationTiming.PostContentLoad;
+
             Hooks.InvokePostSetupContent();
         }
 
@@ -128,7 +243,7 @@ namespace Localizer
         {
             Task.Run(() =>
             {
-                var curVersion = this.Version;
+                var curVersion = Version;
                 if (Kernel.Get<IUpdateService>().CheckUpdate(curVersion, out var updateInfo))
                 {
                     var msg = _("NewVersion", updateInfo.Version);
@@ -150,11 +265,16 @@ namespace Localizer
             {
                 SaveConfig();
 
+                PackageUI?.Close();
+                UIHost.Dispose();
+                Main.OnPostDraw -= OnPostDraw;
+
                 HookEndpointManager.RemoveAllOwnedBy(this);
-                HarmonyInstance.UnpatchAll(nameof(Localizer));
+                Harmony.UnpatchAll(nameof(Localizer));
                 Kernel.Dispose();
 
-                HarmonyInstance = null;
+                PackageUI = null;
+                Harmony = null;
                 Kernel = null;
                 _gameCultures = null;
                 Config = null;
@@ -181,7 +301,7 @@ namespace Localizer
                 Config = Utils.ReadFileAndDeserializeJson<Configuration>(ConfigPath);
                 if (Config is null)
                 {
-                    throw new Exception("Config read failed!");
+                    Config = new Configuration();
                 }
             }
             else
@@ -219,48 +339,22 @@ namespace Localizer
             Kernel.Get<RefreshLanguageService>().Refresh();
         }
 
-        public static string GetEacPath()
-        {
-            string GetEacPathInternal()
-            {
-                var propFile = Instance.GetFileStream("Info");
-
-                var buildProp = Tr().GetType("Terraria.ModLoader.Core.BuildProperties")
-                                    .Method("ReadFromStream", propFile);
-
-                var eacPath = buildProp.Field("eacPath") as string;
-
-                return eacPath;
-            }
-
-            if (TmodFile.IsOpen)
-            {
-                return GetEacPathInternal();
-            }
-
-            using (TmodFile.Open())
-            {
-                return GetEacPathInternal();
-            }
-        }
-
         public static IMod GetWrappedMod(string name)
         {
             if (State < OperationTiming.PostContentLoad)
             {
-                var loadedMods = Tr().GetType("Terraria.ModLoader.Core.AssemblyManager")
-                                     .Field("loadedMods");
-                if ((bool)loadedMods.Method("ContainsKey", name))
-                {
-                    return new LoadedModWrapper(loadedMods.Method("get_Item", name));
-                }
-
-                return null;
+                var loadedMods = "Terraria.ModLoader.Core.AssemblyManager".Type().ValueOf("loadedMods");
+                return (bool)loadedMods.Invoke("ContainsKey", name)
+                    ? new LoadedModWrapper(loadedMods.Invoke("get_Item", name))
+                    : null;
             }
 
             var mod = Utils.GetModByName(name);
             if (mod is null)
+            {
                 return null;
+            }
+
             return new ModWrapper(mod);
         }
 

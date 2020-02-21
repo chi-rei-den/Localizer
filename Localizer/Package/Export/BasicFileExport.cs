@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Reflection;
 using Localizer.DataModel;
 using Localizer.DataModel.Default;
 using Localizer.Helpers;
@@ -28,7 +29,7 @@ namespace Localizer.Package.Export
             {
                 var fieldName = prop.ModTranslationOwnerFieldName();
 
-                var field = (IDictionary)mod.Field(fieldName);
+                var field = mod.ValueOf<IDictionary>(fieldName);
 
                 var entryType = prop.PropertyType.GenericTypeArguments
                                     .FirstOrDefault(g => g.GetInterfaces().Contains(typeof(IEntry)));
@@ -58,7 +59,7 @@ namespace Localizer.Package.Export
 
                 foreach (var mapping in mappings)
                 {
-                    object owner = localizeOwners[key];
+                    var owner = localizeOwners[key];
                     var localizeTrans = owner?.GetType().GetProperty(mapping.Key)?.GetValue(owner) as ModTranslation;
 
                     mapping.Value.SetValue(entry, new BaseEntry

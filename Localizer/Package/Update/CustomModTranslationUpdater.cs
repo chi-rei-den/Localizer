@@ -11,7 +11,7 @@ namespace Localizer.Package.Update
             CheckArgs(oldFile, newFile, logger);
             UpdateInternal(oldFile as CustomModTranslationFile, newFile as CustomModTranslationFile, logger);
         }
-        
+
         public void UpdateInternal(CustomModTranslationFile oldFile, CustomModTranslationFile newFile, IUpdateLogger logger)
         {
             var oldEntries = oldFile.Translations;
@@ -39,7 +39,7 @@ namespace Localizer.Package.Update
             }
 
             var removed = oldEntries.Keys.Where(k => !newEntries.ContainsKey(k));
-            
+
             foreach (var r in removed)
             {
                 logger.Remove($"[{r}]");

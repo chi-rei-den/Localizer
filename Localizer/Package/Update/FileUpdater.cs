@@ -16,15 +16,25 @@ namespace Localizer.Package.Update
 
         internal void CheckArgs(IFile oldFile, IFile newFile, IUpdateLogger logger)
         {
-            if(oldFile is null)
+            if (oldFile is null)
+            {
                 throw new ArgumentNullException(nameof(oldFile));
-            if(newFile is null)
+            }
+
+            if (newFile is null)
+            {
                 throw new ArgumentNullException(nameof(newFile));
-            if(logger is null)
+            }
+
+            if (logger is null)
+            {
                 throw new ArgumentNullException(nameof(logger));
-            
-            if(oldFile.GetType() != newFile.GetType())
+            }
+
+            if (oldFile.GetType() != newFile.GetType())
+            {
                 throw new Exception($"Different file type: [{oldFile.GetType().FullName}] and [{newFile.GetType().FullName}]");
+            }
         }
     }
 }

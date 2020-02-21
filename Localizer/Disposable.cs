@@ -16,7 +16,7 @@ namespace Localizer
         {
             Dispose(false);
         }
-        
+
         protected virtual void Dispose(bool disposeManaged)
         {
             if (!disposed)
@@ -25,7 +25,7 @@ namespace Localizer
                 {
                     DisposeManaged();
                 }
-            
+
                 DisposeUnmanaged();
 
                 disposed = true;
@@ -33,7 +33,7 @@ namespace Localizer
         }
 
         protected virtual void DisposeManaged() { }
-        
+
         protected virtual void DisposeUnmanaged() { }
     }
 }

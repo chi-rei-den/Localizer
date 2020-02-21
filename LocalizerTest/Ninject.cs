@@ -7,43 +7,43 @@ namespace LocalizerTest
 {
     public interface IFoo
     {
-        
+
     }
 
     public interface IBar<T> where T : IFoo
     {
-        
+
     }
 
     public sealed class A : IFoo
     {
-        
+
     }
-    
+
     public sealed class B : IFoo
     {
-        
+
     }
 
     public sealed class ABar : IBar<A>
     {
-        
+
     }
 
     public sealed class BBar : IBar<B>
     {
-        
+
     }
-    
+
     public class NinjectTest
     {
         private StandardKernel _kernel;
-        
+
         public NinjectTest()
         {
             _kernel = new StandardKernel();
         }
-        
+
         [Fact]
         public void GenericTypeBinding()
         {
@@ -54,7 +54,7 @@ namespace LocalizerTest
 
             bars.Count().Should().Be(2);
         }
-        
+
         [Fact]
         public void MultiSingletonBinding()
         {
