@@ -1,6 +1,6 @@
 author = Chireiden Team
 version = 1.5
-displayName = [c/FF2800:L][c/FF5000:o][c/FF7800:c][c/FFA000:a][c/FFC800:l][c/FFF000:i][c/D7FF00:z][c/AFFF00:e][c/87FF00:r]
+displayName = Localizer
 hideCode = true
 hideResources = false
 includeSource = false
