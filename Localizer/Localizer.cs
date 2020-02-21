@@ -22,7 +22,6 @@ using Terraria.GameContent.UI.Elements;
 using Terraria.Localization;
 using Terraria.ModLoader;
 using Terraria.ModLoader.Core;
-using Terraria.ModLoader.UI;
 using Terraria.UI.Chat;
 using static Localizer.Lang;
 using File = System.IO.File;

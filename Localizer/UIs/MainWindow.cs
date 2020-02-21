@@ -6,7 +6,6 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using IL.Terraria;
 using Localizer.DataModel;
 using Localizer.Network;
 using Localizer.Package;
@@ -41,8 +40,6 @@ namespace Localizer.UIs
         private IFileLoadService fileLoadService;
 
         private IFileSaveService fileSaveService;
-
-        private IPackageImportService packageImportService;
 
         private IPackageExportService packageExportService;
 
@@ -81,7 +78,6 @@ namespace Localizer.UIs
             pkgManager = Localizer.Kernel.Get<IPackageManageService>();
             sourcePackageLoadServiceService = Localizer.Kernel.Get<SourcePackageLoad<DataModel.Default.Package>>();
             packedPackageLoadServiceService = Localizer.Kernel.Get<PackedPackageLoad<DataModel.Default.Package>>();
-            packageImportService = Localizer.Kernel.Get<IPackageImportService>();
             packageExportService = Localizer.Kernel.Get<IPackageExportService>();
             packageSaveService = Localizer.Kernel.Get<IPackageSaveService>();
             packageUpdateService = Localizer.Kernel.Get<IPackageUpdateService>();

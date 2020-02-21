@@ -6,7 +6,6 @@ using Localizer.DataModel;
 using Localizer.DataModel.Default;
 using MonoMod.Cil;
 using MonoMod.RuntimeDetour.HookGen;
-using Terraria.ModLoader;
 
 namespace Localizer.Package.Import
 {

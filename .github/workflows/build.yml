@@ -21,7 +21,7 @@ jobs:
       - name: Restore NuGet Packages
         run: nuget restore Localizer.sln
 
-      - name: MSBuild Squid ModPatch
+      - name: Build Mod
         run: |
           & "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current\Bin\MSBuild.exe" Localizer.sln /p:Configuration=Release /p:Platform=x86
 

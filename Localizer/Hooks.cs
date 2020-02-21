@@ -24,7 +24,7 @@ namespace Localizer
         {
             BeforeSetupContent?.Invoke();
         }
-        
+
         public delegate void PostSetupContentHandler();
         public static event PostSetupContentHandler PostSetupContent;
         internal static void InvokePostSetupContent()

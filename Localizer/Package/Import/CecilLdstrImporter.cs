@@ -10,8 +10,6 @@ using Localizer.DataModel.Default;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
 using Ninject;
-using Terraria.ModLoader;
-using Terraria.ModLoader.Core;
 
 namespace Localizer.Package.Import
 {
@@ -28,7 +26,7 @@ namespace Localizer.Package.Import
         {
             _harmony = HarmonyInstance.Create(nameof(CecilLdstrImporter));
             _harmony.Patch("Terraria.ModLoader.Core.AssemblyManager".Type().Method("GetModAssembly"),
-                           postfix:new HarmonyMethod(typeof(CecilLdstrImporter).Method(nameof(PostGetModAssembly))));
+                           postfix: new HarmonyMethod(typeof(CecilLdstrImporter).Method(nameof(PostGetModAssembly))));
         }
 
         public static void PostGetModAssembly(ref byte[] __result)
@@ -37,8 +35,9 @@ namespace Localizer.Package.Import
             {
                 var instance = Localizer.Kernel.Get<CecilLdstrImporter>();
                 if (!instance.Importing)
+                {
                     return;
-
+                }
 
                 using (var ms = new MemoryStream(__result))
                 {
@@ -49,7 +48,9 @@ namespace Localizer.Package.Import
                     __result = result.ToArray();
                 }
             }
-            catch{}
+            catch
+            {
+            }
         }
 
         private void PatchAssembly(AssemblyDefinition asm)
@@ -99,7 +100,7 @@ namespace Localizer.Package.Import
             {
                 ImportingFile = file;
                 ImportingMod = mod;
-                if ((mod as LoadedModWrapper).wrapped.TryGetTarget(out object loadedMod))
+                if ((mod as LoadedModWrapper).wrapped.TryGetTarget(out var loadedMod))
                 {
                     loadedMod.Invoke("set_NeedsReload", true);
                     loadedMod.Invoke("LoadAssemblies");
