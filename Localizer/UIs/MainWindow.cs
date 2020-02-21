@@ -10,7 +10,6 @@ using Localizer.DataModel;
 using Localizer.Network;
 using Localizer.Package;
 using Localizer.Package.Export;
-using Localizer.Package.Import;
 using Localizer.Package.Load;
 using Localizer.Package.Save;
 using Localizer.Package.Update;
