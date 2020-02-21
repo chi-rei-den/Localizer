@@ -6,6 +6,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using IL.Terraria;
 using Localizer.DataModel;
 using Localizer.Network;
 using Localizer.Package;
@@ -261,7 +262,7 @@ namespace Localizer.UIs
                     }
 
                     var list = Directory.GetFiles(Localizer.DownloadPackageDirPath).ToList();
-                    list.AddRange(Directory.GetFiles(Environment.ExpandEnvironmentVariables(@"%USERPROFILE%\Documents\My Games\Terraria\ModLoader\Mods")));
+                    list.AddRange(Directory.GetFiles(Path.Combine(Terraria.Main.SavePath, "Mods"), "*.locpack"));
                     foreach (var file in list)
                     {
                         try
