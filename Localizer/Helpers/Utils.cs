@@ -7,6 +7,7 @@ using System.Net;
 using System.Reflection;
 using System.Reflection.Emit;
 using System.Text;
+using System.Text.RegularExpressions;
 using Harmony.ILCopying;
 using Localizer.Attributes;
 using Localizer.DataModel;
@@ -80,13 +81,21 @@ namespace Localizer
             return _cachedMethod[m].ContainsKey(findableName) ? _cachedMethod[m][findableName] : null;
         }
 
+        private static Regex genericTypeMatch = new Regex(@"\[\[(.*?), .*?\]\]", RegexOptions.Compiled);
         public static MethodDefinition FindMethodByID(ModuleDefinition m, string findableName)
         {
+            var cecilName = genericTypeMatch.Replace(findableName, "<$1>");
             foreach (var t in m.Types)
             {
                 foreach (var method in t.Methods)
                 {
-                    if (findableName == method.GetID())
+                    var id = method.GetID();
+                    if (id == findableName)
+                    {
+                        return method;
+                    }
+
+                    if (id == cecilName)
                     {
                         return method;
                     }

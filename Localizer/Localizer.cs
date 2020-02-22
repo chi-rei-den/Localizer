@@ -223,7 +223,12 @@ namespace Localizer
             catch
             {
             }
-            Main.DrawCursor(Main.DrawThickCursor(false), false);
+
+            if (PackageUI.Visible)
+            {
+                Main.DrawCursor(Main.DrawThickCursor(false), false);
+            }
+
             Main.spriteBatch.SafeEnd();
         }
 

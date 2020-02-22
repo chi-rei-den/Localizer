@@ -12,27 +12,34 @@ namespace Localizer.ModBrowser
         {
             Utils.LogInfo($"Patching ModBrowser, tML version: {ModLoader.version}");
 
-            var populateModBrowser = "Terraria.ModLoader.UI.ModBrowser.UIModBrowser".Type()
-                                      .GetMethods(NoroHelper.Any)
-                                      .FirstOrDefault(m => m.Name.Contains("<PopulateModBrowser>"));
-            Localizer.Harmony.Patch(populateModBrowser, null, null, new HarmonyMethod(NoroHelper.MethodInfo(() => PopulateModBrowserTranspiler(null))));
+            if (!string.IsNullOrEmpty(GetModListURL()))
+            {
+                var populateModBrowser = "Terraria.ModLoader.UI.ModBrowser.UIModBrowser".Type()
+                                          .GetMethods(NoroHelper.Any)
+                                          .FirstOrDefault(m => m.Name.Contains("<PopulateModBrowser>"));
+                Localizer.Harmony.Patch(populateModBrowser, null, null, new HarmonyMethod(NoroHelper.MethodInfo(() => PopulateModBrowserTranspiler(null))));
+            }
 
-            var fromJson = "Terraria.ModLoader.UI.ModBrowser.UIModDownloadItem".Type().Method("FromJson");
-            Localizer.Harmony.Patch(fromJson, null, null, new HarmonyMethod(NoroHelper.MethodInfo(() => FromJSONTranspiler(null))));
+            if (!string.IsNullOrEmpty(GetModDownloadURL()))
+            {
+                var fromJson = "Terraria.ModLoader.UI.ModBrowser.UIModDownloadItem".Type().Method("FromJson");
+                Localizer.Harmony.Patch(fromJson, null, null, new HarmonyMethod(NoroHelper.MethodInfo(() => FromJSONTranspiler(null))));
 
-            var onActivate = "Terraria.ModLoader.UI.UIModInfo".Type()
-                                      .GetMethods(NoroHelper.Any)
-                                      .FirstOrDefault(m => m.Name.Contains("<OnActivate>"));
-            Localizer.Harmony.Patch(onActivate, null, null, new HarmonyMethod(NoroHelper.MethodInfo(() => OnActivateTranspiler(null))));
+                if (!string.IsNullOrEmpty(GetModDescURL()))
+                {
+                    var onActivate = "Terraria.ModLoader.UI.UIModInfo".Type()
+                                              .GetMethods(NoroHelper.Any)
+                                              .FirstOrDefault(m => m.Name.Contains("<OnActivate>"));
+                    Localizer.Harmony.Patch(onActivate, null, null, new HarmonyMethod(NoroHelper.MethodInfo(() => OnActivateTranspiler(null))));
+                }
+            }
 
             Utils.LogInfo("ModBrowser Patched");
         }
 
         private static string GetModListURL()
         {
-            var mirror = Localizer.Config.ModListMirror.Length > 0
-                ? Localizer.Config.ModListMirror[0]
-                : "http://javid.ddns.net/tModLoader/listmods.php";
+            var mirror = Localizer.Config.ModListMirror[0];
             switch (mirror)
             {
                 case "mirror.sgkoi.dev":
@@ -50,9 +57,7 @@ namespace Localizer.ModBrowser
 
         private static string GetModDownloadURL()
         {
-            var mirror = Localizer.Config.ModDownloadMirror.Length > 0
-                ? Localizer.Config.ModDownloadMirror[0]
-                : "http://javid.ddns.net/tModLoader/download.php?Down=mods/";
+            var mirror = Localizer.Config.ModDownloadMirror[0];
             switch (mirror)
             {
                 case "mirror.sgkoi.dev":
@@ -70,9 +75,7 @@ namespace Localizer.ModBrowser
 
         private static string GetModDescURL()
         {
-            var mirror = Localizer.Config.ModDescMirror.Length > 0
-                ? Localizer.Config.ModDescMirror[0]
-                : "http://javid.ddns.net/tModLoader/moddescription.php";
+            var mirror = Localizer.Config.ModDescMirror[0];
             switch (mirror)
             {
                 case "mirror.sgkoi.dev":
