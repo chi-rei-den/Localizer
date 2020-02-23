@@ -1,4 +1,4 @@
-﻿Provide localization functions include: 
+﻿Provide localization functions include:
     - Extract texts from loaded mod
     - Import translations into loaded mod
     - Make and share your translation package on our website

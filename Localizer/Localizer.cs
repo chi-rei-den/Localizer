@@ -52,6 +52,8 @@ namespace Localizer
         {
             Instance = this;
             LoadedLocalizer = new LoadedModWrapper("Terraria.ModLoader.Core.AssemblyManager".Type().ValueOf("loadedMods").Invoke("get_Item", "!Localizer"));
+            LoadedLocalizer.File.SetField("<name>k__BackingField", "Localizer");
+            LoadedLocalizer.SetField("name", "Localizer");
             this.SetField("<File>k__BackingField", LoadedLocalizer.File);
             this.SetField("<Code>k__BackingField", LoadedLocalizer.Code);
             Log = LogManager.GetLogger(nameof(Localizer));
@@ -123,7 +125,7 @@ namespace Localizer
             var current = __instance as UIPanel;
             var modName = __instance.ValueOf("_mod")?.ValueOf("Name")?.ToString();
             var modNameHovering = current.ValueOf<UIText>("_modName")?.IsMouseHovering ?? false;
-            if (modName == "!Localizer")
+            if (modName == "Localizer")
             {
                 frameCounter++;
 
@@ -168,7 +170,7 @@ namespace Localizer
         private static void UIModItemPostfix(object __instance)
         {
             var modName = __instance.ValueOf("_mod")?.ValueOf("Name")?.ToString();
-            if (modName == "!Localizer")
+            if (modName == "Localizer")
             {
                 __instance.ValueOf<UIText>("_modName").OnClick += (evt, element) =>
                 {
@@ -224,7 +226,7 @@ namespace Localizer
             {
             }
 
-            if (PackageUI.Visible)
+            if (PackageUI?.Visible ?? false)
             {
                 Main.DrawCursor(Main.DrawThickCursor(false), false);
             }
