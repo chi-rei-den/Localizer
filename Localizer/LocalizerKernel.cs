@@ -111,7 +111,7 @@ namespace Localizer
         {
             if (plugin is null)
             {
-                Utils.LogWarn($"Plugin cannot be unloaded because it's null");
+                Utils.LogWarn("Plugin cannot be unloaded because it's null");
                 return;
             }
 
