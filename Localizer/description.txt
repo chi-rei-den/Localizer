@@ -1,7 +1,7 @@
-﻿Provide localization functions include: 
-    - Extract texts from loaded mod
-    - Import translations into loaded mod
-    - Make and share your translation package on our website
-    - Download packages shared by others
+﻿Provide localization functions include:
+    - Extract texts from mods
+    - Apply translations to mods
+    - Create your own translation package
+    - Download user generated packages from Localizer
 
 Currently this mod is in hard developing, docs and manuals are not built.

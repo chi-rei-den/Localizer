@@ -9,7 +9,10 @@ namespace System.Reflection
         public const BindingFlags AnyVisibility = BindingFlags.Public | BindingFlags.NonPublic;
         public const BindingFlags Any = AnyVisibility | BindingFlags.Static | BindingFlags.Instance;
 
-        public static MethodInfo MethodInfo(Expression<Action> expression) => (expression.Body as MethodCallExpression)?.Method;
+        public static MethodInfo MethodInfo(Expression<Action> expression)
+        {
+            return (expression.Body as MethodCallExpression)?.Method;
+        }
 
         public static Type Type(this string name)
         {
@@ -17,11 +20,20 @@ namespace System.Reflection
             return AppDomain.CurrentDomain.GetAssemblies().FirstOrDefault(a => a.DefinedTypes.Any(t => t.FullName == name))?.ManifestModule.GetType(name);
         }
 
-        public static FieldInfo Field(this Type type, string name, BindingFlags flags = Any) => type?.GetField(name, flags) ?? type?.BaseType?.Field(name, flags);
+        public static FieldInfo Field(this Type type, string name, BindingFlags flags = Any)
+        {
+            return type?.GetField(name, flags) ?? type?.BaseType?.Field(name, flags);
+        }
 
-        public static PropertyInfo Property(this Type type, string name, BindingFlags flags = Any) => type?.GetProperty(name, flags) ?? type?.BaseType?.Property(name, flags);
+        public static PropertyInfo Property(this Type type, string name, BindingFlags flags = Any)
+        {
+            return type?.GetProperty(name, flags) ?? type?.BaseType?.Property(name, flags);
+        }
 
-        public static MethodInfo Method(this Type t, string name, IEnumerable<Type> args) => t.Method(name, args.ToArray());
+        public static MethodInfo Method(this Type t, string name, IEnumerable<Type> args)
+        {
+            return t.Method(name, args.ToArray());
+        }
 
         public static MethodInfo Method(this Type t, string name, params Type[] args)
         {
@@ -55,15 +67,30 @@ namespace System.Reflection
             throw new MemberAccessException($"{name} not found ({type})");
         }
 
-        public static object ValueOf(this object obj, string name) => obj?.GetType().ValueOf(name, obj);
+        public static object ValueOf(this object obj, string name)
+        {
+            return obj?.GetType().ValueOf(name, obj);
+        }
 
-        public static T ValueOf<T>(this Type type, string name) => (T)type?.ValueOf(name);
+        public static T ValueOf<T>(this Type type, string name)
+        {
+            return (T)type?.ValueOf(name);
+        }
 
-        public static T ValueOf<T>(this object obj, string name) => (T)obj?.ValueOf(name);
+        public static T ValueOf<T>(this object obj, string name)
+        {
+            return (T)obj?.ValueOf(name);
+        }
 
-        public static void SetField(this Type type, string name, object value) => type?.Field(name).SetValue(null, value);
+        public static void SetField(this Type type, string name, object value)
+        {
+            type?.Field(name).SetValue(null, value);
+        }
 
-        public static void SetField(this object obj, string name, object value) => obj?.GetType().Field(name).SetValue(obj, value);
+        public static void SetField(this object obj, string name, object value)
+        {
+            obj?.GetType().Field(name).SetValue(obj, value);
+        }
 
         public static object Invoke(this object o, string name, params object[] args)
         {
