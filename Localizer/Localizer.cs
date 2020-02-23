@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Net;
 using System.Reflection;
 using System.Threading.Tasks;
@@ -111,12 +112,32 @@ namespace Localizer
             {
                 ModBrowser.Patches.Patch();
             }
-
             var onInit = "Terraria.ModLoader.UI.UIModItem".Type().Method("OnInitialize");
             Harmony.Patch(onInit, postfix: new HarmonyMethod(NoroHelper.MethodInfo(() => UIModItemPostfix(null))));
 
             var drawSelf = "Terraria.ModLoader.UI.UIModItem".Type().Method("DrawSelf");
             Harmony.Patch(drawSelf, postfix: new HarmonyMethod(NoroHelper.MethodInfo(() => DrawSelfPostfix(null, null))));
+
+            var saveEnabledMods = "Terraria.ModLoader.Core.ModOrganizer".Type().Method("SaveEnabledMods");
+            Harmony.Patch(saveEnabledMods, postfix: new HarmonyMethod(NoroHelper.MethodInfo(() => SaveEnabledModsPostfix())));
+
+            var refStr = "";
+            var isEnabledPostfix = "Terraria.ModLoader.ModLoader".Type().Method("IsEnabled");
+            Harmony.Patch(isEnabledPostfix, postfix: new HarmonyMethod(NoroHelper.MethodInfo(() => IsEnabledPostfix(ref refStr))));
+        }
+
+        private static void IsEnabledPostfix(ref string modName)
+        {
+            if (modName == "!Localizer")
+            {
+                modName = "Localizer";
+            }
+        }
+
+        private static void SaveEnabledModsPostfix()
+        {
+            var path = Path.Combine(ModLoader.ModPath, "enabled.json");
+            File.WriteAllText(path, File.ReadAllText(path).Replace("\"Localizer\"", "\"!Localizer\""));
         }
 
         private static int frameCounter;
