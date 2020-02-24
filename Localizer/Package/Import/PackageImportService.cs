@@ -195,10 +195,7 @@ namespace Localizer.Package.Import
         {
             foreach (var importer in _importers.Values)
             {
-                Utils.SafeWrap(() =>
-                {
-                    importer.Dispose();
-                });
+                Utils.SafeWrap(() => importer.Dispose());
             }
 
             _importers = null;
