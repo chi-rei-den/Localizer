@@ -112,6 +112,7 @@ namespace Localizer.Package.Export
             GetMethodBase<ModRecipe>(
                 "System.Void Terraria.ModLoader.ModRecipe::AddTile(Terraria.ModLoader.Mod,System.String)"),
             GetMethodBase<ModTranslation>("System.Void Terraria.ModLoader.ModTranslation::SetDefault(System.String)"),
+            typeof(ModLoader).FindMethod("Terraria.Mod Terraria.ModLoader.ModLoader::GetMod(System.String)"),
         };
 
         private static List<MethodBase> _blackList2 = new List<MethodBase>
@@ -155,7 +156,7 @@ namespace Localizer.Package.Export
 
                     try
                     {
-                        Utils.LogDebug($"Exporting method: [{method.GetID()}]");
+                        LogDebug($"Exporting method: [{method.GetID()}]");
                         var entry = GetEntryFromMethod(method);
                         if (entry != null && !file.LdstrEntries.ContainsKey(method.GetID()))
                         {

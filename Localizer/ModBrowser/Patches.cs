@@ -6,7 +6,7 @@ using Terraria.ModLoader;
 
 namespace Localizer.ModBrowser
 {
-    public class Patches
+    public static class Patches
     {
         public static void Patch()
         {
