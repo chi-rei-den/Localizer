@@ -286,6 +286,10 @@ namespace Localizer
             {
                 SaveConfig();
 
+                // MonoModHooks.RemoveAll use mod.Name to unload the mod assembly
+                LoadedLocalizer.File.SetField("<name>k__BackingField", "!Localizer");
+                LoadedLocalizer.SetField("name", "!Localizer");
+
                 PackageUI?.Close();
                 UIHost.Dispose();
                 Main.OnPostDraw -= OnPostDraw;
