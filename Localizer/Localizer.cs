@@ -93,6 +93,11 @@ namespace Localizer
             Kernel = new LocalizerKernel();
             Kernel.Init();
 
+            if (LanguageManager.Instance.ActiveCulture == GameCulture.Chinese)
+            {
+                ModBrowser.Patches.Patch();
+            }
+
             var autoImportService = Kernel.Get<AutoImportService>();
         }
 
@@ -107,10 +112,6 @@ namespace Localizer
             Hooks.InvokeBeforeLoad();
             Kernel.Get<RefreshLanguageService>();
 
-            if (LanguageManager.Instance.ActiveCulture == GameCulture.Chinese)
-            {
-                ModBrowser.Patches.Patch();
-            }
             var onInit = "Terraria.ModLoader.UI.UIModItem".Type().Method("OnInitialize");
             Harmony.Patch(onInit, postfix: new HarmonyMethod(NoroHelper.MethodInfo(() => UIModItemPostfix(null))));
 
@@ -296,6 +297,7 @@ namespace Localizer
 
                 HookEndpointManager.RemoveAllOwnedBy(this);
                 Harmony.UnpatchAll(nameof(Localizer));
+                Harmony.UnpatchAll("ModBrowserMirror");
                 Kernel.Dispose();
 
                 PackageUI = null;

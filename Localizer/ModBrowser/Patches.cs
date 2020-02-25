@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -8,33 +9,46 @@ namespace Localizer.ModBrowser
 {
     public static class Patches
     {
+        public static HarmonyInstance HarmonyInstance { get; set; }
+
         public static void Patch()
         {
             Utils.LogInfo($"Patching ModBrowser, tML version: {ModLoader.version}");
 
-            if (!string.IsNullOrEmpty(GetModListURL()))
-            {
-                var populateModBrowser = "Terraria.ModLoader.UI.ModBrowser.UIModBrowser".Type()
-                                          .GetMethods(NoroHelper.Any)
-                                          .FirstOrDefault(m => m.Name.Contains("<PopulateModBrowser>"));
-                Localizer.Harmony.Patch(populateModBrowser, null, null, new HarmonyMethod(NoroHelper.MethodInfo(() => PopulateModBrowserTranspiler(null))));
-            }
+            HarmonyInstance = HarmonyInstance.Create("ModBrowserMirror");
 
-            if (!string.IsNullOrEmpty(GetModDownloadURL()))
+            try
             {
-                var fromJson = "Terraria.ModLoader.UI.ModBrowser.UIModDownloadItem".Type().Method("FromJson");
-                Localizer.Harmony.Patch(fromJson, null, null, new HarmonyMethod(NoroHelper.MethodInfo(() => FromJSONTranspiler(null))));
-
-                if (!string.IsNullOrEmpty(GetModDescURL()))
+                if (!string.IsNullOrEmpty(GetModListURL()))
                 {
-                    var onActivate = "Terraria.ModLoader.UI.UIModInfo".Type()
+                    var populateModBrowser = "Terraria.ModLoader.UI.ModBrowser.UIModBrowser".Type()
                                               .GetMethods(NoroHelper.Any)
-                                              .FirstOrDefault(m => m.Name.Contains("<OnActivate>"));
-                    Localizer.Harmony.Patch(onActivate, null, null, new HarmonyMethod(NoroHelper.MethodInfo(() => OnActivateTranspiler(null))));
+                                              .FirstOrDefault(m => m.Name.Contains("<PopulateModBrowser>"));
+                    HarmonyInstance.Patch(populateModBrowser, null, null, new HarmonyMethod(NoroHelper.MethodInfo(() => PopulateModBrowserTranspiler(null))));
+                    Utils.LogInfo("PopulateModBrowser Patched");
                 }
-            }
 
-            Utils.LogInfo("ModBrowser Patched");
+                if (!string.IsNullOrEmpty(GetModDownloadURL()))
+                {
+                    var fromJson = "Terraria.ModLoader.UI.ModBrowser.UIModDownloadItem".Type().Method("FromJson");
+                    HarmonyInstance.Patch(fromJson, null, null, new HarmonyMethod(NoroHelper.MethodInfo(() => FromJSONTranspiler(null))));
+                    Utils.LogInfo("FromJson Patched");
+
+                    if (!string.IsNullOrEmpty(GetModDescURL()))
+                    {
+                        var onActivate = "Terraria.ModLoader.UI.UIModInfo".Type()
+                                                  .GetMethods(NoroHelper.Any)
+                                                  .FirstOrDefault(m => m.Name.Contains("<OnActivate>"));
+                        HarmonyInstance.Patch(onActivate, null, null, new HarmonyMethod(NoroHelper.MethodInfo(() => OnActivateTranspiler(null))));
+                        Utils.LogInfo("OnActivate Patched");
+                    }
+                }
+                Utils.LogInfo("ModBrowser Patched");
+            }
+            catch (Exception e)
+            {
+                Utils.LogInfo($"ModBrowser Patch exception: {e}");
+            }
         }
 
         private static string GetModListURL()
