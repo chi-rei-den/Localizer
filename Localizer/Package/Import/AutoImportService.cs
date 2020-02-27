@@ -52,7 +52,7 @@ namespace Localizer.Package.Import
                 return;
             }
 
-            Utils.SafeWrap(() =>
+            try
             {
                 if (Localizer.Config.AutoImport)
                 {
@@ -60,7 +60,10 @@ namespace Localizer.Package.Import
                     Utils.LogInfo($"Early auto import for mod: [{wrapped.Name}]");
                     Import(wrapped);
                 }
-            });
+            }
+            catch
+            {
+            }
         }
 
         private void OnPostSetupContent()
@@ -96,7 +99,7 @@ namespace Localizer.Package.Import
                 list.AddRange(Directory.GetFiles(Path.Combine(Terraria.Main.SavePath, "Mods"), "*.locpack"));
                 foreach (var file in list)
                 {
-                    Utils.SafeWrap(() =>
+                    try
                     {
                         var pack = _packedPackageLoad.Load(file, _fileLoad);
                         if (pack == null)
@@ -105,7 +108,10 @@ namespace Localizer.Package.Import
                         }
 
                         _packageManage.AddPackage(pack);
-                    });
+                    }
+                    catch
+                    {
+                    }
                 }
             }
 
@@ -113,7 +119,7 @@ namespace Localizer.Package.Import
             {
                 foreach (var dir in new DirectoryInfo(Localizer.SourcePackageDirPath).GetDirectories())
                 {
-                    Utils.SafeWrap(() =>
+                    try
                     {
                         var pack = _sourcePackageLoad.Load(dir.FullName, _fileLoad);
                         if (pack == null)
@@ -123,7 +129,10 @@ namespace Localizer.Package.Import
 
                         _packageManage.AddPackage(pack);
                         _packagePack.Pack(Path.Combine(dir.FullName, "Package.json"));
-                    });
+                    }
+                    catch
+                    {
+                    }
                 }
             }
 
@@ -169,7 +178,7 @@ namespace Localizer.Package.Import
                 }
             }
 
-            Utils.SafeWrap(() =>
+            try
             {
                 _packageImport.Clear();
 
@@ -190,7 +199,10 @@ namespace Localizer.Package.Import
                 Localizer.RefreshLanguages();
 
                 Utils.LogDebug("Auto import end.");
-            });
+            }
+            catch
+            {
+            }
         }
 
         protected override void DisposeUnmanaged()

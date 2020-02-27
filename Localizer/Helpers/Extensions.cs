@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
@@ -22,7 +22,8 @@ namespace Localizer.Helpers
                     && !string.IsNullOrWhiteSpace(entry.Origin))
                 {
                     Utils.LogWarn(
-                        $"Mismatch origin text when importing \"{modTranslation.Key}\", Origin in mod: {modTranslation.GetDefault()}, Origin in package: {entry.Origin}");
+                        $"Mismatch origin text when importing \"{modTranslation.Key}\"{Environment.NewLine}Origin in mod: {modTranslation.GetDefault()}{Environment.NewLine}Origin in package: {entry.Origin}{Environment.NewLine}Translation in package: {entry.Translation}");
+                    return;
                 }
 
                 if (modTranslation.GetDefault() != null && entry.Translation != null &&

@@ -52,8 +52,6 @@ namespace Localizer
         {
             Instance = this;
             LoadedLocalizer = new LoadedModWrapper("Terraria.ModLoader.Core.AssemblyManager".Type().ValueOf("loadedMods").Invoke("get_Item", "!Localizer"));
-            LoadedLocalizer.File.SetField("<name>k__BackingField", "Localizer");
-            LoadedLocalizer.SetField("name", "Localizer");
             this.SetField("<File>k__BackingField", LoadedLocalizer.File);
             this.SetField("<Code>k__BackingField", LoadedLocalizer.Code);
             Log = LogManager.GetLogger(nameof(Localizer));
@@ -93,6 +91,11 @@ namespace Localizer
             Kernel = new LocalizerKernel();
             Kernel.Init();
 
+            if (LanguageManager.Instance.ActiveCulture == GameCulture.Chinese)
+            {
+                ModBrowser.Patches.Patch();
+            }
+
             var autoImportService = Kernel.Get<AutoImportService>();
         }
 
@@ -107,30 +110,27 @@ namespace Localizer
             Hooks.InvokeBeforeLoad();
             Kernel.Get<RefreshLanguageService>();
 
-            if (LanguageManager.Instance.ActiveCulture == GameCulture.Chinese)
-            {
-                ModBrowser.Patches.Patch();
-            }
             var onInit = "Terraria.ModLoader.UI.UIModItem".Type().Method("OnInitialize");
             Harmony.Patch(onInit, postfix: new HarmonyMethod(NoroHelper.MethodInfo(() => UIModItemPostfix(null))));
 
             var drawSelf = "Terraria.ModLoader.UI.UIModItem".Type().Method("DrawSelf");
             Harmony.Patch(drawSelf, postfix: new HarmonyMethod(NoroHelper.MethodInfo(() => DrawSelfPostfix(null, null))));
 
-            var refStr = "";
-            var setEnabledPrefix = "Terraria.ModLoader.ModLoader".Type().Method("SetModEnabled");
-            Harmony.Patch(setEnabledPrefix, prefix: new HarmonyMethod(NoroHelper.MethodInfo(() => EnabledPrefix(ref refStr))));
-
-            var isEnabledPrefix = "Terraria.ModLoader.ModLoader".Type().Method("IsEnabled");
-            Harmony.Patch(isEnabledPrefix, prefix: new HarmonyMethod(NoroHelper.MethodInfo(() => EnabledPrefix(ref refStr))));
+            var populateFromJson = "Terraria.ModLoader.UI.ModBrowser.UIModBrowser".Type().Method("PopulateFromJson");
+            Harmony.Patch(populateFromJson, prefix: new HarmonyMethod(NoroHelper.MethodInfo(() => PopulateFromJsonPrefix())),
+                postfix: new HarmonyMethod(NoroHelper.MethodInfo(() => PopulateFromJsonPostfix())));
         }
 
-        private static void EnabledPrefix(ref string modName)
+        private static void PopulateFromJsonPrefix()
         {
-            if (modName == "Localizer")
-            {
-                modName = "!Localizer";
-            }
+            LoadedLocalizer.File.SetField("<name>k__BackingField", "Localizer");
+            LoadedLocalizer.SetField("name", "Localizer");
+        }
+
+        private static void PopulateFromJsonPostfix()
+        {
+            LoadedLocalizer.File.SetField("<name>k__BackingField", "!Localizer");
+            LoadedLocalizer.SetField("name", "!Localizer");
         }
 
         private static int frameCounter;
@@ -139,7 +139,7 @@ namespace Localizer
             var current = __instance as UIPanel;
             var modName = __instance.ValueOf("_mod")?.ValueOf("Name")?.ToString();
             var modNameHovering = current.ValueOf<UIText>("_modName")?.IsMouseHovering ?? false;
-            if (modName == "Localizer")
+            if (modName == "!Localizer")
             {
                 frameCounter++;
 
@@ -184,7 +184,7 @@ namespace Localizer
         private static void UIModItemPostfix(object __instance)
         {
             var modName = __instance.ValueOf("_mod")?.ValueOf("Name")?.ToString();
-            if (modName == "Localizer")
+            if (modName == "!Localizer")
             {
                 __instance.ValueOf<UIText>("_modName").OnClick += (evt, element) =>
                 {
@@ -296,6 +296,7 @@ namespace Localizer
 
                 HookEndpointManager.RemoveAllOwnedBy(this);
                 Harmony.UnpatchAll(nameof(Localizer));
+                Harmony.UnpatchAll("ModBrowserMirror");
                 Kernel.Dispose();
 
                 PackageUI = null;
