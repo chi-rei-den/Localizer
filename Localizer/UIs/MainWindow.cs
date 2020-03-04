@@ -168,7 +168,11 @@ namespace Localizer.UIs
                 var name = _modList.SelectedItem.Text;
                 var mod = Localizer.GetWrappedMod(name);
 
-                var enabledPackages = pkgManager.PackageGroups.FirstOrDefault(g => g.Mod.Name == name)?.Packages.OrderBy(p => p.ModVersion ?? new Version(0, 0, 0, 0)).ToList();
+                var enabledPackages = pkgManager.PackageGroups
+                    .FirstOrDefault(g => g.Mod.Name == name)?.Packages
+                    .Where(p => p.Enabled)
+                    .OrderBy(p => p.ModVersion ?? new Version(0, 0, 0, 0))
+                    .ToList();
                 var oldPack = enabledPackages?.FirstOrDefault();
 
                 var package = new DataModel.Default.Package

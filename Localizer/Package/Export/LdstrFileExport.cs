@@ -129,7 +129,10 @@ namespace Localizer.Package.Export
 
             var modFile = package.Mod.File;
             var assemblyName = (string)"Terraria.ModLoader.Core.AssemblyManager".Type().Invoke("GetModAssemblyFileName", modFile, true);
-            var asm = Assembly.Load(modFile.GetBytes(assemblyName));
+            var loadedMod = "Terraria.ModLoader.Core.AssemblyManager".Type().ValueOf("loadedMods").Invoke("get_Item", package.Mod.Name);
+            var reref = (byte[])"Terraria.ModLoader.Core.AssemblyManager".Type().GetNestedType("LoadedMod", NoroHelper.Any).Method("EncapsulateReferences")
+                .Invoke(loadedMod, new object[] { modFile.GetBytes(assemblyName), null });
+            var asm = Assembly.Load(reref);
 
             var file = new LdstrFile
             {
