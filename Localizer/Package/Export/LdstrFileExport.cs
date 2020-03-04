@@ -111,7 +111,6 @@ namespace Localizer.Package.Export
             typeof(ModContent).FindMethod("System.Boolean Terraria.ModLoader.ModContent::SoundExists(System.String)"),
             GetMethodBase<ModRecipe>(
                 "System.Void Terraria.ModLoader.ModRecipe::AddTile(Terraria.ModLoader.Mod,System.String)"),
-            GetMethodBase<ModTranslation>("System.Void Terraria.ModLoader.ModTranslation::SetDefault(System.String)"),
             typeof(ModLoader).FindMethod("Terraria.Mod Terraria.ModLoader.ModLoader::GetMod(System.String)"),
         };
 
@@ -119,8 +118,6 @@ namespace Localizer.Package.Export
         {
             GetMethodBase<ModRecipe>(
                 "System.Void Terraria.ModLoader.ModRecipe::AddIngredient(Terraria.ModLoader.Mod,System.String,System.Int32)"),
-            GetMethodBase<ModTranslation>(
-                "System.Void Terraria.ModLoader.ModTranslation::AddTranslation(Terraria.Localization.GameCulture,System.String)")
         };
 
         public void Export(IPackage package, IExportConfig config)
@@ -130,7 +127,9 @@ namespace Localizer.Package.Export
                 return;
             }
 
-            var asm = package.Mod.Code;
+            var modFile = package.Mod.File;
+            var assemblyName = (string)"Terraria.ModLoader.Core.AssemblyManager".Type().Invoke("GetModAssemblyFileName", modFile, true);
+            var asm = Assembly.Load(modFile.GetBytes(assemblyName));
 
             var file = new LdstrFile
             {

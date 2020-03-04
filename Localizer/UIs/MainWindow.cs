@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Localizer.DataModel;
+using Localizer.Helpers;
 using Localizer.Network;
 using Localizer.Package;
 using Localizer.Package.Export;
@@ -16,6 +17,7 @@ using Localizer.Package.Update;
 using Localizer.UIs.Components;
 using Ninject;
 using Squid;
+using Terraria.Localization;
 using static Localizer.Lang;
 
 namespace Localizer.UIs
@@ -164,14 +166,21 @@ namespace Localizer.UIs
                 }
 
                 var name = _modList.SelectedItem.Text;
+
+                var enabledPackages = pkgManager.PackageGroups.FirstOrDefault(g => g.Mod.Name == name)?.Packages.ToList();
+
                 var package = new DataModel.Default.Package
                 {
-                    Name = name,
-                    Language = CultureInfo.CurrentCulture,
+                    Name = enabledPackages.FirstOrDefault()?.Name ?? name,
+                    LocalizedModName = enabledPackages.FirstOrDefault()?.LocalizedModName ?? name,
+                    Language = CultureInfo.GetCultureInfo(Language.ActiveCulture.Name),
                     ModName = name,
                     Files = new ObservableCollection<IFile>(),
-                    Version = new Version("1.0.0.0")
+                    Version = enabledPackages.FirstOrDefault()?.Version ?? new Version("1.0.0.0"),
                 };
+
+                package.Mod = Localizer.GetWrappedMod(name);
+                package.ModVersion = package.Mod.Version;
 
                 var dirPath = Utils.EscapePath(Path.Combine(Localizer.SourcePackageDirPath, name));
 
@@ -300,6 +309,9 @@ namespace Localizer.UIs
 
             lock (refreshLock)
             {
+                UIModsPatch.ModsExtraInfo = pkgManager.PackageGroups.ToDictionary(key => key.Mod.Name,
+                    value => string.Join(Environment.NewLine, value.Packages.Select(UI.GetPkgLabelText)));
+
                 var modName = _modList.SelectedItem?.Text ?? "";
                 try
                 {
@@ -317,7 +329,7 @@ namespace Localizer.UIs
                             // TODO: Use better key for HashSet
                             var item = new ListBoxItem
                             {
-                                Text = GetPkgLabelText(p),
+                                Text = UI.GetPkgLabelText(p),
                                 Tooltip = (Gui.Renderer as UIRenderer).WordWrap(p.Description, 400),
                                 TextWrap = true,
                                 Dock = DockStyle.Top,
@@ -327,8 +339,9 @@ namespace Localizer.UIs
                             {
                                 if (args.Button == 0)
                                 {
+                                    UIModsPatch.ReloadRequired = true;
                                     p.Enabled = !p.Enabled;
-                                    item.Text = GetPkgLabelText(p);
+                                    item.Text = UI.GetPkgLabelText(p);
                                     pkgManager.SaveState();
                                 }
                             };
@@ -391,6 +404,7 @@ namespace Localizer.UIs
                         var url = packageBrowserService.GetDownloadLinkOf(p);
                         var path = Utils.EscapePath(Path.Combine(Localizer.DownloadPackageDirPath, $"{p.Name}_{p.Author}.locpack"));
                         downloadManagerService.Download(url, path);
+                        UIModsPatch.ReloadRequired = true;
                         Utils.LogDebug($"{p.Name} is downloaded");
                         LoadPackages();
                     }
@@ -399,11 +413,6 @@ namespace Localizer.UIs
                     }
                 });
             }
-        }
-
-        private string GetPkgLabelText(IPackage p)
-        {
-            return _("PackageDisplay", _(p.Enabled ? "PackageEnabled" : "PackageDisabled"), p.Name, p.Version, p.Author);
         }
 
         private void RefreshModList()

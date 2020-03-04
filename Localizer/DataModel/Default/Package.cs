@@ -30,7 +30,9 @@ namespace Localizer.DataModel.Default
         [JsonProperty] public string Author { get; set; } = "";
         [JsonProperty] public string ModName { get; set; } = "";
         [JsonProperty] public string Description { get; set; } = "";
+        [JsonProperty] public string LocalizedModName { get; set; } = "";
         [JsonProperty] public Version Version { get; set; }
+        [JsonProperty] public Version ModVersion { get; set; }
         [JsonProperty] public CultureInfo Language { get; set; } = CultureInfo.GetCultureInfo("en-US");
         [JsonProperty] public ICollection<string> FileList { get; set; } = new List<string>();
 
