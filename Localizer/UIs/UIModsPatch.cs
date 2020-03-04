@@ -1,13 +1,9 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 using Harmony;
-using Localizer.Helpers;
-using Localizer.Package;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Ninject;
 using Terraria;
 using Terraria.GameContent.UI.Elements;
 using Terraria.Localization;
@@ -41,10 +37,6 @@ namespace Localizer.UIs
             var populateFromJson = "Terraria.ModLoader.UI.ModBrowser.UIModBrowser".Type().Method("PopulateFromJson");
             Localizer.Harmony.Patch(populateFromJson, prefix: new HarmonyMethod(NoroHelper.MethodInfo(() => PopulateFromJsonPrefix())),
                 postfix: new HarmonyMethod(NoroHelper.MethodInfo(() => PopulateFromJsonPostfix())));
-
-            var pkgManager = Localizer.Kernel.Get<IPackageManageService>();
-            ModsExtraInfo = pkgManager.PackageGroups.ToDictionary(key => key.Mod.Name,
-                value => string.Join(Environment.NewLine, value.Packages.Select(UI.GetPkgLabelText)));
         }
 
         private static void PopulateFromJsonPrefix()

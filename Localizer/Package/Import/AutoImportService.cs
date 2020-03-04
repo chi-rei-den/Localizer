@@ -4,8 +4,10 @@ using System.IO;
 using System.Linq;
 using Localizer.DataModel;
 using Localizer.DataModel.Default;
+using Localizer.Helpers;
 using Localizer.Package.Load;
 using Localizer.Package.Pack;
+using Localizer.UIs;
 using Ninject;
 
 using PackageModel = Localizer.DataModel.Default.Package;
@@ -153,6 +155,9 @@ namespace Localizer.Package.Import
                 }
 
                 _packageManage.LoadState();
+
+                UIModsPatch.ModsExtraInfo = _packageManage.PackageGroups.ToDictionary(key => key.Mod.Name,
+                     value => string.Join(Environment.NewLine, value.Packages.Select(UI.GetPkgLabelText)));
             }
             catch (Exception e)
             {

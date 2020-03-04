@@ -166,21 +166,24 @@ namespace Localizer.UIs
                 }
 
                 var name = _modList.SelectedItem.Text;
+                var mod = Localizer.GetWrappedMod(name);
 
-                var enabledPackages = pkgManager.PackageGroups.FirstOrDefault(g => g.Mod.Name == name)?.Packages.ToList();
+                var enabledPackages = pkgManager.PackageGroups.FirstOrDefault(g => g.Mod.Name == name)?.Packages.OrderBy(p => p.ModVersion ?? new Version(0, 0, 0, 0)).ToList();
+                var oldPack = enabledPackages?.FirstOrDefault();
 
                 var package = new DataModel.Default.Package
                 {
-                    Name = enabledPackages.FirstOrDefault()?.Name ?? name,
-                    LocalizedModName = enabledPackages.FirstOrDefault()?.LocalizedModName ?? name,
+                    Name = oldPack?.Name ?? name,
+                    LocalizedModName = oldPack?.LocalizedModName ?? name,
                     Language = CultureInfo.GetCultureInfo(Language.ActiveCulture.Name),
                     ModName = name,
                     Files = new ObservableCollection<IFile>(),
-                    Version = enabledPackages.FirstOrDefault()?.Version ?? new Version("1.0.0.0"),
+                    Version = oldPack?.Version ?? new Version("1.0.0.0"),
+                    Author = oldPack?.Author ?? "",
+                    Description = oldPack?.Description ?? "",
+                    Mod = mod,
+                    ModVersion = mod.Version
                 };
-
-                package.Mod = Localizer.GetWrappedMod(name);
-                package.ModVersion = package.Mod.Version;
 
                 var dirPath = Utils.EscapePath(Path.Combine(Localizer.SourcePackageDirPath, name));
 
@@ -189,20 +192,21 @@ namespace Localizer.UIs
                     WithTranslation = withTranslation
                 });
 
-                IPackage oldPack = null;
-                if (Directory.Exists(dirPath))
-                {
-                    oldPack = sourcePackageLoadServiceService.Load(dirPath, fileLoadService);
-                }
-                else
+                if (!Directory.Exists(dirPath))
                 {
                     Directory.CreateDirectory(dirPath);
                 }
 
-                if (oldPack != null)
+                if (enabledPackages != null && enabledPackages.Count > 0)
                 {
+                    oldPack.ModVersion = package.Mod.Version;
                     var updateLogger = Localizer.Kernel.Get<IUpdateLogger>();
                     updateLogger.Init($"{package.Name}-{Utils.DateTimeToFileName(DateTime.Now)}");
+
+                    foreach (var item in enabledPackages.Skip(1))
+                    {
+                        packageUpdateService.Update(oldPack, item, updateLogger);
+                    }
 
                     packageUpdateService.Update(oldPack, package, updateLogger);
 

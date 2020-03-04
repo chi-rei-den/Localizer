@@ -36,6 +36,11 @@ namespace Localizer.UIs
                 Desktop.Size = new Squid.Point(gd.Viewport.Width, gd.Viewport.Height);
             }
 
+            if (!Main.hasFocus)
+            {
+                return;
+            }
+
             // Mouse
             var mouseState = Mouse.GetState();
 

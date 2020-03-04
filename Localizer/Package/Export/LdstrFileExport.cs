@@ -111,7 +111,7 @@ namespace Localizer.Package.Export
             typeof(ModContent).FindMethod("System.Boolean Terraria.ModLoader.ModContent::SoundExists(System.String)"),
             GetMethodBase<ModRecipe>(
                 "System.Void Terraria.ModLoader.ModRecipe::AddTile(Terraria.ModLoader.Mod,System.String)"),
-            typeof(ModLoader).FindMethod("Terraria.Mod Terraria.ModLoader.ModLoader::GetMod(System.String)"),
+            typeof(ModLoader).FindMethod("Terraria.ModLoader.Mod Terraria.ModLoader.ModLoader::GetMod(System.String)"),
         };
 
         private static List<MethodBase> _blackList2 = new List<MethodBase>
