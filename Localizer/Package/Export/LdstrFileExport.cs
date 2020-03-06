@@ -128,9 +128,10 @@ namespace Localizer.Package.Export
             }
 
             var modFile = package.Mod.File;
-            var assemblyName = (string)"Terraria.ModLoader.Core.AssemblyManager".Type().Invoke("GetModAssemblyFileName", modFile, true);
-            var loadedMod = "Terraria.ModLoader.Core.AssemblyManager".Type().ValueOf("loadedMods").Invoke("get_Item", package.Mod.Name);
-            var reref = (byte[])"Terraria.ModLoader.Core.AssemblyManager".Type().GetNestedType("LoadedMod", NoroHelper.Any).Method("EncapsulateReferences")
+            var asmManager = "Terraria.ModLoader.Core.AssemblyManager".Type();
+            var assemblyName = (string)asmManager.Invoke("GetModAssemblyFileName", modFile, true);
+            var loadedMod = asmManager.ValueOf("loadedMods").Invoke("get_Item", package.Mod.Name);
+            var reref = (byte[])asmManager.GetNestedType("LoadedMod", NoroHelper.Any).Method("EncapsulateReferences")
                 .Invoke(loadedMod, new object[] { modFile.GetBytes(assemblyName), null });
             var asm = Assembly.Load(reref);
 
@@ -197,7 +198,7 @@ namespace Localizer.Package.Export
                         if (next.opcode == OpCodes.Call || next.opcode == OpCodes.Calli ||
                             next.opcode == OpCodes.Callvirt)
                         {
-                            if (_blackList1.Any(m => (next.operand as MethodBase).GetID() == m.GetID()))
+                            if (_blackList1.Any(m => (next.operand as MethodBase).GetID() == m?.GetID()))
                             {
                                 continue;
                             }
@@ -211,7 +212,7 @@ namespace Localizer.Package.Export
                         if (afterNext.opcode == OpCodes.Call || afterNext.opcode == OpCodes.Calli ||
                             afterNext.opcode == OpCodes.Callvirt)
                         {
-                            if (_blackList2.Any(m => (afterNext.operand as MethodBase).GetID() == m.GetID()))
+                            if (_blackList2.Any(m => (afterNext.operand as MethodBase).GetID() == m?.GetID()))
                             {
                                 continue;
                             }
