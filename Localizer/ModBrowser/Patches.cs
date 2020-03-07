@@ -57,7 +57,8 @@ namespace Localizer.ModBrowser
             switch (mirror)
             {
                 case "mirror.sgkoi.dev":
-                    return "https://mirror.sgkoi.dev/tModLoader/listmods.php";
+                case "mirror5.sgkoi.dev":
+                    return $"https://{mirror}/tModLoader/listmods.php";
                 case "mirror2.sgkoi.dev":
                     return "http://www.mb.axeel.moe/tModLoader/listmods.php";
                 case "mirror3.sgkoi.dev":
@@ -75,7 +76,8 @@ namespace Localizer.ModBrowser
             switch (mirror)
             {
                 case "mirror.sgkoi.dev":
-                    return "https://mirror.sgkoi.dev/tModLoader/download.php?Down=mods/";
+                case "mirror5.sgkoi.dev":
+                    return $"https://{mirror}/tModLoader/download.php?Down=mods/";
                 case "mirror2.sgkoi.dev":
                     return "http://www.mb.axeel.moe/tModLoader/download.php?Down=mods/";
                 case "mirror3.sgkoi.dev":
@@ -93,7 +95,8 @@ namespace Localizer.ModBrowser
             switch (mirror)
             {
                 case "mirror.sgkoi.dev":
-                    return "https://mirror.sgkoi.dev/tModLoader/moddescription.php";
+                case "mirror5.sgkoi.dev":
+                    return $"https://{mirror}/tModLoader/moddescription.php";
                 case "mirror2.sgkoi.dev":
                     return "http://www.mb.axeel.moe/tModLoader/moddescription.php";
                 case "mirror4.sgkoi.dev":
