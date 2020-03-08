@@ -1,13 +1,15 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Reflection.Emit;
 using Localizer.DataModel;
 using Localizer.DataModel.Default;
+using Mono.Cecil;
 using MonoMod.Utils;
 using Terraria.ModLoader;
 using static Localizer.Utils;
+using OpCodes = Mono.Cecil.Cil.OpCodes;
 
 namespace Localizer.Package.Export
 {
@@ -133,24 +135,21 @@ namespace Localizer.Package.Export
             var loadedMod = asmManager.ValueOf("loadedMods").Invoke("get_Item", package.Mod.Name);
             var reref = (byte[])asmManager.GetNestedType("LoadedMod", NoroHelper.Any).Method("EncapsulateReferences")
                 .Invoke(loadedMod, new object[] { modFile.GetBytes(assemblyName), null });
-            var asm = Assembly.Load(reref);
+            var asm = AssemblyDefinition.ReadAssembly(new MemoryStream(reref));
 
             var file = new LdstrFile
             {
                 LdstrEntries = new Dictionary<string, LdstrEntry>()
             };
 
-            foreach (var type in asm.ManifestModule.GetTypes())
+            foreach (var type in asm.MainModule.GetTypes())
             {
                 if (type.Namespace == null)
                 {
                     continue;
                 }
 
-                var methodBases = new List<MethodBase>();
-                methodBases.AddRange(type.GetMethods(NoroHelper.Any | BindingFlags.DeclaredOnly));
-                methodBases.AddRange(type.GetConstructors(NoroHelper.Any | BindingFlags.DeclaredOnly));
-                foreach (var method in methodBases)
+                foreach (var method in type.Methods)
                 {
                     if (method.DeclaringType?.Namespace == null || method.IsAbstract)
                     {
@@ -176,9 +175,9 @@ namespace Localizer.Package.Export
             package.AddFile(file);
         }
 
-        private LdstrEntry GetEntryFromMethod(MethodBase method)
+        private LdstrEntry GetEntryFromMethod(MethodDefinition method)
         {
-            var instructions = GetInstructions(method);
+            var instructions = method?.Body?.Instructions;
 
             if (instructions == null)
             {
@@ -189,19 +188,25 @@ namespace Localizer.Package.Export
             for (var i = 0; i < instructions.Count; i++)
             {
                 var ins = instructions[i];
-                if (ins.opcode == OpCodes.Ldstr && !string.IsNullOrWhiteSpace(ins.operand.ToString()))
+                if (ins.OpCode == OpCodes.Ldstr && !string.IsNullOrWhiteSpace(ins.Operand.ToString()))
                 {
                     // Filter methods in blacklist1
                     if (i < instructions.Count - 1)
                     {
                         var next = instructions[i + 1];
-                        if (next.opcode == OpCodes.Call || next.opcode == OpCodes.Calli ||
-                            next.opcode == OpCodes.Callvirt)
+                        var operandId = "";
+                        if (next.OpCode == OpCodes.Call || next.OpCode == OpCodes.Callvirt)
                         {
-                            if (_blackList1.Any(m => (next.operand as MethodBase).GetID() == m?.GetID()))
-                            {
-                                continue;
-                            }
+                            operandId = (next.Operand as MethodReference).GetID();
+                        }
+                        else if (next.OpCode == OpCodes.Calli)
+                        {
+                            operandId = (next.Operand as CallSite).GetID();
+                        }
+
+                        if (!string.IsNullOrWhiteSpace(operandId) && _blackList1.Any(m => operandId == m?.GetID()))
+                        {
+                            continue;
                         }
                     }
 
@@ -209,25 +214,31 @@ namespace Localizer.Package.Export
                     if (i < instructions.Count - 2)
                     {
                         var afterNext = instructions[i + 2];
-                        if (afterNext.opcode == OpCodes.Call || afterNext.opcode == OpCodes.Calli ||
-                            afterNext.opcode == OpCodes.Callvirt)
+                        var operandId = "";
+                        if (afterNext.OpCode == OpCodes.Call || afterNext.OpCode == OpCodes.Callvirt)
                         {
-                            if (_blackList2.Any(m => (afterNext.operand as MethodBase).GetID() == m?.GetID()))
-                            {
-                                continue;
-                            }
+                            operandId = (afterNext.Operand as MethodReference).GetID();
+                        }
+                        else if (afterNext.OpCode == OpCodes.Calli)
+                        {
+                            operandId = (afterNext.Operand as CallSite).GetID();
+                        }
+
+                        if (!string.IsNullOrWhiteSpace(operandId) && _blackList2.Any(m => operandId == m?.GetID()))
+                        {
+                            continue;
                         }
                     }
 
                     // No need to add a same string
-                    if (entry.Instructions.Exists(e => e.Origin == ins.operand.ToString()))
+                    if (entry.Instructions.Exists(e => e.Origin == ins.Operand.ToString()))
                     {
                         continue;
                     }
 
                     entry.Instructions.Add(new BaseEntry
                     {
-                        Origin = ins.operand.ToString(),
+                        Origin = ins.Operand.ToString(),
                         Translation = ""
                     });
                 }

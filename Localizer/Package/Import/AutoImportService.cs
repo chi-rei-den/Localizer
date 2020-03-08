@@ -95,49 +95,6 @@ namespace Localizer.Package.Import
 
         private void LoadPackages()
         {
-            void LoadPackedPackages()
-            {
-                var list = Directory.GetFiles(Localizer.DownloadPackageDirPath).ToList();
-                list.AddRange(Directory.GetFiles(Path.Combine(Terraria.Main.SavePath, "Mods"), "*.locpack"));
-                foreach (var file in list)
-                {
-                    try
-                    {
-                        var pack = _packedPackageLoad.Load(file, _fileLoad);
-                        if (pack == null)
-                        {
-                            return;
-                        }
-
-                        _packageManage.AddPackage(pack);
-                    }
-                    catch
-                    {
-                    }
-                }
-            }
-
-            void LoadSourcePackages()
-            {
-                foreach (var dir in new DirectoryInfo(Localizer.SourcePackageDirPath).GetDirectories())
-                {
-                    try
-                    {
-                        var pack = _sourcePackageLoad.Load(dir.FullName, _fileLoad);
-                        if (pack == null)
-                        {
-                            return;
-                        }
-
-                        _packageManage.AddPackage(pack);
-                        _packagePack.Pack(Path.Combine(dir.FullName, "Package.json"));
-                    }
-                    catch
-                    {
-                    }
-                }
-            }
-
             try
             {
                 _packageManage.PackageGroups = new List<IPackageGroup>();
@@ -165,24 +122,47 @@ namespace Localizer.Package.Import
             }
         }
 
-        private void Import(IMod mod = null)
+        private void LoadSourcePackages()
         {
-            void QueuePackageGroup(IPackageGroup packageGroup)
+            foreach (var dir in new DirectoryInfo(Localizer.SourcePackageDirPath).GetDirectories())
             {
-                if (packageGroup is null || !packageGroup.Mod.Enabled)
+                try
                 {
-                    return;
-                }
-
-                foreach (var p in packageGroup.Packages)
-                {
-                    if (p.Enabled)
+                    var pack = _sourcePackageLoad.Load(dir.FullName, _fileLoad);
+                    if (pack != null)
                     {
-                        _packageImport.Queue(p);
+                        _packageManage.AddPackage(pack);
+                        _packagePack.Pack(Path.Combine(dir.FullName, "Package.json"));
                     }
                 }
+                catch
+                {
+                }
             }
+        }
 
+        private void LoadPackedPackages()
+        {
+            var list = Directory.GetFiles(Localizer.DownloadPackageDirPath).ToList();
+            list.AddRange(Directory.GetFiles(Path.Combine(Terraria.Main.SavePath, "Mods"), "*.locpack"));
+            foreach (var file in list)
+            {
+                try
+                {
+                    var pack = _packedPackageLoad.Load(file, _fileLoad);
+                    if (pack != null)
+                    {
+                        _packageManage.AddPackage(pack);
+                    }
+                }
+                catch
+                {
+                }
+            }
+        }
+
+        private void Import(IMod mod = null)
+        {
             try
             {
                 _packageImport.Clear();
@@ -207,6 +187,22 @@ namespace Localizer.Package.Import
             }
             catch
             {
+            }
+        }
+
+        private void QueuePackageGroup(IPackageGroup packageGroup)
+        {
+            if (packageGroup is null || !packageGroup.Mod.Enabled)
+            {
+                return;
+            }
+
+            foreach (var p in packageGroup.Packages)
+            {
+                if (p.Enabled)
+                {
+                    _packageImport.Queue(p);
+                }
             }
         }
 

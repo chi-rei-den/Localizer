@@ -34,6 +34,7 @@ namespace Localizer.Package.Load
                     var mod = Localizer.GetWrappedMod(package.ModName);
                     if (mod == null)
                     {
+                        Utils.LogError($"Package Mod {package.ModName} not loaded!");
                         return null;
                     }
 

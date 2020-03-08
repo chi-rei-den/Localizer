@@ -186,7 +186,7 @@ namespace Localizer.UIs
                     Author = oldPack?.Author ?? "",
                     Description = oldPack?.Description ?? "",
                     Mod = mod,
-                    ModVersion = mod.Version
+                    ModVersion = Version.Parse($"{mod.Version.Major}.{mod.Version.Minor}.{mod.Version.Build}.{mod.Version.Revision}")
                 };
 
                 var dirPath = Utils.EscapePath(Path.Combine(Localizer.SourcePackageDirPath, name));
@@ -366,6 +366,7 @@ namespace Localizer.UIs
                             {
                                 continue;
                             }
+                            var existing = displayedPackages.FirstOrDefault(kvp => kvp.Key.StartsWith($"{p.ModName}_{p.Author}_"));
                             var update = displayedPackages.Any(kvp => kvp.Key.StartsWith($"{p.ModName}_{p.Author}_"));
                             var item = new ListBoxItem
                             {
