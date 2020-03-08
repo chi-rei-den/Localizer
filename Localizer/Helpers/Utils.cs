@@ -16,6 +16,7 @@ using Localizer.Helpers;
 using Mono.Cecil;
 using MonoMod.Utils;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 using Terraria.ModLoader;
 using File = System.IO.File;
 
@@ -150,7 +151,15 @@ namespace Localizer
         {
             using (var sr = new StreamReader(stream))
             {
-                return JsonConvert.DeserializeObject<T>(sr.ReadToEnd());
+                var content = sr.ReadToEnd();
+                try
+                {
+                    return JsonConvert.DeserializeObject<T>(content, new VersionConverter());
+                }
+                catch
+                {
+                    return JsonConvert.DeserializeObject<T>(content);
+                }
             }
         }
 

@@ -22,6 +22,11 @@ namespace Localizer.DataModel
         string ModName { get; set; }
 
         /// <summary>
+        ///     The localized name of the mod.
+        /// </summary>
+        string LocalizedModName { get; set; }
+
+        /// <summary>
         ///     Description of the package.
         /// </summary>
         string Description { get; set; }
@@ -30,6 +35,11 @@ namespace Localizer.DataModel
         ///     Version of the package.
         /// </summary>
         Version Version { get; set; }
+
+        /// <summary>
+        ///     Version of the targeted mod.
+        /// </summary>
+        Version ModVersion { get; set; }
 
         /// <summary>
         ///     Culture of the package.
@@ -45,7 +55,6 @@ namespace Localizer.DataModel
         ///     Files this package including.
         /// </summary>
         ICollection<IFile> Files { get; set; }
-
 
         int Count { get; }
 

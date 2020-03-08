@@ -1,12 +1,19 @@
 using System;
 using System.Reflection;
+using Localizer.DataModel;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria.UI;
+using static Localizer.Lang;
 
 namespace Localizer.Helpers
 {
     public static class UI
     {
+        public static string GetPkgLabelText(IPackage p)
+        {
+            return _("PackageDisplay", _(p.Enabled ? "PackageEnabled" : "PackageDisabled"), p.Name, p.Version, p.Author);
+        }
+
         public static void ShowInfoMessage(string message, int gotoMenu, UIState state = null, string altButtonText = "", Action altButtonAction = null)
         {
             var infoMsgUI = GetModLoaderUI("infoMessage") ?? throw new Exception("Cannot Find infoMessage field");

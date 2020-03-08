@@ -14,15 +14,12 @@ using Localizer.Package.Import;
 using Localizer.UIs;
 using log4net;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using MonoMod.RuntimeDetour.HookGen;
 using Ninject;
 using Terraria;
-using Terraria.GameContent.UI.Elements;
 using Terraria.Localization;
 using Terraria.ModLoader;
 using Terraria.ModLoader.Core;
-using Terraria.UI.Chat;
 using static Localizer.Lang;
 using File = System.IO.File;
 
@@ -110,95 +107,7 @@ namespace Localizer
             Hooks.InvokeBeforeLoad();
             Kernel.Get<RefreshLanguageService>();
 
-            var onInit = "Terraria.ModLoader.UI.UIModItem".Type().Method("OnInitialize");
-            Harmony.Patch(onInit, postfix: new HarmonyMethod(NoroHelper.MethodInfo(() => UIModItemPostfix(null))));
-
-            var drawSelf = "Terraria.ModLoader.UI.UIModItem".Type().Method("DrawSelf");
-            Harmony.Patch(drawSelf, postfix: new HarmonyMethod(NoroHelper.MethodInfo(() => DrawSelfPostfix(null, null))));
-
-            var populateFromJson = "Terraria.ModLoader.UI.ModBrowser.UIModBrowser".Type().Method("PopulateFromJson");
-            Harmony.Patch(populateFromJson, prefix: new HarmonyMethod(NoroHelper.MethodInfo(() => PopulateFromJsonPrefix())),
-                postfix: new HarmonyMethod(NoroHelper.MethodInfo(() => PopulateFromJsonPostfix())));
-        }
-
-        private static void PopulateFromJsonPrefix()
-        {
-            LoadedLocalizer.File.SetField("<name>k__BackingField", "Localizer");
-            LoadedLocalizer.SetField("name", "Localizer");
-        }
-
-        private static void PopulateFromJsonPostfix()
-        {
-            LoadedLocalizer.File.SetField("<name>k__BackingField", "!Localizer");
-            LoadedLocalizer.SetField("name", "!Localizer");
-        }
-
-        private static int frameCounter;
-        private static void DrawSelfPostfix(object __instance, SpriteBatch spriteBatch)
-        {
-            var current = __instance as UIPanel;
-            var modName = __instance.ValueOf("_mod")?.ValueOf("Name")?.ToString();
-            var modNameHovering = current.ValueOf<UIText>("_modName")?.IsMouseHovering ?? false;
-            if (modName == "!Localizer")
-            {
-                frameCounter++;
-
-                current.ValueOf<UIText>("_modName")
-                       .SetField("_text",
-                                 $"{Utils.AsRainbow("Localizer", frameCounter)} v{current.ValueOf("_mod").ValueOf("modFile").ValueOf("version")}");
-
-                var tooltip = "";
-                if (modNameHovering)
-                {
-                    var modAuthor = current.ValueOf("_mod")?.ValueOf("properties").ValueOf<string>("author");
-                    if (modAuthor.Length > 0)
-                    {
-                        tooltip = _("OpenUI",
-                            Language.GetTextValue("tModLoader.ModsByline", Utils.AsRainbow(modAuthor, frameCounter + 150, 9)),
-                            $"{Utils.AsRainbow("Localizer", frameCounter)}");
-                    }
-                }
-
-                if (!string.IsNullOrEmpty(tooltip))
-                {
-                    current.SetField("_tooltip", "");
-                    var snippets = ChatManager.ParseMessage(tooltip, Color.White).ToArray();
-                    var x = ChatManager.GetStringSize(Main.fontMouseText, snippets, Vector2.One).X;
-                    var pos = Main.MouseScreen + new Vector2(16f);
-                    pos.X = Math.Min(pos.X, Main.screenWidth - x - 16f);
-                    pos.Y = Math.Min(pos.Y, Main.screenHeight - 30);
-                    ChatManager.DrawColorCodedStringWithShadow(spriteBatch, Main.fontMouseText,
-                      snippets, pos, 0, Vector2.Zero, Vector2.One, out var _);
-                }
-            }
-            else
-            {
-                if (modNameHovering)
-                {
-                    // TODO: If any package loaded
-                    current.SetField("_tooltip", "");
-                }
-            }
-        }
-
-        private static void UIModItemPostfix(object __instance)
-        {
-            var modName = __instance.ValueOf("_mod")?.ValueOf("Name")?.ToString();
-            if (modName == "!Localizer")
-            {
-                __instance.ValueOf<UIText>("_modName").OnClick += (evt, element) =>
-                {
-                    if (PackageUI != null)
-                    {
-                        PackageUI.Visible = true;
-                    }
-                    else
-                    {
-                        PackageUI = new MainWindow();
-                        Instance.UIHost.Desktop.AddWindow(PackageUI);
-                    }
-                };
-            }
+            UIModsPatch.Patch();
         }
 
         public override void PostSetupContent()

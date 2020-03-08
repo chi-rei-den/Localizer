@@ -145,6 +145,7 @@
     <Compile Include="UIs\MainWindow.cs" />
     <Compile Include="UIs\UIHost.cs" />
     <Compile Include="UIs\Stylesheet.cs" />
+    <Compile Include="UIs\UIModsPatch.cs" />
     <Compile Include="UIs\UIRenderer.cs" />
     <Compile Include="UIs\UIDesktop.cs" />
     <Compile Include="UIs\Views\ManagerView.cs" />

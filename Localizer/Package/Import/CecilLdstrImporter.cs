@@ -119,10 +119,12 @@ namespace Localizer.Package.Import
                 return;
             }
 
-            var ins = il.FirstOrDefault(i => i?.Operand?.ToString() == o);
-            if (ins != null)
+            foreach (var i in il)
             {
-                ins.Operand = n;
+                if (i.OpCode == OpCodes.Ldstr && i?.Operand?.ToString() == o)
+                {
+                    i.Operand = n;
+                }
             }
         }
 
