@@ -43,7 +43,7 @@ namespace LocalizerTest.Package.Update
 
             oldFile.Translations.Count.Should().Be(5);
             oldFile.Translations["Key1"].Origin.Should().Be("AnotherOrigin1");
-            oldFile.Translations["Key1"].Translation.Should().Be("Translation1");
+            oldFile.Translations["Key1"].Translation.Should().Be("AnotherTranslation1");
             oldFile.Translations["Key2"].Origin.Should().Be("Origin2");
             oldFile.Translations["Key2"].Translation.Should().Be("Translation2");
             oldFile.Translations["Key3"].Origin.Should().Be("Origin3");

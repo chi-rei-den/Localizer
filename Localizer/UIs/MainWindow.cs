@@ -186,7 +186,7 @@ namespace Localizer.UIs
                     Author = oldPack?.Author ?? "",
                     Description = oldPack?.Description ?? "",
                     Mod = mod,
-                    ModVersion = Version.Parse($"{mod.Version.Major}.{mod.Version.Minor}.{mod.Version.Build}.{mod.Version.Revision}")
+                    ModVersion = Version.Parse($"{Math.Max(mod.Version.Major, 0)}.{Math.Max(mod.Version.Minor, 0)}.{Math.Max(mod.Version.Build, 0)}.{Math.Max(mod.Version.Revision, 0)}")
                 };
 
                 var dirPath = Utils.EscapePath(Path.Combine(Localizer.SourcePackageDirPath, name));

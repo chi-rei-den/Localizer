@@ -28,6 +28,7 @@ namespace Localizer.Package.Update
                         logger.Change($"{newEntryKey}\r\n[Old: \"{o.Origin}\"]\r\n => \r\n[New: \"{n.Origin}\"]\r\n");
 
                         o.Origin = n.Origin;
+                        o.Translation = n.Translation;
                     }
                 }
                 else
