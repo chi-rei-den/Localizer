@@ -128,9 +128,9 @@ namespace LocalizerTest.Package.Update
 
             oldFile.Items.Count.Should().Be(4);
             oldFile.Items["Key1"].Name.Origin.Should().Be("AnotherNameOrigin1");
-            oldFile.Items["Key1"].Name.Translation.Should().Be("NameTranslation1");
+            oldFile.Items["Key1"].Name.Translation.Should().Be("AnotherNameTranslation1");
             oldFile.Items["Key1"].Tooltip.Origin.Should().Be("AnotherTooltipOrigin1");
-            oldFile.Items["Key1"].Tooltip.Translation.Should().Be("TooltipTranslation1");
+            oldFile.Items["Key1"].Tooltip.Translation.Should().Be("AnotherTooltipTranslation1");
             oldFile.Items["Key3"].Name.Origin.Should().Be("NameOrigin3");
             oldFile.Items["Key3"].Name.Translation.Should().Be("NameTranslation3");
             oldFile.Items["Key3"].Tooltip.Origin.Should().Be("TooltipOrigin3");
@@ -179,9 +179,9 @@ namespace LocalizerTest.Package.Update
 
             logger1.Changed.Count.Should().Be(2);
             oldEntry1.Name.Origin.Should().Be("AnotherNameOrigin");
-            oldEntry1.Name.Translation.Should().Be("NameTranslation");
+            oldEntry1.Name.Translation.Should().Be("AnotherNameTranslation");
             oldEntry1.Tooltip.Origin.Should().Be("AnotherTooltipOrigin");
-            oldEntry1.Tooltip.Translation.Should().Be("TooltipTranslation");
+            oldEntry1.Tooltip.Translation.Should().Be("AnotherTooltipTranslation");
 
 
             var logger2 = new UpdateLogger();
