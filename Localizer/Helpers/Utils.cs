@@ -86,7 +86,7 @@ namespace Localizer
         public static MethodDefinition FindMethodByID(ModuleDefinition m, string findableName)
         {
             var cecilName = genericTypeMatch.Replace(findableName, "<$1>");
-            foreach (var t in m.Types)
+            foreach (var t in m.GetTypes())
             {
                 foreach (var method in t.Methods)
                 {
