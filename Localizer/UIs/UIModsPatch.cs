@@ -22,7 +22,10 @@ namespace Localizer.UIs
         {
             ReloadRequired = false;
             frameCounter = 0;
-            ModsExtraInfo = new Dictionary<string, string>();
+            if (ModsExtraInfo == null)
+            {
+                ModsExtraInfo = new Dictionary<string, string>();
+            }
 
             var refHolder = false;
             var reloadRequired = "Terraria.ModLoader.Config.ConfigManager".Type().Method("ModNeedsReload");

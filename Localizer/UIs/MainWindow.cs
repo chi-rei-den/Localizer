@@ -203,7 +203,7 @@ namespace Localizer.UIs
 
                 if (enabledPackages != null && enabledPackages.Count > 0)
                 {
-                    oldPack.ModVersion = package.Mod.Version;
+                    oldPack.ModVersion = package.ModVersion;
                     var updateLogger = Localizer.Kernel.Get<IUpdateLogger>();
                     updateLogger.Init($"{package.Name}-{Utils.DateTimeToFileName(DateTime.Now)}");
 
@@ -317,8 +317,12 @@ namespace Localizer.UIs
 
             lock (refreshLock)
             {
-                UIModsPatch.ModsExtraInfo = pkgManager.PackageGroups.ToDictionary(key => key.Mod.Name,
-                    value => string.Join(Environment.NewLine, value.Packages.Select(UI.GetPkgLabelText)));
+                UIModsPatch.ModsExtraInfo = pkgManager.PackageGroups.ToDictionary(group => group.Mod.Name,
+                     group =>
+                     {
+                         var localizedModName = group.Packages.FirstOrDefault(pack => !string.IsNullOrWhiteSpace(pack.LocalizedModName)).LocalizedModName;
+                         return localizedModName + Environment.NewLine + string.Join(Environment.NewLine, group.Packages.Select(UI.GetPkgLabelText));
+                     });
 
                 var modName = _modList.SelectedItem?.Text ?? "";
                 try
@@ -366,8 +370,15 @@ namespace Localizer.UIs
                             {
                                 continue;
                             }
-                            var existing = displayedPackages.FirstOrDefault(kvp => kvp.Key.StartsWith($"{p.ModName}_{p.Author}_"));
                             var update = displayedPackages.Any(kvp => kvp.Key.StartsWith($"{p.ModName}_{p.Author}_"));
+                            if (update)
+                            {
+                                var existing = displayedPackages.FirstOrDefault(kvp => kvp.Key.StartsWith($"{p.ModName}_{p.Author}_")).Key.Substring($"{p.ModName}_{p.Author}_".Length);
+                                if (Version.TryParse(existing, out var localVer) && localVer >= p.Version)
+                                {
+                                    update = false;
+                                }
+                            }
                             var item = new ListBoxItem
                             {
                                 Text = _("PackageDisplay", _(update ? "PackageUpdate" : "PackageOnline"), p.Name, p.Version, p.Author),
