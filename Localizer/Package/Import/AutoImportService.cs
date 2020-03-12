@@ -116,8 +116,8 @@ namespace Localizer.Package.Import
                 UIModsPatch.ModsExtraInfo = _packageManage.PackageGroups.ToDictionary(group => group.Mod.Name,
                      group =>
                      {
-                         var localizedModName = group.Packages.FirstOrDefault(pack => !string.IsNullOrWhiteSpace(pack.LocalizedModName)).LocalizedModName;
-                         return localizedModName + Environment.NewLine + string.Join(Environment.NewLine, group.Packages.Select(UI.GetPkgLabelText));
+                         var localizedModName = group.Packages.FirstOrDefault(pack => !string.IsNullOrWhiteSpace(pack.LocalizedModName))?.LocalizedModName;
+                         return $"{localizedModName}{Environment.NewLine}{string.Join(Environment.NewLine, group.Packages.Select(UI.GetPkgLabelText))}";
                      });
             }
             catch (Exception e)
