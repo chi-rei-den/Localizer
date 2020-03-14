@@ -122,7 +122,7 @@ namespace Localizer
             {
                 using (var sw = new StreamWriter(fs))
                 {
-                    sw.Write(JsonConvert.SerializeObject(obj, indent ? Formatting.Indented : Formatting.None));
+                    sw.Write(JsonConvert.SerializeObject(obj, indent ? Formatting.Indented : Formatting.None, new VersionConverter()));
                 }
             }
         }
