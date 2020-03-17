@@ -26,7 +26,7 @@ namespace Localizer.Helpers
                     return;
                 }
 
-                if (modTranslation.GetDefault() != null && entry.Translation != null &&
+                if (modTranslation.GetDefault() != null && !string.IsNullOrEmpty(entry.Translation) &&
                     entry.Translation != modTranslation.Key)
                 {
                     modTranslation.AddTranslation(Localizer.CultureInfoToGameCulture(culture), entry.Translation);
