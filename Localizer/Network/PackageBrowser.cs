@@ -11,7 +11,7 @@ namespace Localizer.Network
 #if DEBUG
         public string serverURL = "http://127.0.0.1:8000/api/";
 #else
-        public string serverURL = "http://www.localizer.axeel.moe/api/";
+        public string serverURL = "https://mirror.sgkoi.dev/Localizer/";
 #endif
 
         private Dictionary<IPackage, int> packages = new Dictionary<IPackage, int>();
@@ -22,7 +22,7 @@ namespace Localizer.Network
 
             var result = new List<IPackage>();
 
-            var response = Utils.GET($"{serverURL}pkg/list");
+            var response = Utils.GET($"{serverURL}List");
             var jArray = JArray.Parse(Utils.GetResponseBody(response));
 
             foreach (JObject jo in jArray)
@@ -64,7 +64,7 @@ namespace Localizer.Network
                 return null;
             }
 
-            return $"{serverURL}pkg/download/{packages[package]}";
+            return $"{serverURL}Download/{packages[package]}";
         }
 
         public void Dispose()
