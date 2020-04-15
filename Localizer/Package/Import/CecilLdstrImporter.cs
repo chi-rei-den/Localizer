@@ -34,7 +34,7 @@ namespace Localizer.Package.Import
             try
             {
                 var instance = Localizer.Kernel.Get<CecilLdstrImporter>();
-                if (!instance.Importing)
+                if (!instance.Importing || !Localizer.Config.ImportLdstr)
                 {
                     return;
                 }

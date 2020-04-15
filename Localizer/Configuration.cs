@@ -4,6 +4,8 @@ namespace Localizer
     {
         public bool AutoImport { get; set; } = true;
 
+        public bool ImportLdstr { get; set; } = true;
+
         public AutoImportType AutoImportType { get; set; } = AutoImportType.All;
 
         public bool ShowUI { get; set; } = true;
