@@ -18,8 +18,6 @@ namespace Localizer.Package.Export
         private static List<MethodBase> _blackList1 = new List<MethodBase>
         {
             GetMethodBase<ModTranslation>(
-                "System.Void Terraria.ModLoader.ModTranslation::SetDefault(System.String)"),
-            GetMethodBase<ModTranslation>(
                 "System.String Terraria.ModLoader.ModTranslation::GetTranslation(System.String)"),
             GetMethodBase<ModTranslation>(
                 "System.Void Terraria.ModLoader.ModTranslation::AddTranslation(System.Int32,System.String)"),
