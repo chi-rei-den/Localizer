@@ -19,8 +19,7 @@ namespace Localizer
         public string[] ModListMirror { get; set; } = new[]
         {
             "mirror.sgkoi.dev",
-            "mirror4.sgkoi.dev",
-            "mirror2.sgkoi.dev",
+            "mirror7.sgkoi.dev",
             "mirror3.sgkoi.dev",
             "mirror5.sgkoi.dev",
         };
@@ -28,17 +27,15 @@ namespace Localizer
         public string[] ModDownloadMirror { get; set; } = new[]
         {
             "mirror.sgkoi.dev",
-            "mirror4.sgkoi.dev",
+            "mirror7.sgkoi.dev",
             "mirror3.sgkoi.dev",
-            "mirror2.sgkoi.dev",
             "mirror5.sgkoi.dev",
         };
 
         public string[] ModDescMirror { get; set; } = new[]
         {
             "mirror.sgkoi.dev",
-            "mirror4.sgkoi.dev",
-            "mirror2.sgkoi.dev",
+            "mirror7.sgkoi.dev",
             "mirror5.sgkoi.dev",
         };
     }
