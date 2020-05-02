@@ -239,14 +239,19 @@ namespace Localizer
 
         #region Network
 
+        internal static string UserAgent() {
+            return $"Localizer ({Environment.OSVersion}; rv: {Localizer.Instance.Version}; {(Environment.Is64BitOperatingSystem ? "x64" : "x86")}) tModLoader/{ModLoader.versionTag} ({(Environment.Is64BitOperatingSystem ? "x64" : "x86")})";
+        }
+
         public static HttpWebResponse GET(string url)
         {
             var request = (HttpWebRequest)WebRequest.Create(url);
             request.Method = "GET";
             request.ContentType = "application/json;charset=UTF-8";
             request.Accept = "application/vnd.github.v3+json";
-            request.UserAgent = "Localizer";
+            request.UserAgent = UserAgent();
             request.Timeout = 9000;
+            request.Headers["Accept-Language"] = Terraria.Localization.LanguageManager.Instance.ActiveCulture.CultureInfo.ToString();
 
             return (HttpWebResponse)request.GetResponse();
         }

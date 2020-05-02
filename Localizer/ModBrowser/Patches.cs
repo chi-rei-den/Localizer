@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Text.RegularExpressions;
 using Harmony;
 using Terraria.ModLoader;
 
@@ -51,14 +52,12 @@ namespace Localizer.ModBrowser
             }
         }
 
+        private static readonly Regex _defaultMirror = new Regex(@"mirror(?:\d*)?\.sgkoi\.dev");
         private static string GetModListURL()
         {
             var mirror = Localizer.Config.ModListMirror[0];
             switch (mirror)
             {
-                case "mirror.sgkoi.dev":
-                case "mirror5.sgkoi.dev":
-                    return $"https://{mirror}/tModLoader/listmods.php";
                 case "mirror2.sgkoi.dev":
                     return "http://www.mb.axeel.moe/tModLoader/listmods.php";
                 case "mirror3.sgkoi.dev":
@@ -66,7 +65,7 @@ namespace Localizer.ModBrowser
                 case "mirror4.sgkoi.dev":
                     return "http://www.mb2.axeel.moe:25555/tModLoader/listmods.php";
                 default:
-                    return mirror;
+                    return _defaultMirror.IsMatch(mirror) ? $"https://{mirror}/tModLoader/listmods.php" : mirror;
             }
         }
 
@@ -75,9 +74,6 @@ namespace Localizer.ModBrowser
             var mirror = Localizer.Config.ModDownloadMirror[0];
             switch (mirror)
             {
-                case "mirror.sgkoi.dev":
-                case "mirror5.sgkoi.dev":
-                    return $"https://{mirror}/tModLoader/download.php?Down=mods/";
                 case "mirror2.sgkoi.dev":
                     return "http://www.mb.axeel.moe/tModLoader/download.php?Down=mods/";
                 case "mirror3.sgkoi.dev":
@@ -85,7 +81,7 @@ namespace Localizer.ModBrowser
                 case "mirror4.sgkoi.dev":
                     return "http://www.mb2.axeel.moe:25555/tModLoader/download.php?Down=mods/";
                 default:
-                    return mirror;
+                    return _defaultMirror.IsMatch(mirror) ? $"https://{mirror}/tModLoader/download.php?Down=mods/" : mirror;
             }
         }
 
@@ -94,15 +90,12 @@ namespace Localizer.ModBrowser
             var mirror = Localizer.Config.ModDescMirror[0];
             switch (mirror)
             {
-                case "mirror.sgkoi.dev":
-                case "mirror5.sgkoi.dev":
-                    return $"https://{mirror}/tModLoader/moddescription.php";
                 case "mirror2.sgkoi.dev":
                     return "http://www.mb.axeel.moe/tModLoader/moddescription.php";
                 case "mirror4.sgkoi.dev":
                     return "http://www.mb2.axeel.moe:25555/tModLoader/moddescription.php";
                 default:
-                    return mirror;
+                    return _defaultMirror.IsMatch(mirror) ? $"https://{mirror}/tModLoader/moddescription.php" : mirror;
             }
         }
 
