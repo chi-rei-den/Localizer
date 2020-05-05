@@ -25,7 +25,7 @@ namespace Localizer.Package.Import
         public CecilLdstrImporter()
         {
             _harmony = HarmonyInstance.Create(nameof(CecilLdstrImporter));
-            _harmony.Patch("Terraria.ModLoader.Core.AssemblyManager".Type().Method("GetModAssembly"),
+            _harmony.Patch("Terraria.ModLoader.Core.AssemblyManager", "GetModAssembly",
                            postfix: new HarmonyMethod(typeof(CecilLdstrImporter).Method(nameof(PostGetModAssembly))));
         }
 

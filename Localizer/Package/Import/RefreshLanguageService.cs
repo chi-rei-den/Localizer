@@ -30,7 +30,7 @@ namespace Localizer.Package.Import
             items = new List<WeakReference>();
 
             _harmony = HarmonyInstance.Create(nameof(RefreshLanguageService));
-            _harmony.Patch(typeof(ModItem).GetConstructors()[0], null, new HarmonyMethod(NoroHelper.MethodInfo(() => OnModItemCtor(null))));
+            _harmony.Patch(typeof(ModItem).GetConstructors()[0], null, NoroHelper.HarmonyMethod(() => OnModItemCtor(null)));
         }
 
         private static void OnModItemCtor(ModItem __instance)

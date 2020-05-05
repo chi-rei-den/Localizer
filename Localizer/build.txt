@@ -1,5 +1,5 @@
 author = Chireiden Team
-version = 1.5.0.16
+version = 1.5.0.17
 displayName = Localizer
 hideCode = true
 hideResources = false

@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using Harmony;
 
 namespace System.Reflection
 {
@@ -8,6 +9,11 @@ namespace System.Reflection
     {
         public const BindingFlags AnyVisibility = BindingFlags.Public | BindingFlags.NonPublic;
         public const BindingFlags Any = AnyVisibility | BindingFlags.Static | BindingFlags.Instance;
+
+        public static HarmonyMethod HarmonyMethod(Expression<Action> expression)
+        {
+            return new HarmonyMethod((expression.Body as MethodCallExpression)?.Method);
+        }
 
         public static MethodInfo MethodInfo(Expression<Action> expression)
         {
