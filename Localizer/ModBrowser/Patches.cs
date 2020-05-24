@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Reflection;
+using System.Reflection.Emit;
 using System.Text.RegularExpressions;
 using Harmony;
 using Terraria.Localization;
@@ -84,6 +85,12 @@ namespace Localizer.ModBrowser
 
                     #region Error Report
                     // No plan
+                    #endregion
+
+                    #region ModCompile
+                    HarmonyInstance.Patch("Terraria.ModLoader.UI.UIDeveloperModeHelp", "DownloadModCompile",
+                        transpiler: NoroHelper.HarmonyMethod(() => ModCompileTranspiler(null)));
+                    Utils.LogInfo("DownloadModCompile Patched");
                     #endregion
 
                     Utils.LogInfo("ModBrowser Patched");
@@ -183,6 +190,21 @@ namespace Localizer.ModBrowser
             var result = instructions.ToList();
             ReplaceLdstr("http://javid.ddns.net/tModLoader/download.php?Down=mods/", GetModDownloadURL(), result);
             ReplaceLdstr("http://javid.ddns.net/tModLoader/moddescription.php", GetModDescURL(), result);
+            return result;
+        }
+
+        private static IEnumerable<CodeInstruction> ModCompileTranspiler(IEnumerable<CodeInstruction> instructions)
+        {
+            var result = instructions.ToList();
+            for (int i = 0; i < result.Count; i++)
+            {
+                if (result[i].opcode == OpCodes.Ldstr && $"{result[i].operand}" == "https://github.com/tModLoader/tModLoader/releases/download/")
+                {
+                    result[i].operand = "https://mirror.sgkoi.dev/direct";
+                    result[i + 1] = new CodeInstruction(OpCodes.Ldstr, "");
+                }
+            }
+
             return result;
         }
 

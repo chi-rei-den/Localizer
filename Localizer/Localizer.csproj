@@ -1,45 +1,12 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+<Project Sdk="Microsoft.NET.Sdk">
   <Import Project="$(USERPROFILE)\Documents\My Games\Terraria\ModLoader\references\tModLoader.targets" />
   <PropertyGroup>
-    <ProjectGuid>{95D54B28-B67B-4248-B83A-B5E5426C3806}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Localizer</RootNamespace>
     <AssemblyName>Localizer</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <Deterministic>true</Deterministic>
-    <TargetFrameworkProfile />
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <OutputPath>bin\Release\</OutputPath>
+    <TargetFramework>net45</TargetFramework>
     <PlatformTarget>x86</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <OutputPath>bin\Debug\</OutputPath>
-    <PlatformTarget>x86</PlatformTarget>
-  </PropertyGroup>
-  <ItemGroup>
-    <Reference Include="mscorlib" />
-    <Reference Include="System" />
-    <Reference Include="System.IO.Compression" />
-    <Reference Include="System.Net.Http.WebRequest" />
-    <Reference Include="System.Numerics" />
-    <Reference Include="Microsoft.CSharp" />
-  </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Lib.Harmony">
       <Version>1.2.0.1</Version>
@@ -47,111 +14,7 @@
     <PackageReference Include="Ninject">
       <Version>3.3.4</Version>
     </PackageReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Attributes\OperationTimingAttribute.cs" />
-    <Compile Include="Attributes\ModTranslationOwnerFieldAttribute.cs" />
-    <Compile Include="Attributes\ModTranslationPropAttribute.cs" />
-    <Compile Include="Configuration.cs" />
-    <Compile Include="DataModel\Default\BaseEntry.cs" />
-    <Compile Include="DataModel\Default\BasicNPCFile.cs" />
-    <Compile Include="DataModel\Default\BasicPrefixFile.cs" />
-    <Compile Include="DataModel\Default\BasicProjectileFile.cs" />
-    <Compile Include="DataModel\Default\AttributeFile.cs" />
-    <Compile Include="DataModel\Default\ExportConfig.cs" />
-    <Compile Include="DataModel\Default\File.cs" />
-    <Compile Include="DataModel\Default\LoadedModWrapper.cs" />
-    <Compile Include="DataModel\Default\ModWrapper.cs" />
-    <Compile Include="DataModel\Default\Package.cs" />
-    <Compile Include="DataModel\Default\PackageGroup.cs" />
-    <Compile Include="DataModel\Default\PackageGroupState.cs" />
-    <Compile Include="DataModel\Default\GitHubUpdateInfo.cs" />
-    <Compile Include="DataModel\IExportConfig.cs" />
-    <Compile Include="DataModel\Default\BasicBuffFile.cs" />
-    <Compile Include="DataModel\Default\CustomModTranslationFile.cs" />
-    <Compile Include="DataModel\Default\BasicItemFile.cs" />
-    <Compile Include="DataModel\Default\LdstrFile.cs" />
-    <Compile Include="DataModel\IEntry.cs" />
-    <Compile Include="DataModel\IFile.cs" />
-    <Compile Include="DataModel\IMod.cs" />
-    <Compile Include="DataModel\IPackage.cs" />
-    <Compile Include="DataModel\IPackageGroup.cs" />
-    <Compile Include="DataModel\IUpdateInfo.cs" />
-    <Compile Include="Enums\AutoImportType.cs" />
-    <Compile Include="Enums\LogLevel.cs" />
-    <Compile Include="Enums\OperationTiming.cs" />
-    <Compile Include="Enums\PackageType.cs" />
-    <Compile Include="Helpers\Extensions.cs" />
-    <Compile Include="Helpers\Reflection.cs" />
-    <Compile Include="Helpers\UI.cs" />
-    <Compile Include="Hooks.cs" />
-    <Compile Include="Disposable.cs" />
-    <Compile Include="Lang\Lang.cs" />
-    <Compile Include="LocalizerKernel.cs" />
-    <Compile Include="Localizer.cs" />
-    <Compile Include="ModBrowser\Patches.cs" />
-    <Compile Include="Modules\DefaultNetworkModule.cs" />
-    <Compile Include="Modules\DefaultPackageModule.cs" />
-    <Compile Include="LocalizerPlugin.cs" />
-    <Compile Include="Network\DownloadManager.cs" />
-    <Compile Include="Network\GitHubModUpdate.cs" />
-    <Compile Include="Network\IDownloadManagerService.cs" />
-    <Compile Include="Network\IPackageBrowserService.cs" />
-    <Compile Include="Network\IUpdateService.cs" />
-    <Compile Include="Network\PackageBrowser.cs" />
-    <Compile Include="Package\Export\BasicFileExport.cs" />
-    <Compile Include="Package\Export\CustomModTranslationFileExport.cs" />
-    <Compile Include="Package\Export\IFileExportService.cs" />
-    <Compile Include="Package\Export\IPackageExportService.cs" />
-    <Compile Include="Package\Export\LdstrFileExport.cs" />
-    <Compile Include="Package\Export\PackageExport.cs" />
-    <Compile Include="Package\Import\AutoImportService.cs" />
-    <Compile Include="Package\Import\BasicImporter.cs" />
-    <Compile Include="Package\Import\CecilLdstrImporter.cs" />
-    <Compile Include="Package\Import\CustomModTranslationImporter.cs" />
-    <Compile Include="Package\Import\FileImporter.cs" />
-    <Compile Include="Package\Import\HarmonyLdstrImporter.cs" />
-    <Compile Include="Package\Import\IPackageImportService.cs" />
-    <Compile Include="Package\Import\LdstrImporterBase.cs" />
-    <Compile Include="Package\Import\MonoModLdstrImporter.cs" />
-    <Compile Include="Package\Import\PackageImportService.cs" />
-    <Compile Include="Package\Import\RefreshLanguageService.cs" />
-    <Compile Include="Package\IPackageManageService.cs" />
-    <Compile Include="Package\Load\IFileLoadService.cs" />
-    <Compile Include="Package\Load\IPackageLoadService.cs" />
-    <Compile Include="Package\Load\JsonFileLoad.cs" />
-    <Compile Include="Package\Load\PackedPackageLoad.cs" />
-    <Compile Include="Package\Load\SourcePackageLoad.cs" />
-    <Compile Include="Package\PackageManageService.cs" />
-    <Compile Include="Package\Pack\IPackagePackService.cs" />
-    <Compile Include="Package\Pack\ZipPackagePackService.cs" />
-    <Compile Include="Package\Save\IFileSaveService.cs" />
-    <Compile Include="Package\Save\IPackageSaveService.cs" />
-    <Compile Include="Package\Save\JsonFileSaveService.cs" />
-    <Compile Include="Package\Save\PackageSaveService.cs" />
-    <Compile Include="Package\Update\BasicFileUpdater.cs" />
-    <Compile Include="Package\Update\CustomModTranslationUpdater.cs" />
-    <Compile Include="Package\Update\FileUpdater.cs" />
-    <Compile Include="Package\Update\IPackageUpdateService.cs" />
-    <Compile Include="Package\Update\IUpdateLogger.cs" />
-    <Compile Include="Package\Update\LdstrFileUpdater.cs" />
-    <Compile Include="Package\Update\PackageUpdateService.cs" />
-    <Compile Include="Package\Update\PlainUpdateLogger.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Helpers\Utils.cs" />
-    <Compile Include="UIs\Components\BasicListBox.cs" />
-    <Compile Include="UIs\Components\LabelListBoxItem.cs" />
-    <Compile Include="UIs\Components\TitleBar.cs" />
-    <Compile Include="UIs\Components\BasicWindow.cs" />
-    <Compile Include="UIs\MainWindow.cs" />
-    <Compile Include="UIs\UIHost.cs" />
-    <Compile Include="UIs\Stylesheet.cs" />
-    <Compile Include="UIs\UIModsPatch.cs" />
-    <Compile Include="UIs\UIRenderer.cs" />
-    <Compile Include="UIs\UIDesktop.cs" />
-    <Compile Include="UIs\Views\ManagerView.cs" />
-    <Compile Include="UIs\Views\ReloadPluginView.cs" />
-    <Compile Include="UIs\Views\TestView.cs" />
+    <PackageReference Include="tModLoader.CodeAssist" Version="0.1.*" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Squid\Squid.csproj">
@@ -159,7 +22,12 @@
       <Name>Squid</Name>
     </ProjectReference>
   </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <ItemGroup>
+    <Folder Include="Properties\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="System.IO.Compression" />
+  </ItemGroup>
   <Target Name="BuildMod" AfterTargets="Build">
     <Exec Command="mkdir $(ProjectDir)lib" Condition="!Exists('$(ProjectDir)lib')" />
     <Exec Command="copy $(OutDir)0Harmony.dll $(ProjectDir)lib\0Harmony.dll" />
