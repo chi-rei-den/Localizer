@@ -23,9 +23,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Properties\" />
-  </ItemGroup>
-  <ItemGroup>
     <Reference Include="System.IO.Compression" />
   </ItemGroup>
   <Target Name="BuildMod" AfterTargets="Build">
