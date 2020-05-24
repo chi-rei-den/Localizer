@@ -50,4 +50,6 @@ jobs:
           path: Artifact
 
       - name: Run Tests
-        run: '& "$ENV:UserProfile\.nuget\packages\xunit.runner.console\2.4.1\tools\net472\xunit.console.x86.exe" ".\LocalizerTest\bin\Release\net472\LocalizerTest.dll"'
+        run: |
+          copy .\LocalizerTest\bin\Release\net472\tModLoader.exe .\LocalizerTest\bin\Release\net472\Terraria.exe
+          & "$ENV:UserProfile\.nuget\packages\xunit.runner.console\2.4.1\tools\net472\xunit.console.x86.exe" ".\LocalizerTest\bin\Release\net472\LocalizerTest.dll"
