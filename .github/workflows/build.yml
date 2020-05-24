@@ -10,11 +10,11 @@ jobs:
         with:
           submodules: recursive
 
-      - name: Install NuGet client
-        uses: warrenbuckley/Setup-Nuget@v1
+      - name: Installer NuGet client
+        uses: nuget/setup-nuget@v1
 
       - name: Setup tModLoader
-        uses: chi-rei-den/ModLoaderTools@v1
+        uses: chi-rei-den/ModLoaderTools@v1.1
         with:
           command: setup
 
