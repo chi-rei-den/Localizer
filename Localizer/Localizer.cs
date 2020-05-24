@@ -54,7 +54,8 @@ namespace Localizer
             Log = LogManager.GetLogger(nameof(Localizer));
 
             Harmony = HarmonyInstance.Create(nameof(Localizer));
-            Harmony.Patch("Terraria.ModLoader.Core.AssemblyManager".Type().Method("Instantiate"), new HarmonyMethod(NoroHelper.MethodInfo(() => AfterLocalizerCtorHook(null))));
+            Harmony.Patch("Terraria.ModLoader.Core.AssemblyManager", "Instantiate",
+                prefix: NoroHelper.HarmonyMethod(() => AfterLocalizerCtorHook(null)));
 
             State = OperationTiming.BeforeModCtor;
             TmodFile = Instance.ValueOf<TmodFile>("File");
@@ -88,10 +89,7 @@ namespace Localizer
             Kernel = new LocalizerKernel();
             Kernel.Init();
 
-            if (LanguageManager.Instance.ActiveCulture == GameCulture.Chinese)
-            {
-                ModBrowser.Patches.Patch();
-            }
+            ModBrowser.Patches.Patch();
 
             var autoImportService = Kernel.Get<AutoImportService>();
         }
@@ -205,7 +203,7 @@ namespace Localizer
 
                 HookEndpointManager.RemoveAllOwnedBy(this);
                 Harmony.UnpatchAll(nameof(Localizer));
-                Harmony.UnpatchAll("ModBrowserMirror");
+                Harmony.UnpatchAll(nameof(Patches));
                 Kernel.Dispose();
 
                 PackageUI = null;

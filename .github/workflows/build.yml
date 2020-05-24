@@ -10,11 +10,11 @@ jobs:
         with:
           submodules: recursive
 
-      - name: Install NuGet client
-        uses: warrenbuckley/Setup-Nuget@v1
+      - name: Installer NuGet client
+        uses: nuget/setup-nuget@v1
 
       - name: Setup tModLoader
-        uses: chi-rei-den/ModLoaderTools@v1
+        uses: chi-rei-den/ModLoaderTools@v1.1
         with:
           command: setup
 
@@ -26,7 +26,7 @@ jobs:
           & "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current\Bin\MSBuild.exe" Localizer.sln /p:Configuration=Release /p:Platform=x86
 
       - name: Patch Mod
-        run: '& "$ENV:GITHUB_WORKSPACE\ModPatch\bin\Release\ModPatch.exe"'
+        run: '& "$ENV:GITHUB_WORKSPACE\ModPatch\bin\Release\net472\ModPatch.exe"'
 
       - name: Publish Mod
         if: github.ref == 'refs/heads/master'
@@ -50,4 +50,6 @@ jobs:
           path: Artifact
 
       - name: Run Tests
-        run: '& "$ENV:UserProfile\.nuget\packages\xunit.runner.console\2.4.1\tools\net472\xunit.console.x86.exe" ".\LocalizerTest\bin\Release\LocalizerTest.dll"'
+        run: |
+          copy .\LocalizerTest\bin\Release\net472\tModLoader.exe .\LocalizerTest\bin\Release\net472\Terraria.exe
+          & "$ENV:UserProfile\.nuget\packages\xunit.runner.console\2.4.1\tools\net472\xunit.console.x86.exe" ".\LocalizerTest\bin\Release\net472\LocalizerTest.dll"

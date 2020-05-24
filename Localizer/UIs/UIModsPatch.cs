@@ -28,18 +28,18 @@ namespace Localizer.UIs
             }
 
             var refHolder = false;
-            var reloadRequired = "Terraria.ModLoader.Config.ConfigManager".Type().Method("ModNeedsReload");
-            Localizer.Harmony.Patch(reloadRequired, postfix: new HarmonyMethod(NoroHelper.MethodInfo(() => ModNeedsReloadPostfix(ref refHolder))));
+            Localizer.Harmony.Patch("Terraria.ModLoader.Config.ConfigManager", "ModNeedsReload",
+                postfix: NoroHelper.HarmonyMethod(() => ModNeedsReloadPostfix(ref refHolder)));
 
-            var onInit = "Terraria.ModLoader.UI.UIModItem".Type().Method("OnInitialize");
-            Localizer.Harmony.Patch(onInit, postfix: new HarmonyMethod(NoroHelper.MethodInfo(() => UIModItemPostfix(null))));
+            Localizer.Harmony.Patch("Terraria.ModLoader.UI.UIModItem", "OnInitialize",
+                postfix: NoroHelper.HarmonyMethod(() => UIModItemPostfix(null)));
 
-            var drawSelf = "Terraria.ModLoader.UI.UIModItem".Type().Method("DrawSelf");
-            Localizer.Harmony.Patch(drawSelf, postfix: new HarmonyMethod(NoroHelper.MethodInfo(() => DrawSelfPostfix(null, null))));
+            Localizer.Harmony.Patch("Terraria.ModLoader.UI.UIModItem", "DrawSelf",
+                postfix: NoroHelper.HarmonyMethod(() => DrawSelfPostfix(null, null)));
 
-            var populateFromJson = "Terraria.ModLoader.UI.ModBrowser.UIModBrowser".Type().Method("PopulateFromJson");
-            Localizer.Harmony.Patch(populateFromJson, prefix: new HarmonyMethod(NoroHelper.MethodInfo(() => PopulateFromJsonPrefix())),
-                postfix: new HarmonyMethod(NoroHelper.MethodInfo(() => PopulateFromJsonPostfix())));
+            Localizer.Harmony.Patch("Terraria.ModLoader.UI.ModBrowser.UIModBrowser", "PopulateFromJson",
+                prefix: NoroHelper.HarmonyMethod(() => PopulateFromJsonPrefix()),
+                postfix: NoroHelper.HarmonyMethod(() => PopulateFromJsonPostfix()));
         }
 
         private static void PopulateFromJsonPrefix()

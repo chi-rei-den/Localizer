@@ -8,6 +8,7 @@ using System.Reflection;
 using System.Reflection.Emit;
 using System.Text;
 using System.Text.RegularExpressions;
+using Harmony;
 using Harmony.ILCopying;
 using Localizer.Attributes;
 using Localizer.DataModel;
@@ -239,8 +240,14 @@ namespace Localizer
 
         #region Network
 
-        internal static string UserAgent() {
-            return $"Localizer ({Environment.OSVersion}; rv: {Localizer.Instance.Version}; {(Environment.Is64BitOperatingSystem ? "x64" : "x86")}) tModLoader/{ModLoader.versionTag} ({(Environment.Is64BitOperatingSystem ? "x64" : "x86")})";
+        internal static string UserAgent(bool localizer = true)
+        {
+            if (!localizer)
+            {
+                // Request by tModLoader
+                return $"tModLoader/{ModLoader.versionTag} ({Environment.OSVersion}; {(Environment.Is64BitOperatingSystem ? "x64" : "x86")})";
+            }
+            return $"Localizer/{Localizer.Instance.Version} ({Environment.OSVersion}; {(Environment.Is64BitOperatingSystem ? "x64" : "x86")}) tModLoader/{ModLoader.versionTag} ({(Environment.Is64BitOperatingSystem ? "x64" : "x86")})";
         }
 
         public static HttpWebResponse GET(string url)
@@ -411,6 +418,26 @@ namespace Localizer
             }
 
             return default;
+        }
+
+        public static void Patch(this HarmonyInstance instance, string @class, string method, bool exactMatch = true, HarmonyMethod prefix = null, HarmonyMethod postfix = null, HarmonyMethod transpiler = null)
+        {
+            if (exactMatch)
+            {
+                instance.Patch(@class.Type().Method(method),
+                    prefix: prefix,
+                    postfix: postfix,
+                    transpiler: transpiler);
+            }
+            else
+            {
+                instance.Patch(@class.Type()
+                    .GetMethods(NoroHelper.Any)
+                    .FirstOrDefault(m => m.Name.Contains(method)),
+                    prefix: prefix,
+                    postfix: postfix,
+                    transpiler: transpiler);
+            }
         }
         #endregion
     }

@@ -1,9 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Reflection;
+using System.Reflection.Emit;
 using System.Text.RegularExpressions;
 using Harmony;
+using Terraria.Localization;
 using Terraria.ModLoader;
 
 namespace Localizer.ModBrowser
@@ -16,35 +19,93 @@ namespace Localizer.ModBrowser
         {
             Utils.LogInfo($"Patching ModBrowser, tML version: {ModLoader.version}");
 
-            HarmonyInstance = HarmonyInstance.Create("ModBrowserMirror");
+            HarmonyInstance = HarmonyInstance.Create(nameof(Patches));
+
+            if (LanguageManager.Instance.ActiveCulture == GameCulture.Chinese)
+            {
+                try
+                {
+                    #region Download Mod List
+                    if (!string.IsNullOrEmpty(GetModListURL()))
+                    {
+                        HarmonyInstance.Patch("Terraria.ModLoader.UI.ModBrowser.UIModBrowser", "<PopulateModBrowser>",
+                            exactMatch: false,
+                            transpiler: NoroHelper.HarmonyMethod(() => PopulateModBrowserTranspiler(null)));
+                        Utils.LogInfo("PopulateModBrowser Patched");
+                    }
+                    #endregion
+
+                    #region Get Mod Download URL
+                    if (!string.IsNullOrEmpty(GetModDownloadURL()))
+                    {
+                        HarmonyInstance.Patch("Terraria.ModLoader.UI.ModBrowser.UIModDownloadItem", "FromJson",
+                            transpiler: NoroHelper.HarmonyMethod(() => FromJSONTranspiler(null)));
+                        Utils.LogInfo("FromJson Patched");
+
+                        if (!string.IsNullOrEmpty(GetModDescURL()))
+                        {
+                            HarmonyInstance.Patch("Terraria.ModLoader.UI.UIModInfo", "<OnActivate>",
+                                exactMatch: false,
+                                transpiler: NoroHelper.HarmonyMethod(() => OnActivateTranspiler(null)));
+                            Utils.LogInfo("OnActivate Patched");
+                        }
+                    }
+                    #endregion
+
+                    #region List My Mods
+                    // Terraria.ModLoader.UI.UIManagePublished.OnActivate
+                    // "http://javid.ddns.net/tModLoader/listmymods.php"
+                    #endregion
+
+                    #region Publish Mod
+                    // Terraria.ModLoader.UI.UIModSourceItem.PublishMod
+                    // "http://javid.ddns.net/tModLoader/publishmod.php"
+                    #endregion
+
+                    #region Unpublish Mod
+                    // Terraria.ModLoader.UI.UIModManageItem.UnpublishMod
+                    // "http://javid.ddns.net/tModLoader/unpublishmymod.php"
+                    #endregion
+
+                    #region Register Link
+                    // Terraria.ModLoader.UI.UIEnterPassphraseMenu.VisitRegisterWebpage
+                    // Terraria.ModLoader.UI.UIEnterSteamIDMenu.VisitRegisterWebpage
+                    // "http://javid.ddns.net/tModLoader/register.php"
+                    #endregion
+
+                    #region Direct Mod Listing
+                    // Terraria.ModLoader.UI.ModBrowser.UIModBrowser.<>c.<ShowOfflineTroubleshootingMessage>
+                    // "http://javid.ddns.net/tModLoader/DirectModDownloadListing.php"
+                    #endregion
+
+                    #region Query Mod Download URL
+                    // Terraria.ModLoader.Interface.ServerModBrowserMenu
+                    // "http://javid.ddns.net/tModLoader/tools/querymoddownloadurl.php?modname="
+                    #endregion
+
+                    #region Error Report
+                    // No plan
+                    #endregion
+
+                    #region ModCompile
+                    HarmonyInstance.Patch("Terraria.ModLoader.UI.UIDeveloperModeHelp", "DownloadModCompile",
+                        transpiler: NoroHelper.HarmonyMethod(() => ModCompileTranspiler(null)));
+                    Utils.LogInfo("DownloadModCompile Patched");
+                    #endregion
+
+                    Utils.LogInfo("ModBrowser Patched");
+                }
+                catch (Exception e)
+                {
+                    Utils.LogInfo($"ModBrowser Patch exception: {e}");
+                }
+            }
 
             try
             {
-                if (!string.IsNullOrEmpty(GetModListURL()))
-                {
-                    var populateModBrowser = "Terraria.ModLoader.UI.ModBrowser.UIModBrowser".Type()
-                                              .GetMethods(NoroHelper.Any)
-                                              .FirstOrDefault(m => m.Name.Contains("<PopulateModBrowser>"));
-                    HarmonyInstance.Patch(populateModBrowser, null, null, new HarmonyMethod(NoroHelper.MethodInfo(() => PopulateModBrowserTranspiler(null))));
-                    Utils.LogInfo("PopulateModBrowser Patched");
-                }
-
-                if (!string.IsNullOrEmpty(GetModDownloadURL()))
-                {
-                    var fromJson = "Terraria.ModLoader.UI.ModBrowser.UIModDownloadItem".Type().Method("FromJson");
-                    HarmonyInstance.Patch(fromJson, null, null, new HarmonyMethod(NoroHelper.MethodInfo(() => FromJSONTranspiler(null))));
-                    Utils.LogInfo("FromJson Patched");
-
-                    if (!string.IsNullOrEmpty(GetModDescURL()))
-                    {
-                        var onActivate = "Terraria.ModLoader.UI.UIModInfo".Type()
-                                                  .GetMethods(NoroHelper.Any)
-                                                  .FirstOrDefault(m => m.Name.Contains("<OnActivate>"));
-                        HarmonyInstance.Patch(onActivate, null, null, new HarmonyMethod(NoroHelper.MethodInfo(() => OnActivateTranspiler(null))));
-                        Utils.LogInfo("OnActivate Patched");
-                    }
-                }
-                Utils.LogInfo("ModBrowser Patched");
+                HarmonyInstance.Patch("Terraria.ModLoader.UI.DownloadManager.DownloadFile", "SetupDownloadRequest",
+                    postfix: NoroHelper.HarmonyMethod(() => PostSetupDownloadRequest(null)));
+                Utils.LogInfo("SetupDownloadRequest Patched");
             }
             catch (Exception e)
             {
@@ -53,6 +114,7 @@ namespace Localizer.ModBrowser
         }
 
         private static readonly Regex _defaultMirror = new Regex(@"mirror(?:\d*)?\.sgkoi\.dev");
+
         private static string GetModListURL()
         {
             var mirror = Localizer.Config.ModListMirror[0];
@@ -99,6 +161,13 @@ namespace Localizer.ModBrowser
             }
         }
 
+        private static void PostSetupDownloadRequest(object __instance)
+        {
+            var request = __instance.ValueOf<HttpWebRequest>("<Request>k__BackingField");
+            request.Headers[HttpRequestHeader.UserAgent] = Utils.UserAgent(false);
+            request.Headers[HttpRequestHeader.AcceptLanguage] = LanguageManager.Instance.ActiveCulture.CultureInfo.ToString();
+        }
+
         private static IEnumerable<CodeInstruction> PopulateModBrowserTranspiler(IEnumerable<CodeInstruction> instructions)
         {
             var result = instructions.ToList();
@@ -121,6 +190,21 @@ namespace Localizer.ModBrowser
             var result = instructions.ToList();
             ReplaceLdstr("http://javid.ddns.net/tModLoader/download.php?Down=mods/", GetModDownloadURL(), result);
             ReplaceLdstr("http://javid.ddns.net/tModLoader/moddescription.php", GetModDescURL(), result);
+            return result;
+        }
+
+        private static IEnumerable<CodeInstruction> ModCompileTranspiler(IEnumerable<CodeInstruction> instructions)
+        {
+            var result = instructions.ToList();
+            for (int i = 0; i < result.Count; i++)
+            {
+                if (result[i].opcode == OpCodes.Ldstr && $"{result[i].operand}" == "https://github.com/tModLoader/tModLoader/releases/download/")
+                {
+                    result[i].operand = "https://mirror.sgkoi.dev/direct";
+                    result[i + 1] = new CodeInstruction(OpCodes.Ldstr, "");
+                }
+            }
+
             return result;
         }
 
