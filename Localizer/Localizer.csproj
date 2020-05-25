@@ -31,7 +31,7 @@
     <Exec Command="copy $(OutDir)Ninject.dll $(ProjectDir)lib\Ninject.dll" />
     <Exec Command="copy $(OutDir)Squid.dll $(ProjectDir)lib\Squid.dll" />
     <Exec Command="&quot;$(tMLBuildServerPath)&quot; -build $(ProjectDir) -eac $(TargetPath) -define $(DefineConstants) -unsafe $(AllowUnsafeBlocks)" />
-    <Exec Command="$(SolutionDir)ModPatch\bin\Debug\ModPatch.exe" Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' " />
-    <Exec Command="$(SolutionDir)ModPatch\bin\Release\ModPatch.exe" Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' " />
+    <Exec Command="$(SolutionDir)ModPatch\bin\Debug\ModPatch.exe" Condition=" '$(Configuration)' == 'Debug' " />
+    <Exec Command="$(SolutionDir)ModPatch\bin\Release\ModPatch.exe" Condition=" '$(Configuration)' == 'Release' " />
   </Target>
 </Project>
