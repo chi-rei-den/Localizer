@@ -93,6 +93,12 @@ namespace Localizer.ModBrowser
                     Utils.LogInfo("DownloadModCompile Patched");
                     #endregion
 
+                    #region Mod Update
+                    HarmonyInstance.Patch("Terraria.ModLoader.UI.DownloadManager.DownloadModFile", "PreCopy",
+                        prefix: NoroHelper.HarmonyMethod(() => PreCopyPrefix(null)));
+                    Utils.LogInfo("PreCopy Patched");
+                    #endregion
+
                     Utils.LogInfo("ModBrowser Patched");
                 }
                 catch (Exception e)
@@ -161,17 +167,40 @@ namespace Localizer.ModBrowser
             }
         }
 
+        private static void PreCopyPrefix(object ___ModBrowserItem)
+        {
+            if (___ModBrowserItem.ValueOf<string>("ModName") == "Localizer")
+            {
+                ___ModBrowserItem.SetField("ModName", "!Localizer");
+            }
+        }
+
         private static void PostSetupDownloadRequest(object __instance)
         {
             var request = __instance.ValueOf<HttpWebRequest>("<Request>k__BackingField");
-            request.Headers[HttpRequestHeader.UserAgent] = Utils.UserAgent(false);
+            request.UserAgent = Utils.UserAgent(false);
             request.Headers[HttpRequestHeader.AcceptLanguage] = LanguageManager.Instance.ActiveCulture.CultureInfo.ToString();
+        }
+
+        public static void UpdateHeader(WebClient wc)
+        {
+            wc.Headers[HttpRequestHeader.UserAgent] = Utils.UserAgent(false);
+            wc.Headers[HttpRequestHeader.AcceptLanguage] = LanguageManager.Instance.ActiveCulture.CultureInfo.ToString();
         }
 
         private static IEnumerable<CodeInstruction> PopulateModBrowserTranspiler(IEnumerable<CodeInstruction> instructions)
         {
             var result = instructions.ToList();
             ReplaceLdstr("http://javid.ddns.net/tModLoader/listmods.php", GetModListURL(), result);
+            for (int i = 0; i < result.Count; i++)
+            {
+                if (result[i].opcode == OpCodes.Callvirt && $"{result[i].operand}".Contains("UploadValuesCompleted"))
+                {
+                    result.Insert(i + 1, new CodeInstruction(result[i + 1]));
+                    result.Insert(i + 2, new CodeInstruction(OpCodes.Call, NoroHelper.MethodInfo(() => UpdateHeader(null))));
+                    break;
+                }
+            }
 
             return result;
         }
