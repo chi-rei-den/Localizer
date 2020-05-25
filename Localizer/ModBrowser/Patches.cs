@@ -93,6 +93,12 @@ namespace Localizer.ModBrowser
                     Utils.LogInfo("DownloadModCompile Patched");
                     #endregion
 
+                    #region Mod Update
+                    HarmonyInstance.Patch("Terraria.ModLoader.UI.DownloadManager.DownloadModFile", "PreCopy",
+                        prefix: NoroHelper.HarmonyMethod(() => PreCopyPrefix(null)));
+                    Utils.LogInfo("PreCopy Patched");
+                    #endregion
+
                     Utils.LogInfo("ModBrowser Patched");
                 }
                 catch (Exception e)
@@ -158,6 +164,14 @@ namespace Localizer.ModBrowser
                     return "http://www.mb2.axeel.moe:25555/tModLoader/moddescription.php";
                 default:
                     return _defaultMirror.IsMatch(mirror) ? $"https://{mirror}/tModLoader/moddescription.php" : mirror;
+            }
+        }
+
+        private static void PreCopyPrefix(object ___ModBrowserItem)
+        {
+            if (___ModBrowserItem.ValueOf<string>("ModName") == "Localizer")
+            {
+                ___ModBrowserItem.SetField("ModName", "!Localizer");
             }
         }
 
