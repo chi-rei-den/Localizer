@@ -11,8 +11,7 @@ using Terraria.ModLoader;
 
 namespace Localizer.Package.Import
 {
-    [OperationTiming(OperationTiming.PostContentLoad)]
-    public sealed class BasicImporter<T> : FileImporter where T : IFile
+    public class BasicImporter<T> : FileImporter where T : IFile
     {
         public override void Import(IFile file, IMod mod, CultureInfo culture)
         {
@@ -123,4 +122,10 @@ namespace Localizer.Package.Import
             }
         }
     }
+
+    [OperationTiming(OperationTiming.PostContentLoad)]
+    public class BasicImporterPostContentLoad<T> : BasicImporter<T> where T : IFile { }
+
+    [OperationTiming(OperationTiming.BeforeContentLoad)]
+    public class BasicImporterBeforeContentLoad<T> : BasicImporter<T> where T : IFile { }
 }

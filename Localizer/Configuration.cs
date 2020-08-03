@@ -6,6 +6,10 @@ namespace Localizer
 
         public bool ImportLdstr { get; set; } = true;
 
+        public string LdstrImporter { get; set; } = "Cecil";
+
+        public bool ImporBasictAfterSetupContent { get; set; } = true;
+
         public AutoImportType AutoImportType { get; set; } = AutoImportType.All;
 
         public bool ShowUI { get; set; } = true;
@@ -20,7 +24,7 @@ namespace Localizer
         {
             "mirror.sgkoi.dev",
             "mirror7.sgkoi.dev",
-            "mirror3.sgkoi.dev",
+            "mirror8.sgkoi.dev",
             "mirror5.sgkoi.dev",
         };
 
@@ -28,7 +32,7 @@ namespace Localizer
         {
             "mirror.sgkoi.dev",
             "mirror7.sgkoi.dev",
-            "mirror3.sgkoi.dev",
+            "mirror8.sgkoi.dev",
             "mirror5.sgkoi.dev",
         };
 
@@ -36,6 +40,7 @@ namespace Localizer
         {
             "mirror.sgkoi.dev",
             "mirror7.sgkoi.dev",
+            "mirror8.sgkoi.dev",
             "mirror5.sgkoi.dev",
         };
     }
