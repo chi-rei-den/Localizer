@@ -9,7 +9,7 @@ using Terraria.ModLoader;
 
 namespace Localizer.Package.Import
 {
-    [OperationTiming(OperationTiming.PostContentLoad)]
+    [OperationTiming(OperationTiming.BeforeContentLoad)]
     public class CustomModTranslationImporter : FileImporter
     {
         public override void Import(IFile file, IMod mod, CultureInfo culture)
