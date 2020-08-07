@@ -77,6 +77,7 @@ namespace Localizer.ModBrowser
                     // Terraria.ModLoader.UI.ModBrowser.UIModBrowser.<>c.<ShowOfflineTroubleshootingMessage>
                     // "http://javid.ddns.net/tModLoader/DirectModDownloadListing.php"
                     HarmonyInstance.Patch("Terraria.ModLoader.UI.ModBrowser.UIModBrowser.<>c", "<ShowOfflineTroubleshootingMessage>",
+                        exactMatch: false,
                         transpiler: NoroHelper.HarmonyMethod(() => DirectModListingTranspiler(null)));
                     Utils.LogInfo("DirectModListing Patched");
                     #endregion
