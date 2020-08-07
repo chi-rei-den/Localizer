@@ -1,4 +1,5 @@
 using System;
+using System.Reflection;
 using Localizer.DataModel;
 using Localizer.DataModel.Default;
 using Localizer.Package;
@@ -56,13 +57,31 @@ namespace Localizer.Modules
             Bind<IPackageImportService>().To<PackageImportService>().InSingletonScope();
 
             var packageImportService = Kernel.Get<IPackageImportService>();
-            packageImportService.RegisterImporter<BasicItemFile>(typeof(BasicImporter<BasicItemFile>));
-            packageImportService.RegisterImporter<BasicNPCFile>(typeof(BasicImporter<BasicNPCFile>));
-            packageImportService.RegisterImporter<BasicBuffFile>(typeof(BasicImporter<BasicBuffFile>));
-            packageImportService.RegisterImporter<BasicProjectileFile>(typeof(BasicImporter<BasicProjectileFile>));
-            packageImportService.RegisterImporter<BasicPrefixFile>(typeof(BasicImporter<BasicPrefixFile>));
+            if (Localizer.Config.ImporBasictAfterSetupContent)
+            {
+                packageImportService.RegisterImporter<BasicItemFile>(typeof(BasicImporterPostContentLoad<BasicItemFile>));
+                packageImportService.RegisterImporter<BasicNPCFile>(typeof(BasicImporterPostContentLoad<BasicNPCFile>));
+                packageImportService.RegisterImporter<BasicBuffFile>(typeof(BasicImporterPostContentLoad<BasicBuffFile>));
+                packageImportService.RegisterImporter<BasicProjectileFile>(typeof(BasicImporterPostContentLoad<BasicProjectileFile>));
+                packageImportService.RegisterImporter<BasicPrefixFile>(typeof(BasicImporterPostContentLoad<BasicPrefixFile>));
+            }
+            else
+            {
+                packageImportService.RegisterImporter<BasicItemFile>(typeof(BasicImporterBeforeContentLoad<BasicItemFile>));
+                packageImportService.RegisterImporter<BasicNPCFile>(typeof(BasicImporterBeforeContentLoad<BasicNPCFile>));
+                packageImportService.RegisterImporter<BasicBuffFile>(typeof(BasicImporterBeforeContentLoad<BasicBuffFile>));
+                packageImportService.RegisterImporter<BasicProjectileFile>(typeof(BasicImporterBeforeContentLoad<BasicProjectileFile>));
+                packageImportService.RegisterImporter<BasicPrefixFile>(typeof(BasicImporterBeforeContentLoad<BasicPrefixFile>));
+            }
             packageImportService.RegisterImporter<CustomModTranslationFile>(typeof(CustomModTranslationImporter));
-            packageImportService.RegisterImporter<LdstrFile>(typeof(CecilLdstrImporter));
+            if (!string.IsNullOrWhiteSpace(Localizer.Config.LdstrImporter))
+            {
+                packageImportService.RegisterImporter<LdstrFile>(Assembly.GetExecutingAssembly().GetType($"Localizer.Package.Import.{Localizer.Config.LdstrImporter}LdstrImporter"));
+            }
+            else
+            {
+                packageImportService.RegisterImporter<LdstrFile>(typeof(CecilLdstrImporter));
+            }
 
             Bind<AutoImportService>().ToSelf().InSingletonScope();
             Bind<RefreshLanguageService>().ToSelf().InSingletonScope();

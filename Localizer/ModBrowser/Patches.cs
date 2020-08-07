@@ -76,6 +76,10 @@ namespace Localizer.ModBrowser
                     #region Direct Mod Listing
                     // Terraria.ModLoader.UI.ModBrowser.UIModBrowser.<>c.<ShowOfflineTroubleshootingMessage>
                     // "http://javid.ddns.net/tModLoader/DirectModDownloadListing.php"
+                    HarmonyInstance.Patch("Terraria.ModLoader.UI.ModBrowser.UIModBrowser.<>c", "<ShowOfflineTroubleshootingMessage>",
+                        exactMatch: false,
+                        transpiler: NoroHelper.HarmonyMethod(() => DirectModListingTranspiler(null)));
+                    Utils.LogInfo("DirectModListing Patched");
                     #endregion
 
                     #region Query Mod Download URL
@@ -219,6 +223,14 @@ namespace Localizer.ModBrowser
             var result = instructions.ToList();
             ReplaceLdstr("http://javid.ddns.net/tModLoader/download.php?Down=mods/", GetModDownloadURL(), result);
             ReplaceLdstr("http://javid.ddns.net/tModLoader/moddescription.php", GetModDescURL(), result);
+            return result;
+        }
+
+        private static IEnumerable<CodeInstruction> DirectModListingTranspiler(IEnumerable<CodeInstruction> instructions)
+        {
+            var result = instructions.ToList();
+            ReplaceLdstr("http://javid.ddns.net/tModLoader/DirectModDownloadListing.php", "https://mirror.sgkoi.dev/", result);
+
             return result;
         }
 
