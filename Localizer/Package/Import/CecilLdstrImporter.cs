@@ -7,6 +7,7 @@ using Harmony;
 using Localizer.Attributes;
 using Localizer.DataModel;
 using Localizer.DataModel.Default;
+using Localizer.Package.Export;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
 using Ninject;
@@ -119,11 +120,54 @@ namespace Localizer.Package.Import
                 return;
             }
 
-            foreach (var i in il)
+        
+            for (var i = 0; i < il.Count; i++)
             {
-                if (i.OpCode == OpCodes.Ldstr && i?.Operand?.ToString() == o)
+                var ins = il[i];
+                if (ins.OpCode == OpCodes.Ldstr && !string.IsNullOrWhiteSpace(ins.Operand.ToString()))
                 {
-                    i.Operand = n;
+                    // Filter methods in blacklist1
+                    if (i < il.Count - 1)
+                    {
+                        var next = il[i + 1];
+                        var operandId = "";
+                        if (next.OpCode == OpCodes.Call || next.OpCode == OpCodes.Callvirt)
+                        {
+                            operandId = (next.Operand as MethodReference).GetID();
+                        }
+                        else if (next.OpCode == OpCodes.Calli)
+                        {
+                            operandId = (next.Operand as CallSite).GetID();
+                        }
+                        if (!string.IsNullOrWhiteSpace(operandId) && LdstrFileExport._blackList1.Any(m => operandId == m?.GetID()))
+                        {
+                            continue;
+                        }
+                    }
+
+                    // Filter methods in blacklist2
+                    if (i < il.Count - 2)
+                    {
+                        var afterNext = il[i + 2];
+                        var operandId = "";
+                        if (afterNext.OpCode == OpCodes.Call || afterNext.OpCode == OpCodes.Callvirt)
+                        {
+                            operandId = (afterNext.Operand as MethodReference).GetID();
+                        }
+                        else if (afterNext.OpCode == OpCodes.Calli)
+                        {
+                            operandId = (afterNext.Operand as CallSite).GetID();
+                        }
+                        if (!string.IsNullOrWhiteSpace(operandId) && LdstrFileExport._blackList2.Any(m => operandId == m?.GetID()))
+                        {
+                            continue;
+                        }
+                    }
+
+                    if (i.OpCode == OpCodes.Ldstr && i?.Operand?.ToString() == o)
+                    {
+                        i.Operand = n;
+                    }
                 }
             }
         }
