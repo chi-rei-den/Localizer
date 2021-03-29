@@ -15,7 +15,7 @@ namespace Localizer.Package.Export
 {
     public sealed class LdstrFileExport : IFileExportService
     {
-        private static List<MethodBase> _blackList1 = new List<MethodBase>
+        internal static List<MethodBase> _blackList1 = new List<MethodBase>
         {
             GetMethodBase<ModTranslation>(
                 "System.String Terraria.ModLoader.ModTranslation::GetTranslation(System.String)"),
@@ -114,7 +114,7 @@ namespace Localizer.Package.Export
             typeof(ModLoader).FindMethod("Terraria.ModLoader.Mod Terraria.ModLoader.ModLoader::GetMod(System.String)"),
         };
 
-        private static List<MethodBase> _blackList2 = new List<MethodBase>
+        internal static List<MethodBase> _blackList2 = new List<MethodBase>
         {
             GetMethodBase<ModRecipe>(
                 "System.Void Terraria.ModLoader.ModRecipe::AddIngredient(Terraria.ModLoader.Mod,System.String,System.Int32)"),
