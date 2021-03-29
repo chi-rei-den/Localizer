@@ -121,13 +121,13 @@ namespace Localizer.Package.Import
             }
 
         
-            for (var i = 0; i < il.Count; i++)
+            for (var i = 0; i < il.Count(); i++)
             {
                 var ins = il[i];
                 if (ins.OpCode == OpCodes.Ldstr && !string.IsNullOrWhiteSpace(ins.Operand.ToString()))
                 {
                     // Filter methods in blacklist1
-                    if (i < il.Count - 1)
+                    if (i < il.Count() - 1)
                     {
                         var next = il[i + 1];
                         var operandId = "";
@@ -146,7 +146,7 @@ namespace Localizer.Package.Import
                     }
 
                     // Filter methods in blacklist2
-                    if (i < il.Count - 2)
+                    if (i < il.Count() - 2)
                     {
                         var afterNext = il[i + 2];
                         var operandId = "";
@@ -164,9 +164,9 @@ namespace Localizer.Package.Import
                         }
                     }
 
-                    if (i.OpCode == OpCodes.Ldstr && i?.Operand?.ToString() == o)
+                    if (ins.OpCode == OpCodes.Ldstr && ins?.Operand?.ToString() == o)
                     {
-                        i.Operand = n;
+                        ins.Operand = n;
                     }
                 }
             }
