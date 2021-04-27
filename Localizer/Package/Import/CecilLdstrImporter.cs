@@ -10,6 +10,7 @@ using Localizer.DataModel.Default;
 using Localizer.Package.Export;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
+using MonoMod.Utils;
 using Ninject;
 
 namespace Localizer.Package.Import
@@ -113,14 +114,14 @@ namespace Localizer.Package.Import
             }
         }
 
-        private static void ReplaceLdstr(string o, string n, IEnumerable<Instruction> il)
+        private static void ReplaceLdstr(string o, string n, List<Instruction> il)
         {
             if (string.IsNullOrEmpty(n))
             {
                 return;
             }
 
-        
+
             for (var i = 0; i < il.Count(); i++)
             {
                 var ins = il[i];
